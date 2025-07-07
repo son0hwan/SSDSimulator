@@ -6,6 +6,7 @@ class SsdCmdInterface {
 public:
     virtual void run() = 0;
 };
+
 class SsdErrorCmd : public SsdCmdInterface {
 public:
 	SsdErrorCmd(long address) : address(address) {}

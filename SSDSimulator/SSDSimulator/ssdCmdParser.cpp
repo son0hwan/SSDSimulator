@@ -34,7 +34,6 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isRightLba(args[1])) {
 		long address = std::stol(args[1]);
 		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
-		long address = std::stol(arg1);
 		readCmd.setAddress(address);
 		return &SsdReadCmd::getInstance();
 	}
