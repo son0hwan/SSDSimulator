@@ -11,8 +11,12 @@ public:
 	std::string read(int address) {
 		return executor->readFromSSD(address);
 	}
-	std::string fullRead() {
-		return "";
+	bool fullRead() {
+		for (int i = 0; i < 100; i++) {
+			if (executor->readFromSSD(i) == "ERROR")
+				return false;
+		}
+		return true;
 	}
 	
 private:
