@@ -6,5 +6,5 @@
 
 class SsdCmdParser {
 public:
-    SsdCmdInterface* parse(const std::string& cmd, const std::string& arg1, const std::string& arg2 = "");
+    SsdCmdInterface* getCommand(const std::string& cmd, const std::string& arg1, const std::string& arg2 = "");
 };

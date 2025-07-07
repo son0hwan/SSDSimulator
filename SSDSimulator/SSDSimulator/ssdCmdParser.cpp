@@ -4,7 +4,7 @@
 
 
 
-SsdCmdInterface* SsdCmdParser::parse(const std::string& cmd, const std::string& arg1, const std::string& arg2)
+SsdCmdInterface* SsdCmdParser::getCommand(const std::string& cmd, const std::string& arg1, const std::string& arg2)
 {
 	return new SsdReadCmd{3};
 }
