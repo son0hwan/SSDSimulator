@@ -18,6 +18,18 @@ public:
 
 		return WRITE_SUCCESS;
 	}
+
+	int fullwrite(int value) {
+		std::string result;
+
+		for (int addr = 0; addr < 100; addr++) {
+			result = executor->writeToSSD(addr, value);
+			if (result == WRITE_ERROR_STRING)
+				return WRITE_ERROR;
+		}
+
+		return WRITE_SUCCESS;
+	}
 	
 private:
 	Executor* executor;

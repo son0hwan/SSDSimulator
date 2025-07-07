@@ -27,3 +27,18 @@ TEST(ShellWrite, WriteFailureWithWrongAddress) {
 	int result = shell.write(100, 0x1000000);
 	EXPECT_EQ(WRITE_ERROR, result);
 }
+
+TEST(ShellWrite, FullWrite) {
+	MockSSD mock;
+	TestShell shell(&mock);
+
+	for (int address = 0; address < 100; address++) {
+		EXPECT_CALL(mock, writeToSSD(address, 0x1000000))
+			.Times(1)
+			.WillOnce(Return(WRITE_SUCCESS_STRING));
+	}
+
+	int result = shell.fullwrite(0x1000000);
+
+	EXPECT_EQ(WRITE_SUCCESS, result);
+}
