@@ -14,7 +14,7 @@ class SsdCmdParserFixture : public Test {
 };
 
 TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {
-    std::vector<std::string> args = { "READ", "3" };
+    std::vector<std::string> args = { "R", "3" };
     SsdCmdInterface* command = cmdParser.getCommand(args);
 
     EXPECT_TRUE(nullptr != dynamic_cast<SsdReadCmd*>(command));
@@ -49,7 +49,6 @@ TEST_F(SsdCmdParserFixture, InvalidCmd) {
     EXPECT_TRUE(nullptr != dynamic_cast<SsdErrorCmd*>(result));
 }
 
-
 TEST_F(SsdCmdParserFixture, ReadWithNonAddress) {
     std::vector<std::string> args = { "R", "BBB" };
     SsdCmdInterface* result = cmdParser.getCommand(args);
@@ -64,6 +63,12 @@ TEST_F(SsdCmdParserFixture, WriteWithNonAddress) {
     EXPECT_TRUE(nullptr != dynamic_cast<SsdErrorCmd*>(result));
 }
 
+TEST_F(SsdCmdParserFixture, WriteWithNonData) {
+    std::vector<std::string> args = { "W", "2", "BBB" };
+    SsdCmdInterface* result = cmdParser.getCommand(args);
+
+    EXPECT_TRUE(nullptr != dynamic_cast<SsdErrorCmd*>(result));
+}
 
 TEST_F(SsdCmdParserFixture, ReadWithLessArg) {
     std::vector<std::string> args = { "R" };
@@ -71,7 +76,6 @@ TEST_F(SsdCmdParserFixture, ReadWithLessArg) {
 
     EXPECT_TRUE(nullptr != dynamic_cast<SsdErrorCmd*>(result));
 }
-
 
 TEST_F(SsdCmdParserFixture, ReadWithManyArg) {
     std::vector<std::string> args = { "R", "3", "BBB" };
