@@ -10,10 +10,10 @@ TEST(ShellWrite, Write) {
 	
 	EXPECT_CALL(mock, writeToSSD(1, 0x1000000))
 		.Times(1)
-		.WillRepeatedly(Return(""));
+		.WillRepeatedly(Return(WRITE_SUCCESS_STRING));
 
 	int result = shell.write(1, 0x1000000);
-	EXPECT_EQ(0, result);
+	EXPECT_EQ(WRITE_SUCCESS, result);
 }
 
 TEST(ShellWrite, WriteFailureWithWrongAddress) {
@@ -22,8 +22,8 @@ TEST(ShellWrite, WriteFailureWithWrongAddress) {
 
 	EXPECT_CALL(mock, writeToSSD(100, 0x1000000))
 		.Times(1)
-		.WillOnce(Return("ERROR"));
+		.WillOnce(Return(WRITE_ERROR_STRING));
 
 	int result = shell.write(100, 0x1000000);
-	EXPECT_EQ(1, result);
+	EXPECT_EQ(WRITE_ERROR, result);
 }
