@@ -130,9 +130,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="executor.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ssdExecutor.cpp" />
+    <ClCompile Include="mockExecutor.cpp" />
     <ClCompile Include="testShellCmdInterface.h" />
     <ClCompile Include="testShellCmdWrite.h" />
+    <ClCompile Include="test_write.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="testShellCmdRead.h" />
