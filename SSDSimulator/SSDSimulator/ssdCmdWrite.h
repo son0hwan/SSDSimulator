@@ -28,7 +28,7 @@ public:
 
     void updateOutputError();
 
-    void updarteDataInNAND();
+    void updateDataToNAND();
 #if (1 == TEMPORARY_CODE_FOR_TESTING)  
     long TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address);
 

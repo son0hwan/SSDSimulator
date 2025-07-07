@@ -13,7 +13,7 @@ void SsdWriteCmd::run() {
 
     // write to internal vector; the whole vector will be flushed to raw_nand.txt later 
     updateDataInInternalBuffer(this->address, this->data);
-    updarteDataInNAND();
+    updateDataToNAND();
     updateOutput();
 }
 
@@ -35,7 +35,7 @@ void SsdWriteCmd::updateOutputError() {
     outputFile.close();
 }
 
-void SsdWriteCmd::updarteDataInNAND()
+void SsdWriteCmd::updateDataToNAND()
 {
     std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
     if (!nandDataFile) {
