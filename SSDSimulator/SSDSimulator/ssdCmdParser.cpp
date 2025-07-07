@@ -2,6 +2,7 @@
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
 #include "ssdCmdParser.h"	
+#include<string>
 
 #include <algorithm>
 
@@ -32,7 +33,10 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 
 	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isRightLba(args[1])) {
 		long address = std::stol(args[1]);
-		return new SsdReadCmd(address);
+		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
+		long address = std::stol(arg1);
+		readCmd.setAddress(address);
+		return &SsdReadCmd::getInstance();
 	}
 	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isRightLba(args[1]) && isHexString(args[2]))) {
 		long address = std::stol(args[1]);
