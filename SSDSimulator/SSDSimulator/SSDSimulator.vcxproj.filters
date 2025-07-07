@@ -18,17 +18,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ssdCmdWrite.cpp">
+    <ClCompile Include="test_SsdCmdParser.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="test_ssdCmdWrite.cpp">
-      <Filter>테스트 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -41,5 +35,8 @@
     <ClInclude Include="ssdCmdWrite.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
