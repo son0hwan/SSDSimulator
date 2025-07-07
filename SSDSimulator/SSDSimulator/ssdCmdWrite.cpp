@@ -53,7 +53,7 @@ void SsdWriteCmd::updateDataInInternalBuffer(long address, long data) {
 }
 
 #if (1 == TEMPORARY_CODE_FOR_TESTING)    
-long SsdWriteCmd::TEMPORARY_READ_SECTOR(long address) {
+long SsdWriteCmd::TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address) {
     if (this->address > DEVICE_MAX_ADDRESS ||
         this->address < 0) {
         throw std::exception("Invalid address range; must be greater than 0 and less than 100");
@@ -81,10 +81,24 @@ std::vector<std::string> SsdWriteCmd::TEMPORARY_READ_OUTPUT() {
 }
 
 void SsdWriteCmd::TEMPORARY_READ_FROM_SSD_NAND_TXT() {  
-
-    for (int addr = 0; addr <= DEVICE_MAX_ADDRESS; addr++) {
-        v.push_back(ReadWriteData{ (long)addr, TEMPORARY_GENERATE_RANDOM_NUMBER()});
+    std::ifstream inFile(NAND_DATA_FILE);
+    if (!inFile) {
+        throw std::exception("error opening file for writing");
     }
+
+    std::string line;
+
+    while (std::getline(inFile, line)) {
+        size_t delimiter_pos = line.find(';');
+
+        std::string first_part = line.substr(0, delimiter_pos);
+        std::string second_part = line.substr(delimiter_pos + 1);
+        long addr = std::stoll(first_part, nullptr, 16);
+        long data = std::stoll(second_part, nullptr, 16);
+
+        v.push_back(ReadWriteData{ addr, data });
+    }
+
 }
 
 long SsdWriteCmd::TEMPORARY_GENERATE_RANDOM_NUMBER() {

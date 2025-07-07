@@ -30,9 +30,12 @@ public:
 
     void updarteDataInNAND();
 #if (1 == TEMPORARY_CODE_FOR_TESTING)  
-    long TEMPORARY_READ_SECTOR(long address);
+    long TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address);
 
     std::vector<std::string> TEMPORARY_READ_OUTPUT();
+    void TEMPORARY_READ_FROM_SSD_NAND_TXT();
+    long TEMPORARY_GENERATE_RANDOM_NUMBER();
+    std::vector<ReadWriteData> v;
 #endif
 
 private:
@@ -46,10 +49,4 @@ private:
     const std::string OUTPUT_ERROR = "ERROR";
 
     void updateDataInInternalBuffer(long address, long data);
-
-#if (1 == TEMPORARY_CODE_FOR_TESTING)  
-    void TEMPORARY_READ_FROM_SSD_NAND_TXT();
-    long TEMPORARY_GENERATE_RANDOM_NUMBER();
-    std::vector<ReadWriteData> v;
-#endif
 };

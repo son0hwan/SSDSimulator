@@ -33,5 +33,7 @@ TEST(SSD, write_data_integrity) {
 	SsdWriteCmd writeCmd{ addr, data };
 	writeCmd.run();
 
-	EXPECT_EQ(data, writeCmd.TEMPORARY_READ_SECTOR(addr));
+	writeCmd.TEMPORARY_READ_FROM_SSD_NAND_TXT();
+
+	EXPECT_EQ(data, writeCmd.TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(addr));
 }
