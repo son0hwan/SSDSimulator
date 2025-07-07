@@ -128,9 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ssdCmdParser.cpp" />
     <ClCompile Include="test_SsdCmdParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ssdCmdParser.h" />
     <ClInclude Include="ssdCmdRead.h" />
     <ClInclude Include="ssdCmdWrite.h" />
     <ClInclude Include="ssdInterface.h" />
