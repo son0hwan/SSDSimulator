@@ -9,20 +9,20 @@ using namespace testing;
 
 class SsdCmdParserFixture : public Test {
  public:
-
-private:
+      SsdCmdParser cmdParser;
+      SsdCmdInterface* GetSsdReadCmdParser(const std::string& command, const std::string& lba) {
+        return cmdParser.parse(command, lba);
+      }
 };
 
 TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {
-      SsdCmdParser cmdParser;
-      SsdCmdInterface* result = cmdParser.parse("READ", "3");
+    SsdCmdInterface* parseResult = GetSsdReadCmdParser("READ", "3");
+    EXPECT_TRUE(nullptr != dynamic_cast<SsdReadCmd*>(parseResult));
 
-      EXPECT_TRUE(nullptr != dynamic_cast<SsdReadCmd*>(result));
-
-      try {
-        SsdReadCmd* convertedCmd = dynamic_cast<SsdReadCmd*>(result);
+    try {
+        SsdReadCmd* convertedCmd = dynamic_cast<SsdReadCmd*>(parseResult);
         EXPECT_EQ(3, convertedCmd->getAddress());
-      } catch (std::exception& e){
-          FAIL();
-      }
+    } catch (std::exception& e){
+        FAIL();
+    }
 }
