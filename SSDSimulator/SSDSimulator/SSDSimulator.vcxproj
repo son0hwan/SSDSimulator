@@ -131,6 +131,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ssdCmdWrite.cpp" />
+    <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssdCmdRead.h" />
