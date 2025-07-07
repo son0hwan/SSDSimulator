@@ -3,7 +3,11 @@ class TestShell {
 public:
 	TestShell(Executor* executor) : executor(executor) {}
 	int write(int address, int value) {
-		executor->writeToSSD(address, value);
+		std::string result;
+		result = executor->writeToSSD(address, value);
+		if (result == "ERROR")
+			return 1;
+
 		return 0;
 	}
 	
