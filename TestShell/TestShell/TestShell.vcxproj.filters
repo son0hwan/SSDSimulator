@@ -27,6 +27,24 @@
     <ClCompile Include="testShellCmdWrite.h">
       <Filter>헤더 파일</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="test_write.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ssdExecutor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="executor.h">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="mockExecutor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="testShellCmdRead.h">
