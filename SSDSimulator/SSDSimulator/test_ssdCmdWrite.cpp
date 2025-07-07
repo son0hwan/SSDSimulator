@@ -1,14 +1,14 @@
 #include "gmock/gmock.h"
 #include "ssdCmdWrite.h"
 
-TEST(SSD, write_executed_without_error) {
+TEST(SSD, WriteExecutedWithoutError) {
 	long addr = 90;
 	long data = 0xADEABB00;
 	SsdWriteCmd writeCmd{ addr, data };
 	EXPECT_NO_THROW(writeCmd.run());
 }
 
-TEST(SSD, write_error_invalid_address_range) {
+TEST(SSD, WriteErrorInvalidAddressRange) {
 	long invalid_addr = 106;
 	long data = 0xADEABB00;
 	SsdWriteCmd writeCmd{ invalid_addr, data };
@@ -27,7 +27,7 @@ TEST(SSD, write_error_invalid_address_range) {
 	EXPECT_EQ(true, hasError);	
 }
 
-TEST(SSD, write_data_integrity) {
+TEST(SSD, WriteDataIntegrity) {
 	long addr = 90;
 	long data = 0xADEABB00;
 	SsdWriteCmd writeCmd{ addr, data };

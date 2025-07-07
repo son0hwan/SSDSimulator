@@ -43,9 +43,16 @@ void SsdWriteCmd::updateDataToNAND()
     }
 
     for (int addr = 0; addr < v.size(); addr++) {
-        nandDataFile << std::hex << addr << ";" << std::hex << std::setw(8) << std::setfill('0') << v[addr].data << std::endl;
+        WriteSectorAddressAndData(nandDataFile, addr);
     }
     nandDataFile.close();
+}
+
+void SsdWriteCmd::WriteSectorAddressAndData(std::ofstream& nandDataFile, int addr)
+{
+    nandDataFile << std::hex << addr; 
+    nandDataFile << SEPARATOR;
+    nandDataFile << std::hex << std::setw(8) << std::setfill('0') << v[addr].data << std::endl;
 }
 
 void SsdWriteCmd::updateDataInInternalBuffer(long address, long data) {

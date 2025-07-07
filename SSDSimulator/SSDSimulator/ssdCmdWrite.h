@@ -29,6 +29,7 @@ public:
     void updateOutputError();
 
     void updateDataToNAND();
+    void WriteSectorAddressAndData(std::ofstream& nandDataFile, int addr);
 #if (1 == TEMPORARY_CODE_FOR_TESTING)  
     long TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address);
 
@@ -45,7 +46,7 @@ private:
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
     const std::string OUTPUT_FILE = "ssd_output.txt";
-
+    const std::string SEPARATOR = ";";
     const std::string OUTPUT_ERROR = "ERROR";
 
     void updateDataInInternalBuffer(long address, long data);
