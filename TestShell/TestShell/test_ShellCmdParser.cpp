@@ -78,3 +78,45 @@ TEST_F(ShellCmdParserFixture, HelpCommand) {
   auto command = cmdParser.getCommand({"help"});
   EXPECT_TRUE(isCmdTypeOf<TestShellHelpCmd>(command));
 }
+
+TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd1) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "1_FullWriteAndReadCompare" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellTestScript1Cmd*>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd2) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "1_" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellTestScript1Cmd*>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd2) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "2_PartialLBAWrite" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript2Cmd*>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd2) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "2_" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript2Cmd*>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd1) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "3_WriteReadAging" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript3Cmd*>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd2) {
+    ShellCmdParser cmdParser;
+    TestShellCmdInterface* command = cmdParser.getCommand({ "3_" });
+
+    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript3Cmd*>(command));
+}
