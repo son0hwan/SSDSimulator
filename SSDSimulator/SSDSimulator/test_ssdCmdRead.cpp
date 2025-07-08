@@ -25,11 +25,30 @@ public:
         EXPECT_EQ(fileContent, expectResult);
     }
 
+    void CreateNewNandFileAndInitForTest()
+    {
+        std::ifstream file(NAND_FILENAME);
+        if (!file) {
+            std::ofstream newFile(NAND_FILENAME);
+            for (int i = 0; i < 100; ++i) {
+                newFile << std::hex << std::nouppercase; // 소문자 hex
+                newFile << i << ";705ff43a" << std::endl;
+            }
+            newFile.close();
+        }
+    }
+
+    void deleteFileIfExists(const std::string& filename) {
+        if (std::ifstream(filename)) {
+            std::remove(filename.c_str());  // 기존 파일 삭제
+        }
+    }
 
 protected:
     static const uint32_t VALID_ADDRESS = 19;
     static const uint32_t INVALID_ADDRESS = 100;
     static const uint32_t EXPECTED_DATA = 0x705ff43a;
+    static const uint32_t INIT_READ_DATA = 0x00000000;
     static const std::string OUTPUT_ERROR;
     static const std::string OUTPUT_VALID_READ;
     static const std::string OUTPUT_FILENAME;
@@ -52,8 +71,17 @@ TEST_F(ReadTestFixture, ReadExecutedWithError) {
 }
 
 TEST_F(ReadTestFixture, ReadValidData) {
+    deleteFileIfExists(NAND_FILENAME);
+    CreateNewNandFileAndInitForTest();
+
     EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
     EXPECT_EQ(readCmd.getReadData(), EXPECTED_DATA);
 
     CheckOutputFileValid(OUTPUT_VALID_READ);
+}
+
+TEST_F(ReadTestFixture, ReadNoInputAutoCreateFileAndInitializeToZero) {
+    deleteFileIfExists(NAND_FILENAME);
+    EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
+    EXPECT_EQ(readCmd.getReadData(), INIT_READ_DATA);
 }
