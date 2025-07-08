@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <random>
 #include <filesystem>
 
 struct ReadRawData {
@@ -21,23 +20,15 @@ public:
     }
 
     void init() {
-        std::ifstream nandDataFile(NAND_DATA_FILE);
-        if (!nandDataFile) {
-            createNandDataFile();
-        }
+        createNandDataFile();
     }
 
     void createNandDataFile() {
         std::ofstream nandDataFile(NAND_DATA_FILE);
         for (int i = 0; i <= DEFAULT_MAX_LBA_OF_DEVICE; ++i) {
-            std::random_device rd;                          // Non-deterministic seed
-            std::mt19937 gen(rd());                         // Mersenne Twister engine
-            std::uniform_int_distribution<uint32_t> dist(MIN_DATA_VALUE, MAX_DATA_VALUE);
-            uint32_t random_number = dist(gen);
-
             nandDataFile << std::hex << std::nouppercase;
             nandDataFile << i << SEPARATOR;
-            nandDataFile << std::setw(8) << std::setfill('0') << random_number;
+            nandDataFile << std::setw(8) << std::setfill('0') << INIT_NAND_DATA;
             nandDataFile << std::endl;
         }
         nandDataFile.close();
@@ -184,6 +175,7 @@ private:
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE;
+    const static uint32_t INIT_NAND_DATA = 0;
     const static uint32_t MIN_DATA_VALUE = 0;
     const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
 
