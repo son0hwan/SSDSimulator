@@ -18,9 +18,8 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
   } else if (isHelpCmd(args)) {
     return new TestShellHelpCmd(); 
   } else if (isExitCmd(args)) {
-    return new TestShellExitCmd();
+    return TEST_SHELL_EXIT_CMD;
   }
-
   return new TestShellErrorCmd();
 }
 
