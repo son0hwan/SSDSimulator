@@ -123,3 +123,28 @@ TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd2) {
     auto command = cmdParser.getCommand({ "3_" });
     EXPECT_TRUE(isCmdTypeOf<TestShellScript3Cmd>(command));
 }
+
+TEST_F(ShellCmdParserFixture, EraseCmd) {
+  auto command = cmdParser.getCommand({"erase"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellEraseCmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, EraseRangeCmd) {
+  auto command = cmdParser.getCommand({"erase_range"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellEraseRangeCmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript4Cmd1) {
+  auto command = cmdParser.getCommand({"4_EraseAndWriteAging"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellScript4Cmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript4Cmd2) {
+  auto command = cmdParser.getCommand({"4_"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellScript4Cmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, FlushCmd) {
+  auto command = cmdParser.getCommand({"flush"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellScript3Cmd>(command));
+}

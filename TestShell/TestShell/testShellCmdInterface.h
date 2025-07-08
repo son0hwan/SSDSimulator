@@ -56,3 +56,28 @@ class TestShellErrorCmd : public TestShellCmdInterface {
 	  std::cout << "unknown command \n";
   }
 };
+
+class TestShellEraseCmd : public TestShellCmdInterface {
+ public:
+  TestShellEraseCmd() {}
+  void run() override {}
+};
+
+class TestShellEraseRangeCmd : public TestShellCmdInterface {
+ public:
+  TestShellEraseRangeCmd() {}
+  void run() override {}
+};
+
+class TestShellScript4Cmd : public TestShellCmdInterface {
+ public:
+  TestShellScript4Cmd() {}
+  void run() override {}
+};
+
+class TestShellFlushCmd : public TestShellCmdInterface {
+ public:
+  TestShellFlushCmd() {}
+  void run() override {}
+};
+

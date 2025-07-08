@@ -44,4 +44,7 @@ class ShellCmdParser {
   bool isTestScript1(const std::vector<std::string>& args);
   bool isTestScript2(const std::vector<std::string>& args);
   bool isTestScript3(const std::vector<std::string>& args);
+
+  bool isEraseCmd(const std::vector<std::string>& args);
+  bool isFlushCmd(const std::vector<std::string>& args);
 };
