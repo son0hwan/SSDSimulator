@@ -14,16 +14,6 @@ public:
         readCmd.run();
     }
 
-    void CheckOutputFileValid(const std::string& expectResult)
-    {
-        std::ifstream outFile(OUTPUT_FILENAME);
-        ASSERT_TRUE(outFile.is_open()) << "ssd_output.txt 파일 열기 실패";
-
-        std::string fileContent;
-        std::getline(outFile, fileContent);
-        EXPECT_EQ(fileContent, expectResult);
-    }
-
 protected:
     static const long VALID_ADDRESS = 19;
     static const long INVALID_ADDRESS = 100;
@@ -47,12 +37,20 @@ TEST_F(ReadTestFixture, ReadExecutedWithoutError) {
 TEST_F(ReadTestFixture, ReadExecutedWithError) {
     runReadTest(INVALID_ADDRESS);
 
-    CheckOutputFileValid(OUTPUT_ERROR);
+    std::ifstream outFile(OUTPUT_FILENAME);
+    ASSERT_TRUE(outFile.is_open()) << "ssd_output.txt 파일 열기 실패";
+
+    std::string fileContent;
+    std::getline(outFile, fileContent);
+    EXPECT_EQ(fileContent, OUTPUT_ERROR);
 }
 
 TEST_F(ReadTestFixture, ReadValidData) {
     EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
     EXPECT_EQ(readCmd.getReadData(), EXPECTED_DATA);
-
-    CheckOutputFileValid(OUTPUT_VALID_READ);
+    std::ifstream outFile(OUTPUT_FILENAME);
+    ASSERT_TRUE(outFile.is_open()) << "ssd_output.txt 파일 열기 실패";
+    std::string fileContent;
+    std::getline(outFile, fileContent);
+    EXPECT_EQ(fileContent, OUTPUT_VALID_READ);
 }
