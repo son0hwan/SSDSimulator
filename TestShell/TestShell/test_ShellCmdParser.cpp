@@ -94,14 +94,14 @@ TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd1) {
     ShellCmdParser cmdParser;
     auto command = cmdParser.getCommand({ "1_FullWriteAndReadCompare" });
 
-    EXPECT_TRUE(isCmdTypeOf<TestShellTestScript1Cmd>(command));
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript1Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd2) {
     ShellCmdParser cmdParser;
     auto command = cmdParser.getCommand({ "1_" });
 
-    EXPECT_TRUE(isCmdTypeOf<TestShellTestScript1Cmd>(command));
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript1Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd1) {

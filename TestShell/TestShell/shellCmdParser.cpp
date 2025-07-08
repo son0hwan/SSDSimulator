@@ -24,7 +24,7 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
   } else if (isExitCmd(args)) {
     return TEST_SHELL_EXIT_CMD;
   } else if (isTestScript1(args)) {
-    return new TestShellTestScript1Cmd{};
+    return new TestShellScript1Cmd{};
   } else if (isTestScript2(args)) {
     return new TestShellScript2Cmd{};
   } else if (isTestScript3(args)) {

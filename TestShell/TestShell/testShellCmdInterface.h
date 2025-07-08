@@ -37,18 +37,6 @@ class TestShellHelpCmd : public TestShellCmdInterface {
 	}
 };
 
-class TestShellTestScript1Cmd : public TestShellCmdInterface {
- public:
-  TestShellTestScript1Cmd() {}
-  void run() override {}
-};
-
-class TestShellScript2Cmd : public TestShellCmdInterface {
- public:
-  TestShellScript2Cmd() {}
-  void run() override {}
-};
-
 class TestShellErrorCmd : public TestShellCmdInterface {
  public:
   TestShellErrorCmd() {}
