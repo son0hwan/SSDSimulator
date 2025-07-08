@@ -1,6 +1,7 @@
 #include "gmock/gmock.h"
 #include "stdexcept"
 #include "ssdCmdRead.h"
+#include "ssdSimulator.h"
 #include <fstream>
 #include <sstream>
 #include <string>
