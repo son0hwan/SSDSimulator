@@ -46,6 +46,8 @@ void SsdReadCmd::ParseFile(const std::string& filename) {
 }
 
 void SsdReadCmd::readNandData(const std::string& filename) {
+    if (!readRawData.empty()) readRawData.clear();
+    
     ParseFile(filename);
 
     // address와 일치하는 데이터를 찾아서 readData에 저장

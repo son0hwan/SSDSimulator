@@ -1,14 +1,13 @@
 #include "gmock/gmock.h"
 #include "ssdCmdWrite.h"
+#include "ssdCmdRead.h"
 
 using namespace testing;
 
 class WriteTestFixture : public testing::Test {
 public:
-	SsdWriteCmd writeCmd{ DEFAULT_ADDRESS, DEFAULT_WRITE_DATA };
-#if WAIT_UNTIL_READ_COMMAND_COMPLETION	 
-	SsdReadCmd readCmd;
-#endif
+	SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
+	SsdReadCmd& readCmd = SsdReadCmd::getInstance();
 
 	void runWriteTest(unsigned long address, unsigned long data) {
 		writeCmd.setAddress(address);
@@ -24,6 +23,11 @@ public:
 		std::string fileContent;
 		std::getline(outFile, fileContent);
 		EXPECT_EQ(fileContent, expectResult);
+	}
+
+	void runRead(uint32_t address) {
+		readCmd.setAddress(address);
+		readCmd.run();
 	}
 
 protected:
@@ -55,9 +59,8 @@ TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
 	EXPECT_NO_THROW(runWriteTest(VALID_ADDRESS, WRITE_DATA));
-	// Commented for now until read command feature is complete 
-#if WAIT_UNTIL_READ_COMMAND_COMPLETION	 
+	EXPECT_NO_THROW(runRead(VALID_ADDRESS));
 	EXPECT_EQ(readCmd.getReadData(), WRITE_DATA);
+
 	CheckOutputFileValid(OUTPUT_VALID_READ);
-#endif
 }

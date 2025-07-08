@@ -39,7 +39,11 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isRightLba(args[1]) && isHexString(args[2]))) {
 		long address = std::stol(args[1]);
 		long value = std::stol(args[2], nullptr, 16); // hex format
-		return new SsdWriteCmd(address, value);
+		//return new SsdWriteCmd(address, value);
+		SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
+		writeCmd.setAddress(address);
+		writeCmd.setWriteData(value);
+		return &SsdWriteCmd::getInstance();
 	}
 	else {
 		return new SsdErrorCmd(-1); // -1 is a placeholder for error command
