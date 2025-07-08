@@ -15,8 +15,6 @@ public:
         return instance;
     }
 
-    //SsdWriteCmd(uint32_t address, uint32_t data) : requestedAddress(address), data(data) {}
-
     void run() override;
     void setAddress(uint32_t newAddress);
     void setWriteData(uint32_t newWriteData);   
