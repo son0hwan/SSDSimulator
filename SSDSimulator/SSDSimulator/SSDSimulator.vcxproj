@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ssdCmdError.cpp" />
     <ClCompile Include="ssdCmdParser.cpp" />
     <ClCompile Include="ssdCmdRead.cpp" />
     <ClCompile Include="ssdCmdWrite.cpp" />
@@ -136,10 +137,12 @@
     <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ssdCmdError.h" />
     <ClInclude Include="ssdCmdParser.h" />
     <ClInclude Include="ssdCmdRead.h" />
     <ClInclude Include="ssdCmdWrite.h" />
     <ClInclude Include="ssdInterface.h" />
+    <ClInclude Include="ssdSimulator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

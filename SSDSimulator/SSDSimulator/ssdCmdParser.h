@@ -1,9 +1,9 @@
 #pragma once
-
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <cstdlib>  // for std::stol
+#include "ssdInterface.h"
 
 class SsdCmdParser {
 public:
