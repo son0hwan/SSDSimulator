@@ -1,7 +1,7 @@
 #include "ssdCmdWrite.h"
 
 void SsdWriteCmd::run() {
-    if (!CheckAddressRange(requestedAddress))return;
+    if (!CheckAddressRange(requestedAddress)) return;
     readNandData(NAND_DATA_FILE);
     updateDataInInternalBuffer(this->requestedAddress, this->data);
     updateNandData();
@@ -20,7 +20,7 @@ bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
 
 void SsdWriteCmd::readNandData(const std::string& filename) {
     if (!readRawData.empty()) readRawData.clear();
-    
+
     loadDataFromNand(filename);
 
     // address와 일치하는 데이터를 찾아서 readData에 저장
@@ -82,7 +82,7 @@ void SsdWriteCmd::updateOutputError() {
 
 void SsdWriteCmd::WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr)
 {
-    nandDataFile << std::hex << addr; 
+    nandDataFile << std::hex << addr;
     nandDataFile << SEPARATOR;
     nandDataFile << std::hex << std::setw(8) << std::setfill('0') << readRawData[addr].data << std::endl;
 }
