@@ -14,6 +14,7 @@ class ShellCmdParser {
   const int NUM_OF_READ_ARGS = 2;
   const int NUM_OF_WRITE_ARGS = 3;
   const int NUM_OF_CMD_ONLY_ARGS = 1;
+  const int NUM_OF_FULL_WRITE_ARGS = 2;
 
   const int MIN_ADDRESS = 0;
   const int MAX_ADDRESS = 99;

@@ -80,7 +80,7 @@ TEST_F(ShellCmdParserFixture, HelpCommand) {
 }
 
 TEST_F(ShellCmdParserFixture, FullWriteCommand) {
-    auto command = cmdParser.getCommand({ "fullwrite" });
+    auto command = cmdParser.getCommand({ "fullwrite", "0xAAAABBBB" });
     EXPECT_TRUE(isCmdTypeOf<TestShellFullWriteCmd>(command));
 }
 
