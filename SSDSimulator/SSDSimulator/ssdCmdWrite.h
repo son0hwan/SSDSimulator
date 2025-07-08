@@ -28,6 +28,6 @@ private:
     SsdWriteCmd(const SsdWriteCmd&) = delete;
     SsdWriteCmd& operator=(const SsdWriteCmd&) = delete;
 
-    uint32_t requestedAddress;
-    uint32_t data;
+    uint32_t requestedAddress = 0;
+    uint32_t data = 0;
 };

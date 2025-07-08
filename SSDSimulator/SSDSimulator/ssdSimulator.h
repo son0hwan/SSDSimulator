@@ -168,13 +168,17 @@ public:
         outputFile.close();
     }
 
+    uint32_t getMaxSector() {
+        return numOfSectors - 1;
+    }
+
 private: 
     SsdSimulator() {};
     SsdSimulator(const SsdSimulator&) = delete;
     SsdSimulator& operator=(const SsdSimulator&) = delete;
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
-    uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE;
+    uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE + 1;
     const static uint32_t INIT_NAND_DATA = 0;
     const static uint32_t MIN_DATA_VALUE = 0;
     const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
