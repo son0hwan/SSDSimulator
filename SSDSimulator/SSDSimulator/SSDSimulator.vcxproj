@@ -132,12 +132,7 @@
     <ClCompile Include="ssdCmdRead.cpp" />
     <ClCompile Include="ssdCmdWrite.cpp" />
     <ClCompile Include="test_SsdCmdParser.cpp" />
-    <ClCompile Include="test_ssdCmdRead.cpp">
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">// %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">// %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">// %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">// %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
+    <ClCompile Include="test_ssdCmdRead.cpp" />
     <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
