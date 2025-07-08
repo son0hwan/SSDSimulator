@@ -30,6 +30,7 @@ bool ShellCmdParser::isReadCmd(const std::vector<std::string>& args) {
   if (false == isLbaString(args[1])) return false;
   return true;
 }
+
 bool ShellCmdParser::isWriteCmd(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_WRITE_ARGS) return false;
   if (args[0] != CMD_WRITE) return false;
