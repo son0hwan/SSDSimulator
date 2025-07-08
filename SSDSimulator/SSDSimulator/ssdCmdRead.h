@@ -13,23 +13,29 @@ public:
     }
 
     // 주소 재설정 함수
-    void setAddress(long newAddress) {
+    void setAddress(uint32_t newAddress) {
         CheckAddressRange(newAddress);
         requestedAddress = newAddress;
     }
 
     void run() override {
         CheckAddressRange(requestedAddress);
+        readNandData("ssd_nand.txt");
     }
-    long getAddress() const { return requestedAddress; }
+    uint32_t getAddress() const { return requestedAddress; }
+    uint32_t getReadData() const { return readData; }
+    void readNandData(const std::string& filename);
 
 private:
     SsdReadCmd() : requestedAddress() {}
     SsdReadCmd(const SsdReadCmd&) = delete;
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
 
-    void CheckAddressRange(long newAddress);
+    void CheckAddressRange(uint32_t newAddress);
+    void ParseFile(const std::string& filename);
 
-    long requestedAddress;
-    long readData;
+    uint32_t requestedAddress;
+    uint32_t readData;
+
+    std::vector<ReadRawData> readRawData;
 };

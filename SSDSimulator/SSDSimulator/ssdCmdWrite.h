@@ -7,44 +7,34 @@
 #include <iomanip>
 #include <random>
 
-#define TEMPORARY_CODE_FOR_TESTING (1)
-
-// Temporarily defined it here just for testing purpose 
-#if (1 == TEMPORARY_CODE_FOR_TESTING)    
-struct ReadWriteData {
-    long address;
-    long data;
-};
-#endif 
-
 class SsdWriteCmd : public SsdCmdInterface {
 public:
-    // 생성자는 parser에서 불러줄 것
-    SsdWriteCmd(long address, long data) : address(address), data(data) {}
+    static SsdWriteCmd& getInstance() {
+        static SsdWriteCmd instance;
+        return instance;
+    }
+
+    //SsdWriteCmd(uint32_t address, uint32_t data) : requestedAddress(address), data(data) {}
+
     void run() override;
-
+    void setAddress(uint32_t newAddress);
+    void setWriteData(uint32_t newWriteData);
+    void readNandData(const std::string& filename);
     void updateOutput();
-
     void updateOutputError();
-
-    void updateDataToNAND();
-    void WriteSectorAddressAndData(std::ofstream& nandDataFile, int addr);
-#if (1 == TEMPORARY_CODE_FOR_TESTING)  
-    long TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address);
-
-    std::vector<std::string> TEMPORARY_READ_OUTPUT();
-    void TEMPORARY_READ_FROM_SSD_NAND_TXT();
-    long TEMPORARY_GENERATE_RANDOM_NUMBER();
-    std::vector<ReadWriteData> v;
-#endif
-
-    long getAddress() { return address; }
-    long getValue() { return data;  }
-    long getData() const { return data; }
+    void updateNandData();
+    void WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr);
+    uint32_t getAddress() { return requestedAddress; }
+    uint32_t getValue() { return data;  }
+    uint32_t getData() const { return data; }
 
 private:
-    const long address;
-    const long data;
+    SsdWriteCmd() : requestedAddress() {}
+    SsdWriteCmd(const SsdWriteCmd&) = delete;
+    SsdWriteCmd& operator=(const SsdWriteCmd&) = delete;
+
+    uint32_t requestedAddress;
+    uint32_t data;
     static const int DEVICE_MAX_ADDRESS = 99;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
@@ -52,5 +42,9 @@ private:
     const std::string SEPARATOR = ";";
     const std::string OUTPUT_ERROR = "ERROR";
 
-    void updateDataInInternalBuffer(long address, long data);
+    bool CheckAddressRange(uint32_t address);
+    void ParseFile(const std::string& filename);
+    void updateDataInInternalBuffer(uint32_t address, uint32_t data);
+
+    std::vector<ReadRawData> readRawData;
 };
