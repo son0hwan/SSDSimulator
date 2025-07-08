@@ -25,7 +25,6 @@ public:
         ioManager.ProgramAllDatasToNand(readRawData);
         ioManager.updateOutputWriteSuccess();
     }
-    
     void erase(uint32_t startAddress, uint32_t eraseSize) {
         // Temporary code to pass UT; will be gone once parser code is in place
         uint32_t endAddress = startAddress + eraseSize - 1;
@@ -34,7 +33,6 @@ public:
             ioManager.updateOutputError();
             return;
         }
-
         LoadAllDatasFromNand();
 
         for (uint32_t lba = startAddress; lba <= endAddress; lba++) {
