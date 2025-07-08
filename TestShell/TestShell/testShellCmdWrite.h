@@ -2,22 +2,25 @@
 #include "testShellCmdInterface.h"
 
 class TestShellWriteCmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellWriteCmd(long address, long data) : address(address), data(data) {}
+ public:
+  // 생성자는 parser에서 불러줄 것
+  TestShellWriteCmd(long address, unsigned data)
+      : address(address), data(data) {}
 
-	void run() override {}
+  void run() override {}
 
-private:
-	const long address;
-	const long data;
+  long getAddress() { return address; }
+  long getData() { return data; }
+
+ private:
+  const long address;
+  const unsigned data;
 };
 
-
 class TestShellFullWriteCmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellFullWriteCmd() {}
+ public:
+  // 생성자는 parser에서 불러줄 것
+  TestShellFullWriteCmd() {}
 
-	void run() override {}
+  void run() override {}
 };

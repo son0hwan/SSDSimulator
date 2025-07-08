@@ -46,3 +46,11 @@ public:
 
 	void run() override {}
 };
+
+class TestShellErrorCmd : public TestShellCmdInterface {
+ public:
+  // 생성자는 parser에서 불러줄 것
+  TestShellErrorCmd() {}
+
+  void run() override {}
+};
