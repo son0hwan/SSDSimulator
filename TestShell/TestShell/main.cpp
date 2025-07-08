@@ -3,9 +3,9 @@
 #include "ssdExecutor.cpp"
 
 int main() {
-	//SSDExecutor ssdExecutor;
-	//TestShell ts(&ssdExecutor);
-	//ts.run();
+	SSDExecutor ssdExecutor;
+	TestShell ts(&ssdExecutor);
+	ts.run();
 
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();

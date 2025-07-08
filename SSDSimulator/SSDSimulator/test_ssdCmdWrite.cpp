@@ -48,34 +48,15 @@ public:
 		EXPECT_EQ(fileContent, expectResult);
 	}
 
-	void deleteFileIfExists(const std::string& filename) {
-		if (std::ifstream(filename)) {
-			std::remove(filename.c_str());  // 기존 파일 삭제
-		}
-	}
-	void CreateNewNandFileAndInitForTest() {
-		std::ifstream file(NAND_FILENAME);
-		if (!file) {
-			std::ofstream newFile(NAND_FILENAME);
-			uint32_t maxAddress = SsdSimulator::getInstance().getMaxSector();
-			for (int i = 0; i <= maxAddress; ++i) {
-				newFile << std::hex << std::nouppercase; // 소문자 hex
-				newFile << i << ";705ff43a" << std::endl;
-			}
-			newFile.close();
-		}
-	}
-
 protected:
-	static const uint32_t DEFAULT_ADDRESS = 0;
-	static const uint32_t DEFAULT_WRITE_DATA = 0;
+	IOManager ioManager;
+
 	static const uint32_t VALID_ADDRESS = 19;
 	static const uint32_t INVALID_ADDRESS = 100;
 	static const uint32_t WRITE_DATA = 0x705ff43a;
 	const std::string OUTPUT_VALID_READ = "0x705FF43A";
 	const std::string OUTPUT_ERROR = "ERROR";
 	const std::string OUTPUT_FILENAME = "ssd_output.txt";
-	const std::string NAND_FILENAME = "ssd_nand.txt";
 };
 
 TEST_F(WriteTestFixture, WriteExecutedWithoutError) {
@@ -88,13 +69,13 @@ TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
-	deleteFileIfExists(NAND_FILENAME);
-	CreateNewNandFileAndInitForTest();
+	ioManager.deleteFileIfExists();
+	ioManager.CreateNewTempNandFileAndInitForTest();
 	verifyWriteAndRead(VALID_ADDRESS, WRITE_DATA);
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrityFullCapacity) {
-	deleteFileIfExists(NAND_FILENAME);
-	CreateNewNandFileAndInitForTest();
+	ioManager.deleteFileIfExists();
+	ioManager.CreateNewTempNandFileAndInitForTest();
 	verifyWriteAndReadAll(VALID_ADDRESS, WRITE_DATA);
 }
