@@ -1,5 +1,5 @@
 #include "ssdCmdError.h"
 
 void SsdErrorCmd::run() {
-    SsdSimulator::getInstance().updateOutputError();
+    SsdSimulator::getInstance().getIoManager().updateOutputError();
 }
