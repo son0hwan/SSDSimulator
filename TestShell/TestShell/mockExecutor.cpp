@@ -1,3 +1,4 @@
+#pragma once
 #include "gmock/gmock.h"
 #include "executor.h"
 #include <string>

@@ -137,7 +137,16 @@
     <ClCompile Include="mockExecutor.cpp" />
     <ClCompile Include="testShellCmdInterface.h" />
     <ClCompile Include="testShellCmdWrite.h" />
+<<<<<<< HEAD
     <ClCompile Include="test_ShellCmdParser.cpp" />
+=======
+    <ClCompile Include="test_read.cpp">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+>>>>>>> 22f857f7f35f739f28185a3468f00892d9e4d9fb
     <ClCompile Include="test_write.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -146,7 +155,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClInclude Include="shellCmdParser.h" />
+=======
+    <ClInclude Include="shellFixture.cpp" />
+>>>>>>> 22f857f7f35f739f28185a3468f00892d9e4d9fb
     <ClInclude Include="testShell.cpp" />
     <ClInclude Include="testShellCmdRead.h" />
   </ItemGroup>
