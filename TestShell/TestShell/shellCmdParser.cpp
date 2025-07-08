@@ -1,6 +1,7 @@
 #include "shellCmdParser.h"
 #include "testShellCmdRead.cpp"
 #include "testShellCmdWrite.cpp"
+#include "testShellCmdComplex.cpp"
 
 TestShellCmdInterface* ShellCmdParser::getCommand(
     const std::vector<std::string>& args) {

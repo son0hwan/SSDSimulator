@@ -6,6 +6,7 @@
 #include "testShellCmdInterface.h"
 #include "testShellCmdRead.cpp"
 #include "testShellCmdWrite.cpp"
+#include "testShellCmdComplex.cpp"
 
 using namespace testing;
 using namespace std;

@@ -2,7 +2,6 @@
 
 class TestShellWriteCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
 	TestShellWriteCmd(long address, unsigned data)
 		: address(address), data(data) {
 	}
@@ -26,7 +25,6 @@ private:
 
 class TestShellFullWriteCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
 	TestShellFullWriteCmd(unsigned data)
 		: data (data) {
 	}
