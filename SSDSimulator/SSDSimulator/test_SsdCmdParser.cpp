@@ -2,6 +2,7 @@
 #include "stdexcept"
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
+#include "ssdCmdError.h"
 #include "ssdInterface.h"
 #include "ssdCmdParser.h"
 

@@ -1,6 +1,7 @@
 #include "ssdInterface.h"
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
+#include "ssdCmdError.h"
 #include "ssdCmdParser.h"	
 #include <string>
 #include <algorithm>
