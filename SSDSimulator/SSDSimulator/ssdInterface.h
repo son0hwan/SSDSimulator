@@ -1,5 +1,6 @@
 ////ssdInterface.h
 #pragma once
+#include <cstdint>
 
 class SsdCmdInterface {
 public:
@@ -15,4 +16,9 @@ public:
 
 private:
 	const long address;
+};
+
+struct ReadRawData {
+	uint32_t address;
+	uint32_t data;
 };

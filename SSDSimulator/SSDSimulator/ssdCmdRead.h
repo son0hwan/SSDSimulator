@@ -20,8 +20,11 @@ public:
 
     void run() override {
         CheckAddressRange(requestedAddress);
+        readNandData("ssd_nand.txt");
     }
     uint32_t getAddress() const { return requestedAddress; }
+    uint32_t getReadData() const { return readData; }
+    void readNandData(const std::string& filename);
 
 private:
     SsdReadCmd() : requestedAddress() {}
@@ -29,7 +32,10 @@ private:
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
 
     void CheckAddressRange(uint32_t newAddress);
+    void ParseFile(const std::string& filename);
 
     uint32_t requestedAddress;
     uint32_t readData;
+
+    std::vector<ReadRawData> readRawData;
 };
