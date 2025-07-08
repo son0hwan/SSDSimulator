@@ -29,11 +29,11 @@ TEST_F(ShellFixture, ReadJustOnce) {
 	EXPECT_EQ(EXPECTED_STR + "\n", getPrintedString());
 }
 
-TEST_F(ShellFixture, FullRead) {
-	//for (int i = 0; i < NUM_OF_LBA; i++) {
-	//	EXPECT_CALL(mockSSD, readFromSSD(i))
-	//		.WillOnce(testing::Return(SUCCESS_STRING));
-	//}
-
-	//testShell.fake_command("fullread");
-}
+//TEST_F(ShellFixture, FullRead) {
+//	for (int i = 0; i < NUM_OF_LBA; i++) {
+//		EXPECT_CALL(mockSSD, readFromSSD(i))
+//			.WillOnce(testing::Return(SUCCESS_STRING));
+//	}
+//
+//	testShell.fake_command("fullread");
+//}

@@ -4,7 +4,6 @@
 
 class TestShellReadCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
 	TestShellReadCmd(long address) : address(address) {}
 
 	void readOutputFile() {
@@ -39,7 +38,6 @@ private:
 
 class TestShellFullReadCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
 	TestShellFullReadCmd() {}
 
 	void run() override {

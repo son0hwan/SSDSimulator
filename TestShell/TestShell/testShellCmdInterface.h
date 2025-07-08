@@ -31,6 +31,9 @@ class TestShellHelpCmd : public TestShellCmdInterface {
 		std::cout << "\n [HELP]\n";
 		std::cout << " -. read [LBA] \n";
 		std::cout << " -. write [LBA] [DATA_IN_HEX] \n";
+		std::cout << " -. fullread \n";
+		std::cout << " -. fullwrite \n";
+		std::cout << " -. exit \n\n";
 	}
 };
 
@@ -46,15 +49,10 @@ class TestShellScript2Cmd : public TestShellCmdInterface {
   void run() override {}
 };
 
-class TestShellScript3Cmd : public TestShellCmdInterface {
- public:
-  TestShellScript3Cmd() {}
-  void run() override {}
-};
-
 class TestShellErrorCmd : public TestShellCmdInterface {
  public:
   TestShellErrorCmd() {}
   void run() override {
+	  std::cout << "unknown command \n";
   }
 };
