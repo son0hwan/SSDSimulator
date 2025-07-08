@@ -35,8 +35,10 @@ public:
 		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 			result = executor->writeToSSD(addr, data);
 			if (result == ERROR_STRING)
-				break;
+				return;
 		}
+
+		std::cout << "[Full Write] Done" << std::endl;
 	}
 private:
 	const unsigned data;
