@@ -48,7 +48,7 @@ public:
     }
 
     bool checkAddressRange(uint32_t address) {
-        if (address < 0 || address > DEFAULT_MAX_LBA_OF_DEVICE) {
+        if (address > DEFAULT_MAX_LBA_OF_DEVICE) {
             return false;
         }
         return true;
@@ -68,33 +68,7 @@ public:
 
     void loadDataFromNandAll() {
         if (!readRawData.empty()) readRawData.clear();
-        loadDataFromNand(NAND_DATA_FILE);
-#if 0
-        // address와 일치하는 데이터를 찾아서 readData에 저장
-        auto foundReadData = std::find_if(
-            readRawData.begin(),
-            readRawData.end(),
-            [this](const ReadRawData& readEntry) {
-                return readEntry.address == requestedAddress;
-            }
-        );
-
-        if (foundReadData != readRawData.end()) {
-            data = foundReadData->data;
-            std::ofstream outFile("ssd_output.txt");
-            outFile << "0x" << std::hex << std::uppercase << data << std::endl;
-            return;
-        }
-        else {
-            std::ofstream outFile("ssd_output.txt");
-            outFile << "ERROR" << std::endl;
-            return;
-        }
-#endif
-    }
-
-    void loadDataFromNand(const std::string& filename) {
-        std::ifstream file(filename);
+        std::ifstream file(NAND_DATA_FILE);
         if (!file) {
             throw std::exception("error opening file for reading");
         }
@@ -122,6 +96,28 @@ public:
         }
 
         file.close();
+#if 0
+        // address와 일치하는 데이터를 찾아서 readData에 저장
+        auto foundReadData = std::find_if(
+            readRawData.begin(),
+            readRawData.end(),
+            [this](const ReadRawData& readEntry) {
+                return readEntry.address == requestedAddress;
+            }
+        );
+
+        if (foundReadData != readRawData.end()) {
+            data = foundReadData->data;
+            std::ofstream outFile("ssd_output.txt");
+            outFile << "0x" << std::hex << std::uppercase << data << std::endl;
+            return;
+        }
+        else {
+            std::ofstream outFile("ssd_output.txt");
+            outFile << "ERROR" << std::endl;
+            return;
+        }
+#endif
     }
 
     void updateDataInInternalBuffer(uint32_t address, uint32_t data) {
