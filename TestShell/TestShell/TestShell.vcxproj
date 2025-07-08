@@ -136,7 +136,8 @@
     <ClCompile Include="ssdExecutor.cpp" />
     <ClCompile Include="mockExecutor.cpp" />
     <ClCompile Include="testShellCmdInterface.h" />
-    <ClCompile Include="testShellCmdWrite.h" />
+    <ClCompile Include="testShellCmdRead.cpp" />
+    <ClCompile Include="testShellCmdWrite.cpp" />
     <ClCompile Include="test_ShellCmdParser.cpp" />
     <ClCompile Include="test_read.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
@@ -155,7 +156,6 @@
     <ClInclude Include="shellCmdParser.h" />
     <ClInclude Include="shellFixture.cpp" />
     <ClInclude Include="testShell.cpp" />
-    <ClInclude Include="testShellCmdRead.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

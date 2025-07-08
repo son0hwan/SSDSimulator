@@ -15,6 +15,10 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
     return new TestShellWriteCmd{address, value};
   } else if (isHelpCmd(args)) {
     return new TestShellHelpCmd{};
+  } else if (isFullWriteCmd(args)) {
+    return new TestShellFullWriteCmd{};
+  } else if (isFullReadCmd(args)) {
+    return new TestShellFullReadCmd{};
   } else if (isExitCmd(args)) {
     return TEST_SHELL_EXIT_CMD;
   } else if (isTestScript1(args)) {
@@ -55,6 +59,18 @@ bool ShellCmdParser::isHelpCmd(const std::vector<std::string>& args) {
   return true;
 }
 
+bool ShellCmdParser::isFullWriteCmd(const std::vector<std::string>& args) {
+    if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+    if (args[0] != CMD_FULL_WRITE) return false;
+    return true;
+}
+
+bool ShellCmdParser::isFullReadCmd(const std::vector<std::string>& args) {
+    if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+    if (args[0] != CMD_FULL_READ) return false;
+    return true;
+}
+
 bool ShellCmdParser::isTestScript1(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
   return (args[0] == CMD_SCRIPT_1 || args[0] == CMD_SCRIPT_SHORT_1);
@@ -81,8 +97,9 @@ bool ShellCmdParser::isHexString(const std::string& address) {
 
 bool ShellCmdParser::isLbaString(const std::string& address) {
   try {
-    long lba = std::stol(address);
-    return MIN_ADDRESS <= lba && lba <= MAX_ADDRESS;
+      size_t pos;
+      std::stoul(address, &pos);
+      return pos == address.size();
   } catch (...) {
     return false;
   }
