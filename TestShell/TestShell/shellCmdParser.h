@@ -14,6 +14,7 @@ class ShellCmdParser {
   const int NUM_OF_READ_ARGS = 2;
   const int NUM_OF_WRITE_ARGS = 3;
   const int NUM_OF_CMD_ONLY_ARGS = 1;
+  const int NUM_OF_FULL_WRITE_ARGS = 2;
 
   const int MIN_ADDRESS = 0;
   const int MAX_ADDRESS = 99;
@@ -22,6 +23,8 @@ class ShellCmdParser {
   static constexpr const char* CMD_WRITE = "write";
   static constexpr const char* CMD_EXIT = "exit";
   static constexpr const char* CMD_HELP = "help";
+  static constexpr const char* CMD_FULL_WRITE = "fullwrite";
+  static constexpr const char* CMD_FULL_READ = "fullread";
   static constexpr const char* CMD_SCRIPT_1 = "1_FullWriteAndReadCompare";
   static constexpr const char* CMD_SCRIPT_2 = "2_PartialLBAWrite";
   static constexpr const char* CMD_SCRIPT_3 = "3_WriteReadAging";
@@ -36,6 +39,8 @@ class ShellCmdParser {
   bool isWriteCmd(const std::vector<std::string>& args);
   bool isExitCmd(const std::vector<std::string>& args);
   bool isHelpCmd(const std::vector<std::string>& args);
+  bool isFullWriteCmd(const std::vector<std::string>& args);
+  bool isFullReadCmd(const std::vector<std::string>& args);
   bool isTestScript1(const std::vector<std::string>& args);
   bool isTestScript2(const std::vector<std::string>& args);
   bool isTestScript3(const std::vector<std::string>& args);

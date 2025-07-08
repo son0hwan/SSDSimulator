@@ -2,7 +2,6 @@
 
 class TestShellWriteCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
 	TestShellWriteCmd(long address, unsigned data)
 		: address(address), data(data) {
 	}
@@ -26,16 +25,19 @@ private:
 
 class TestShellFullWriteCmd : public TestShellCmdInterface {
 public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellFullWriteCmd() {}
+	TestShellFullWriteCmd(unsigned data)
+		: data (data) {
+	}
 
 	void run() override {
 		std::string result;
 
 		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-			result = executor->writeToSSD(addr, 0x1000000);
+			result = executor->writeToSSD(addr, data);
 			if (result == ERROR_STRING)
 				break;
 		}
 	}
+private:
+	const unsigned data;
 };

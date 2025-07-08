@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <filesystem>
 
 struct ReadRawData {
     uint32_t address;
@@ -34,10 +33,9 @@ public:
         nandDataFile.close();
     }
 
- 
     void write(uint32_t address, uint32_t value) {
         // Temporary code to pass UT; will be gone once parser code is in place
-        if (!checkAddressRange(numOfSectors)) {
+        if (!checkAddressRange(address)) {
             updateOutputError();
             return;
         }
@@ -47,15 +45,16 @@ public:
         updateOutputWriteSuccess();
     }
 
-    void read(uint32_t address) {
+    uint32_t read(uint32_t address) {
         // Temporary code to pass UT; will be gone once parser code is in place
-        if (!checkAddressRange(numOfSectors)) {
+        if (!checkAddressRange(address)) {
             updateOutputError();
-            return;
+            return 0;
         }
         loadDataFromNandAll();
         uint32_t readData = getReadData(address);
         updateOutputReadSuccess(readData);
+        return readData;
     }
 
     bool checkAddressRange(uint32_t address) {
@@ -81,30 +80,12 @@ public:
         if (!readRawData.empty()) readRawData.clear();
         std::ifstream file(NAND_DATA_FILE);
         if (!file) {
-            throw std::exception("error opening file for reading");
+            //throw std::exception("error opening file for reading");
+            createNandDataFile();
         }
 
         std::string line;
-        while (std::getline(file, line)) {
-            if (line.empty()) continue; // 공백 줄 스킵
-
-            size_t delimiterPos = line.find(';');
-            if (delimiterPos == std::string::npos) continue; // 세미콜론 없으면 스킵
-
-            std::string addrStr = line.substr(0, delimiterPos);
-            std::string dataStr = line.substr(delimiterPos + 1);
-
-            try {
-                uint32_t  addr = std::stoul(addrStr, nullptr, 16);  // 16진수 주소 처리
-                uint32_t  data = std::stoul(dataStr, nullptr, 16);  // 16진수 데이터 처리
-
-                readRawData.push_back({ addr, data });
-            }
-            catch (const std::exception& e) {
-                std::cerr << "파싱 실패: " << e.what() << ", line=" << line << std::endl;
-                continue; // 실패한 라인은 스킵
-            }
-        }
+        FillReadRawAllDatas(file);
 
         file.close();
 #if 0
@@ -169,7 +150,7 @@ public:
     }
 
     uint32_t getMaxSector() {
-        return numOfSectors - 1;
+        return maxLba;
     }
 
 private: 
@@ -177,11 +158,52 @@ private:
     SsdSimulator(const SsdSimulator&) = delete;
     SsdSimulator& operator=(const SsdSimulator&) = delete;
 
+    void FillReadRawAllDatas(std::ifstream& file)
+    {
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.empty()) continue;
+
+            std::string addrStr;
+            std::string dataStr;
+
+            if (false == SplitStringToAddressAndData(line, addrStr, dataStr)) continue;
+            if (false == CheckParsingLineSuccessAndPushReadRawData(line, addrStr, dataStr)) continue;
+        }
+    }
+
+    bool SplitStringToAddressAndData(std::string& line, std::string& addrStr, std::string& dataStr)
+    {
+        size_t delimiterPos = line.find(';');
+        if (delimiterPos == std::string::npos) return false;
+
+        addrStr = line.substr(0, delimiterPos);
+        dataStr = line.substr(delimiterPos + 1);
+        return true;
+    }
+
+    bool CheckParsingLineSuccessAndPushReadRawData(const std::string& line, const std::string& addrStr, const std::string& dataStr)
+    {
+        try {
+            uint32_t  addr = std::stoul(addrStr, nullptr, 16);
+            uint32_t  data = std::stoul(dataStr, nullptr, 16);
+
+            readRawData.push_back({ addr, data });
+        }
+        catch (const std::exception& e) {
+            std::cerr << "파싱 실패: " << e.what() << ", line=" << line << std::endl;
+            return false;
+        }
+        return true;
+    }
+
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
-    uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE + 1;
+    uint32_t maxLba = DEFAULT_MAX_LBA_OF_DEVICE;
+    //uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE + 1;
     const static uint32_t INIT_NAND_DATA = 0;
     const static uint32_t MIN_DATA_VALUE = 0;
     const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
+
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
     const std::string OUTPUT_FILE = "ssd_output.txt";

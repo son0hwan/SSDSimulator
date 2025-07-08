@@ -6,6 +6,7 @@
 #include "testShellCmdInterface.h"
 #include "testShellCmdRead.cpp"
 #include "testShellCmdWrite.cpp"
+#include "testShellCmdComplex.cpp"
 
 using namespace testing;
 using namespace std;
@@ -77,6 +78,16 @@ TEST_F(ShellCmdParserFixture, ExitCommand) {
 TEST_F(ShellCmdParserFixture, HelpCommand) {
   auto command = cmdParser.getCommand({"help"});
   EXPECT_TRUE(isCmdTypeOf<TestShellHelpCmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, FullWriteCommand) {
+    auto command = cmdParser.getCommand({ "fullwrite", "0xAAAABBBB" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellFullWriteCmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, FullReadCommand) {
+    auto command = cmdParser.getCommand({ "fullread" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellFullReadCmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd1) {

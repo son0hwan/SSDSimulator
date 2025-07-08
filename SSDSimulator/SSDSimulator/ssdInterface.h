@@ -1,4 +1,3 @@
-////ssdInterface.h
 #pragma once
 #include <cstdint>
 

@@ -1,12 +1,6 @@
 #pragma once
 #include "ssdInterface.h"
 #include "ssdSimulator.h"
-#include <vector>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <random>
 
 class SsdWriteCmd : public SsdCmdInterface {
 public:
@@ -14,8 +8,6 @@ public:
         static SsdWriteCmd instance;
         return instance;
     }
-
-    //SsdWriteCmd(uint32_t address, uint32_t data) : requestedAddress(address), data(data) {}
 
     void run() override;
     void setAddress(uint32_t newAddress);
