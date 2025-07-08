@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include "ssdSimulator.h"
 
 class SsdReadCmd : public SsdCmdInterface {
 public:
@@ -21,6 +22,8 @@ public:
     void run() override {
         CheckAddressRange(requestedAddress);
         readNandData("ssd_nand.txt");
+
+        //SsdSimulator::getInstance().read(requestedAddress);
     }
     uint32_t getAddress() const { return requestedAddress; }
     uint32_t getReadData() const { return readData; }
@@ -32,7 +35,7 @@ private:
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
 
     void CheckAddressRange(uint32_t newAddress);
-    void loadDataFromNand(const std::string& filename);
+    void ParseFile(const std::string& filename);
 
     uint32_t requestedAddress;
     uint32_t readData;

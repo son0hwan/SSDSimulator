@@ -8,10 +8,10 @@
 #include <random>
 #include "ssdInterface.h"
 
-//struct ReadRawData {
-//    uint32_t address;
-//    uint32_t data;
-//};
+struct ReadRawData {
+    uint32_t address;
+    uint32_t data;
+};
 
 class SsdSimulator {
 public:
@@ -21,15 +21,26 @@ public:
     }
 
     void write(uint32_t address, uint32_t value) {
-        if (!checkAddressRange(numOfSectors))return;
-        readNandData();
+        // Temporary code to pass UT; will be gone once parser code is in place
+        if (!checkAddressRange(numOfSectors)) {
+            updateOutputError();
+            return;
+        }
+        loadDataFromNandAll();
         updateDataInInternalBuffer(address, value);
         updateNandData();
         updateOutputWriteSuccess();
     }
 
     void read(uint32_t address) {
-
+        // Temporary code to pass UT; will be gone once parser code is in place
+        if (!checkAddressRange(numOfSectors)) {
+            updateOutputError();
+            return;
+        }
+        loadDataFromNandAll();
+        uint32_t readData = getReadData(address);
+        updateOutputReadSuccess(readData);
     }
 
     bool checkAddressRange(uint32_t address) {
@@ -39,7 +50,19 @@ public:
         return true;
     }
 
-    void readNandData() {
+    uint32_t getReadData(uint32_t address) const { 
+        return readRawData[address].data; 
+    }
+
+    void updateOutputReadSuccess(uint32_t readData) {
+        std::ofstream outFile(OUTPUT_FILE);
+        if (!outFile) {
+            throw std::exception("error opening file for writing");
+        }
+        outFile << "0x" << std::hex << std::uppercase << readData << std::endl;
+    }
+
+    void loadDataFromNandAll() {
         if (!readRawData.empty()) readRawData.clear();
         loadDataFromNand(NAND_DATA_FILE);
 #if 0
@@ -115,6 +138,15 @@ public:
         }
 
         nandDataFile.close();
+    }
+
+    void updateOutputError() {
+        std::ofstream outputFile(OUTPUT_FILE);
+        if (!outputFile) {
+            throw std::exception("error opening file for writing");
+        }
+        outputFile << OUTPUT_ERROR;
+        outputFile.close();
     }
 
     void updateOutputWriteSuccess()
