@@ -27,13 +27,13 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
 bool ShellCmdParser::isReadCmd(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_READ_ARGS) return false;
   if (args[0] != CMD_READ) return false;
-  if (false == IsLbaString(args[1])) return false;
+  if (false == isLbaString(args[1])) return false;
   return true;
 }
 bool ShellCmdParser::isWriteCmd(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_WRITE_ARGS) return false;
   if (args[0] != CMD_WRITE) return false;
-  if (false == IsLbaString(args[1])) return false;
+  if (false == isLbaString(args[1])) return false;
   if (false == isHexString(args[2])) return false;
   return true;
 }
@@ -59,7 +59,7 @@ bool ShellCmdParser::isHexString(const std::string& address) {
   return false;
 }
 
-bool ShellCmdParser::IsLbaString(const std::string& address) {
+bool ShellCmdParser::isLbaString(const std::string& address) {
   try {
     long lba = std::stol(address);
     return MIN_ADDRESS <= lba && lba <= MAX_ADDRESS;
