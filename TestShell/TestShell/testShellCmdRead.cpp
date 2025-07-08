@@ -1,6 +1,7 @@
 #include "testShellCmdInterface.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 
 class TestShellReadCmd : public TestShellCmdInterface {
 public:
@@ -16,7 +17,12 @@ public:
 
 		std::string line;
 		if (std::getline(file, line)) {   
-			std::cout << line << std::endl;
+			unsigned int value = std::stoul(line, nullptr, 16);
+			std::cout << "[Read] LBA "
+				<< std::setw(2) << std::setfill('0') << std::dec << address
+				<< " : 0x"
+				<< std::setw(8) << std::setfill('0') << std::hex << std::uppercase << value
+				<< std::endl;
 		}
 		else {
 			std::cout << "fail to read file" << std::endl;
