@@ -9,7 +9,7 @@
 
 class SsdWriteCmd : public SsdCmdInterface {
 public:
-    // »ı¼ºÀÚ´Â parser¿¡¼­ ºÒ·¯ÁÙ °Í
+    // Â»Ã½Â¼ÂºÃ€ÃšÂ´Ã‚ parserÂ¿Â¡Â¼Â­ ÂºÃ’Â·Â¯ÃÃ™ Â°Ã
     SsdWriteCmd(uint32_t address, uint32_t data) : address(address), data(data) {}
 
     void run() override;
@@ -21,6 +21,10 @@ public:
     void updateNandData();
     void WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr);
 
+
+    long getAddress() { return address; }
+    long getValue() { return data;  }
+    long getData() const { return data; }
 
 private:
     uint32_t address;
