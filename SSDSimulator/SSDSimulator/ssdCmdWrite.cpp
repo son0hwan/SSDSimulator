@@ -1,20 +1,61 @@
 #include "ssdCmdWrite.h"
 
 void SsdWriteCmd::run() {
-    if (this->address > DEVICE_MAX_ADDRESS || 
-        this->address < 0) {
+    if (!CheckAddressRange(address))return;
+    readNandData(NAND_DATA_FILE);
+    updateDataInInternalBuffer(this->address, this->data);
+    updateNandData();
+    updateOutput();
+}
+
+bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
+    if (address < 0 || address > DEVICE_MAX_ADDRESS) {
         updateOutputError();
+        return false;
+    }
+    return true;
+}
+
+void SsdWriteCmd::readNandData(const std::string& filename) {
+    ParseFile(filename);
+
+    // address와 일치하는 데이터를 찾아서 readData에 저장
+    auto foundReadData = std::find_if(
+        readRawData.begin(),
+        readRawData.end(),
+        [this](const ReadRawData& readEntry) {
+            return readEntry.address == address;
+        }
+    );
+
+    if (foundReadData != readRawData.end()) {
+        data = foundReadData->data;
+        std::ofstream outFile("ssd_output.txt");
+        outFile << "0x" << std::hex << std::uppercase << data << std::endl;
         return;
     }
+    else {
+        std::ofstream outFile("ssd_output.txt");
+        outFile << "ERROR" << std::endl;
+        return;
+    }
+}
 
-    // Temporary function to mock read from ssd_nand.txt (this will be implemented later on) 
-    // The data will be stored to private vector within class
-    TEMPORARY_READ_FROM_SSD_NAND_TXT();
+void SsdWriteCmd::updateDataInInternalBuffer(uint32_t address, uint32_t data) {
+    readRawData[this->address].data = this->data;
+}
 
-    // write to internal vector; the whole vector will be flushed to raw_nand.txt later 
-    updateDataInInternalBuffer(this->address, this->data);
-    updateDataToNAND();
-    updateOutput();
+void SsdWriteCmd::updateNandData()
+{
+    std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
+    if (!nandDataFile) {
+        throw std::exception("error opening file for writing");
+    }
+
+    for (int addr = 0; addr < readRawData.size(); addr++) {
+        WriteSectorAddressAndDataToNAND(nandDataFile, addr);
+    }
+    nandDataFile.close();
 }
 
 void SsdWriteCmd::updateOutput()
@@ -35,91 +76,49 @@ void SsdWriteCmd::updateOutputError() {
     outputFile.close();
 }
 
-void SsdWriteCmd::updateDataToNAND()
-{
-    std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
-    if (!nandDataFile) {
-        throw std::exception("error opening file for writing");
-    }
-
-    for (int addr = 0; addr < v.size(); addr++) {
-        WriteSectorAddressAndData(nandDataFile, addr);
-    }
-    nandDataFile.close();
-}
-
-void SsdWriteCmd::WriteSectorAddressAndData(std::ofstream& nandDataFile, int addr)
+void SsdWriteCmd::WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr)
 {
     nandDataFile << std::hex << addr; 
     nandDataFile << SEPARATOR;
-    nandDataFile << std::hex << std::setw(8) << std::setfill('0') << v[addr].data << std::endl;
+    nandDataFile << std::hex << std::setw(8) << std::setfill('0') << readRawData[addr].data << std::endl;
 }
 
-void SsdWriteCmd::updateDataInInternalBuffer(long address, long data) {
-    v[this->address].data = this->data;
+void SsdWriteCmd::setAddress(uint32_t newAddress) {
+    CheckAddressRange(newAddress);
+    address = newAddress;
 }
 
-#if (1 == TEMPORARY_CODE_FOR_TESTING)    
-long SsdWriteCmd::TEMPORARY_READ_SECTOR_FROM_INTERNAL_BUFFER(long address) {
-    if (this->address > DEVICE_MAX_ADDRESS ||
-        this->address < 0) {
-        throw std::exception("Invalid address range; must be greater than 0 and less than 100");
-    }
-
-    return v[address].data;
+void SsdWriteCmd::setWriteData(uint32_t newWriteData) {
+    data = newWriteData;
 }
 
-std::vector<std::string> SsdWriteCmd::TEMPORARY_READ_OUTPUT() {
-    std::ifstream inFile(OUTPUT_FILE);
-    if (!inFile) {
-        throw std::exception("error opening file for writing");
-    }
-
-    std::vector<std::string> lines;
-    std::string line;
-
-    while (std::getline(inFile, line)) {
-        lines.push_back(line);
-    }
-
-    inFile.close();
-
-    return lines;
-}
-
-void SsdWriteCmd::TEMPORARY_READ_FROM_SSD_NAND_TXT() {  
-    std::ifstream inFile(NAND_DATA_FILE);
-    if (!inFile) {
-        throw std::exception("error opening file for writing");
+void SsdWriteCmd::ParseFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file) {
+        throw std::exception("error opening file for reading");
     }
 
     std::string line;
+    while (std::getline(file, line)) {
+        if (line.empty()) continue; // 공백 줄 스킵
 
-    while (std::getline(inFile, line)) {
-        size_t delimiter_pos = line.find(';');
+        size_t delimiterPos = line.find(';');
+        if (delimiterPos == std::string::npos) continue; // 세미콜론 없으면 스킵
 
-        std::string first_part = line.substr(0, delimiter_pos);
-        std::string second_part = line.substr(delimiter_pos + 1);
-        long addr = std::stoll(first_part, nullptr, 16);
-        long data = std::stoll(second_part, nullptr, 16);
+        std::string addrStr = line.substr(0, delimiterPos);
+        std::string dataStr = line.substr(delimiterPos + 1);
 
-        v.push_back(ReadWriteData{ addr, data });
+        try {
+            uint32_t  addr = std::stoul(addrStr, nullptr, 16);  // 16진수 주소 처리
+            uint32_t  data = std::stoul(dataStr, nullptr, 16);  // 16진수 데이터 처리
+
+            readRawData.push_back({ addr, data });
+        }
+        catch (const std::exception& e) {
+            std::cerr << "파싱 실패: " << e.what() << ", line=" << line << std::endl;
+            continue; // 실패한 라인은 스킵
+        }
     }
 
+    file.close();
 }
-
-long SsdWriteCmd::TEMPORARY_GENERATE_RANDOM_NUMBER() {
-    std::random_device rd;
-
-    // Create a Mersenne Twister RNG seeded with rd
-    std::mt19937_64 gen(rd());
-
-    // Create a uniform distribution for 32-bit unsigned range
-    std::uniform_int_distribution<uint32_t> dist(0, 0xFFFFFFFF);
-
-    // Generate a random number
-    long random_number = dist(gen);
-
-    return random_number;
-}
-#endif
