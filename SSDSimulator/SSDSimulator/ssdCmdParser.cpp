@@ -4,6 +4,7 @@
 #include "ssdCmdParser.h"	
 #include <string>
 #include <algorithm>
+#include <cstdint>
 
 bool SsdCmdParser::isHexString(const std::string& address) {
 	try {
@@ -31,15 +32,29 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	std::string cmd = args[0];
 
 	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isRightLba(args[1])) {
-		long address = std::stol(args[1]);
+		uint32_t address = std::stol(args[1]);
 		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
 		readCmd.setAddress(address);
 		return &SsdReadCmd::getInstance();
 	}
 	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isRightLba(args[1]) && isHexString(args[2]))) {
+<<<<<<< HEAD
+<<<<<<< HEAD
+		uint32_t address = std::stol(args[1]);
+		uint32_t value = std::stol(args[2], nullptr, 16); // hex format		
+=======
 		long address = std::stol(args[1]);
 		long value = std::stol(args[2], nullptr, 16); // hex format
-		return new SsdWriteCmd(address, value);
+		//return new SsdWriteCmd(address, value);
+>>>>>>> 5297684 (1) Refactored ssdCmdWrite to singleton, 2) merged ssd read to write unit test, and 3) fixed nand read to clear internal buffer if data is already there)
+=======
+		uint32_t address = std::stol(args[1]);
+		uint32_t value = std::stol(args[2], nullptr, 16); // hex format		
+>>>>>>> ec2f21e (Fixed parser to call get singleton instance of write command instead of new(), and changed type of data and address to uint)
+		SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
+		writeCmd.setAddress(address);
+		writeCmd.setWriteData(value);
+		return &SsdWriteCmd::getInstance();
 	}
 	else {
 		return new SsdErrorCmd(-1); // -1 is a placeholder for error command

@@ -81,42 +81,34 @@ TEST_F(ShellCmdParserFixture, HelpCommand) {
 
 TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd1) {
     ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "1_FullWriteAndReadCompare" });
+    auto command = cmdParser.getCommand({ "1_FullWriteAndReadCompare" });
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellTestScript1Cmd*>(command));
+    EXPECT_TRUE(isCmdTypeOf<TestShellTestScript1Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd2) {
     ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "1_" });
+    auto command = cmdParser.getCommand({ "1_" });
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellTestScript1Cmd*>(command));
+    EXPECT_TRUE(isCmdTypeOf<TestShellTestScript1Cmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd1) {
+    auto command = cmdParser.getCommand({ "2_PartialLBAWrite" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript2Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd2) {
-    ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "2_PartialLBAWrite" });
-
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript2Cmd*>(command));
-}
-
-TEST_F(ShellCmdParserFixture, ShellTestScript2Cmd2) {
-    ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "2_" });
-
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript2Cmd*>(command));
+    auto command = cmdParser.getCommand({ "2_" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript2Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd1) {
-    ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "3_WriteReadAging" });
-
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript3Cmd*>(command));
+    auto command = cmdParser.getCommand({ "3_WriteReadAging" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript3Cmd>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd2) {
-    ShellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "3_" });
-
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellScript3Cmd*>(command));
+    auto command = cmdParser.getCommand({ "3_" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellScript3Cmd>(command));
 }

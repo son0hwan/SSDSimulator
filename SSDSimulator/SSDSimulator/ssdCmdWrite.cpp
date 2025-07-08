@@ -1,9 +1,9 @@
 #include "ssdCmdWrite.h"
 
 void SsdWriteCmd::run() {
-    if (!CheckAddressRange(address))return;
+    if (!CheckAddressRange(requestedAddress))return;
     readNandData(NAND_DATA_FILE);
-    updateDataInInternalBuffer(this->address, this->data);
+    updateDataInInternalBuffer(this->requestedAddress, this->data);
     updateNandData();
     updateOutput();
 }
@@ -17,6 +17,8 @@ bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
 }
 
 void SsdWriteCmd::readNandData(const std::string& filename) {
+    if (!readRawData.empty()) readRawData.clear();
+    
     ParseFile(filename);
 
     // address와 일치하는 데이터를 찾아서 readData에 저장
@@ -24,7 +26,7 @@ void SsdWriteCmd::readNandData(const std::string& filename) {
         readRawData.begin(),
         readRawData.end(),
         [this](const ReadRawData& readEntry) {
-            return readEntry.address == address;
+            return readEntry.address == requestedAddress;
         }
     );
 
@@ -42,7 +44,7 @@ void SsdWriteCmd::readNandData(const std::string& filename) {
 }
 
 void SsdWriteCmd::updateDataInInternalBuffer(uint32_t address, uint32_t data) {
-    readRawData[this->address].data = this->data;
+    readRawData[this->requestedAddress].data = this->data;
 }
 
 void SsdWriteCmd::updateNandData()
@@ -85,7 +87,7 @@ void SsdWriteCmd::WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, u
 
 void SsdWriteCmd::setAddress(uint32_t newAddress) {
     CheckAddressRange(newAddress);
-    address = newAddress;
+    requestedAddress = newAddress;
 }
 
 void SsdWriteCmd::setWriteData(uint32_t newWriteData) {
