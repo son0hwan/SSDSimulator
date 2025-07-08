@@ -4,6 +4,7 @@
 #include "ssdCmdParser.h"	
 #include <string>
 #include <algorithm>
+#include <cstdint>
 
 bool SsdCmdParser::isHexString(const std::string& address) {
 	try {
@@ -31,15 +32,14 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	std::string cmd = args[0];
 
 	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isRightLba(args[1])) {
-		long address = std::stol(args[1]);
+		uint32_t address = std::stol(args[1]);
 		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
 		readCmd.setAddress(address);
 		return &SsdReadCmd::getInstance();
 	}
 	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isRightLba(args[1]) && isHexString(args[2]))) {
-		long address = std::stol(args[1]);
-		long value = std::stol(args[2], nullptr, 16); // hex format
-		//return new SsdWriteCmd(address, value);
+		uint32_t address = std::stol(args[1]);
+		uint32_t value = std::stol(args[2], nullptr, 16); // hex format		
 		SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
 		writeCmd.setAddress(address);
 		writeCmd.setWriteData(value);
