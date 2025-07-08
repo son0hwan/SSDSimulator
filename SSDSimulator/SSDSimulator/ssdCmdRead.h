@@ -13,7 +13,7 @@ public:
     }
 
     // 주소 재설정 함수
-    void setAddress(long newAddress) {
+    void setAddress(uint32_t newAddress) {
         CheckAddressRange(newAddress);
         requestedAddress = newAddress;
     }
@@ -21,15 +21,15 @@ public:
     void run() override {
         CheckAddressRange(requestedAddress);
     }
-    long getAddress() const { return requestedAddress; }
+    uint32_t getAddress() const { return requestedAddress; }
 
 private:
     SsdReadCmd() : requestedAddress() {}
     SsdReadCmd(const SsdReadCmd&) = delete;
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
 
-    void CheckAddressRange(long newAddress);
+    void CheckAddressRange(uint32_t newAddress);
 
-    long requestedAddress;
-    long readData;
+    uint32_t requestedAddress;
+    uint32_t readData;
 };
