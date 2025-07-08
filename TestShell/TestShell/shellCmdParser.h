@@ -24,7 +24,7 @@ class ShellCmdParser {
   static constexpr const char* CMD_HELP = "help";
 
   bool isHexString(const std::string& address);
-  bool IsLbaString(const std::string& address);
+  bool isLbaString(const std::string& address);
 
   bool isReadCmd(const std::vector<std::string>& args);
   bool isWriteCmd(const std::vector<std::string>& args);
