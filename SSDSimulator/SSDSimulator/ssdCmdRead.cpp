@@ -104,7 +104,7 @@ bool SsdReadCmd::CheckParsingLineSuccessAndPushReadRawData(const std::string& li
 }
 
 void SsdReadCmd::readNandData(const std::string& filename) {
-	if (!readRawData.empty()) readRawData.clear();
+	//if (!readRawData.empty()) readRawData.clear();
 
 	ParseFile(filename);
 
