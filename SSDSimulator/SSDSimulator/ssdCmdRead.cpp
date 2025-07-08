@@ -15,9 +15,27 @@ void SsdReadCmd::CheckAddressRange(uint32_t newAddress)
 }
 
 void SsdReadCmd::ParseFile(const std::string& filename) {
+    readRawData.clear();
     std::ifstream file(filename);
     if (!file) {
-        throw std::exception("error opening file for reading");
+        std::ofstream newFile(filename);
+        if (!newFile) {
+            throw std::runtime_error("ssd_nand.txt create failed");
+        }
+
+        // Init data to 00000000 for 0-99 address
+        for (int i = 0; i < 100; ++i) {
+            newFile << std::hex << std::nouppercase;
+            newFile << i << ";00000000" << std::endl;
+        }
+        newFile.close();
+
+        std::cout << filename << " Create New file because there was no ssd_nand.txt" << std::endl;
+
+        file.open(filename);
+        if (!file) {
+            throw std::runtime_error("error opening ssd_nand.txt file again for reading");
+        }
     }
 
     std::string line;
