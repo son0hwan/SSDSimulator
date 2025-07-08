@@ -36,7 +36,9 @@ public:
             uint32_t random_number = dist(gen);
 
             nandDataFile << std::hex << std::nouppercase;
-            nandDataFile << i << SEPARATOR << random_number << std::endl;
+            nandDataFile << i << SEPARATOR;
+            nandDataFile << std::setw(8) << std::setfill('0') << random_number;
+            nandDataFile << std::endl;
         }
         nandDataFile.close();
     }
