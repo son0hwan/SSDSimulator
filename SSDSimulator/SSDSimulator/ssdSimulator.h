@@ -17,7 +17,6 @@ public:
     }
 
     void write(uint32_t address, uint32_t value) {
-        // Temporary code to pass UT; will be gone once parser code is in place
         if (!CheckAddressRange(address)) return;
 
         LoadAllDatasFromNand();
@@ -27,7 +26,6 @@ public:
     }
 
     uint32_t read(uint32_t address) {
-        // Temporary code to pass UT; will be gone once parser code is in place
         if (!CheckAddressRange(address)) return READ_ERROR;
 
         LoadAllDatasFromNand();

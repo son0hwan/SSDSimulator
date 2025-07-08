@@ -25,8 +25,7 @@ public:
         outputFile << OUTPUT_ERROR;
     }
     
-    void updateOutputWriteSuccess()
-    {
+    void updateOutputWriteSuccess() {
         auto outputFile = openFile(OUTPUT_FILE);
     }
 
@@ -81,7 +80,7 @@ public:
 
     void deleteFileIfExists() {
         if (std::ifstream(NAND_DATA_FILE)) {
-            std::remove(NAND_DATA_FILE.c_str());  // 기존 파일 삭제
+            std::remove(NAND_DATA_FILE.c_str()); 
         }
     }
 #endif
