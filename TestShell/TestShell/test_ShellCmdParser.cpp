@@ -20,8 +20,7 @@ TEST_F(ShellCmdParserFixture, ReadWithValidAddress) {
 
   EXPECT_TRUE(nullptr != dynamic_cast<TestShellReadCmd*>(command));
   try {
-    TestShellReadCmd* convertedCmd =
-        dynamic_cast<TestShellReadCmd*>(command);
+    TestShellReadCmd* convertedCmd = dynamic_cast<TestShellReadCmd*>(command);
     EXPECT_EQ(0, convertedCmd->getAddress());
   } catch (std::exception& e) {
     FAIL();
@@ -42,54 +41,55 @@ TEST_F(ShellCmdParserFixture, ReadWithInValidAddress) {
   EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(command));
 }
 
-
 TEST_F(ShellCmdParserFixture, WriteWithValidAddress) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "write", "3", "0xAAAABBBB" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command =
+      cmdParser.getCommand({"write", "3", "0xAAAABBBB"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellWriteCmd*>(command));
-    try {
-        TestShellWriteCmd* convertedCmd = dynamic_cast<TestShellWriteCmd*>(command);
-        EXPECT_EQ(2, convertedCmd->getAddress());
-        EXPECT_EQ(0xAAAABBBB, convertedCmd->getData());
-    }
-    catch (std::exception& e) {
-        FAIL();
-    }
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellWriteCmd*>(command));
+  try {
+    TestShellWriteCmd* convertedCmd = dynamic_cast<TestShellWriteCmd*>(command);
+    EXPECT_EQ(3, convertedCmd->getAddress());
+    EXPECT_EQ(0xAAAABBBB, convertedCmd->getData());
+  } catch (std::exception& e) {
+    FAIL();
+  }
 }
 
 TEST_F(ShellCmdParserFixture, WriteWithInValidAddress1) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "write", "3", "AAAABBBB" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command =
+      cmdParser.getCommand({"write", "3", "AAAABBBB"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(result));
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(command));
 }
 
 TEST_F(ShellCmdParserFixture, WriteWithInValidAddress2) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "write", "0x333", "AAAABBBB" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command =
+      cmdParser.getCommand({"write", "0x333", "AAAABBBB"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(result));
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(command));
 }
 
 TEST_F(ShellCmdParserFixture, WriteWithInValidAddress3) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "write", "3", "0xAAAABBBB", "0xAAABBB" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command =
+      cmdParser.getCommand({"write", "3", "0xAAAABBBB", "0xAAABBB"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(result));
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellErrorCmd*>(command));
 }
 
 TEST_F(ShellCmdParserFixture, ExitCommand) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "exit" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command = cmdParser.getCommand({"exit"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellExitCmd*>(command));
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellExitCmd*>(command));
 }
 
 TEST_F(ShellCmdParserFixture, HelpCommand) {
-    SellCmdParser cmdParser;
-    TestShellCmdInterface* command = cmdParser.getCommand({ "help" });
+  ShellCmdParser cmdParser;
+  TestShellCmdInterface* command = cmdParser.getCommand({"help"});
 
-    EXPECT_TRUE(nullptr != dynamic_cast<TestShellHelpCmd*>(command));
+  EXPECT_TRUE(nullptr != dynamic_cast<TestShellHelpCmd*>(command));
 }
-

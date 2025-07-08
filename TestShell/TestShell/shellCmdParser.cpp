@@ -15,6 +15,10 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
     long address = std::stol(args[1]);
     unsigned value = std::stoul(args[2], nullptr, 16);
     return new TestShellWriteCmd(address, value);
+  } else if (isHelpCmd(args)) {
+    return new TestShellHelpCmd(); 
+  } else if (isExitCmd(args)) {
+    return new TestShellExitCmd();
   }
 
   return new TestShellErrorCmd();
@@ -31,6 +35,18 @@ bool ShellCmdParser::isWriteCmd(const std::vector<std::string>& args) {
   if (args[0] != CMD_WRITE) return false;
   if (false == IsLbaString(args[1])) return false;
   if (false == isHexString(args[2])) return false;
+  return true;
+}
+
+bool ShellCmdParser::isExitCmd(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  if (args[0] != CMD_EXIT) return false;
+  return true;
+}
+
+bool ShellCmdParser::isHelpCmd(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  if (args[0] != CMD_HELP) return false;
   return true;
 }
 
