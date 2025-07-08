@@ -29,6 +29,23 @@ public:
 		readCmd.setAddress(address);
 		readCmd.run();
 	}
+	void deleteFileIfExists(const std::string& filename) {
+		if (std::ifstream(filename)) {
+			std::remove(filename.c_str());  // 기존 파일 삭제
+		}
+	}
+	void CreateNewNandFileAndInitForTest()
+	{
+		std::ifstream file(NAND_FILENAME);
+		if (!file) {
+			std::ofstream newFile(NAND_FILENAME);
+			for (int i = 0; i < 100; ++i) {
+				newFile << std::hex << std::nouppercase; // 소문자 hex
+				newFile << i << ";705ff43a" << std::endl;
+			}
+			newFile.close();
+		}
+	}
 
 protected:
 	static const uint32_t DEFAULT_ADDRESS = 0;
@@ -58,6 +75,9 @@ TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
+	deleteFileIfExists(NAND_FILENAME);
+	CreateNewNandFileAndInitForTest();
+
 	EXPECT_NO_THROW(runWriteTest(VALID_ADDRESS, WRITE_DATA));
 	EXPECT_NO_THROW(runRead(VALID_ADDRESS));
 	EXPECT_EQ(readCmd.getReadData(), WRITE_DATA);
