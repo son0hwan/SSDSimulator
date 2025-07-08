@@ -6,7 +6,6 @@
 #include <fstream>
 #include <iomanip>
 #include <random>
-#include "ssdInterface.h"
 
 struct ReadRawData {
     uint32_t address;
@@ -18,6 +17,11 @@ public:
     static SsdSimulator& getInstance() {
         static SsdSimulator instance;
         return instance;
+    }
+
+    void init() {
+        // Check if nand.txt file is there
+        // If not, create one? 
     }
 
     void write(uint32_t address, uint32_t value) {
@@ -124,8 +128,7 @@ public:
         readRawData[address].data = data;
     }
 
-    void updateNandData()
-    {
+    void updateNandData(){
         std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
         if (!nandDataFile) {
             throw std::exception("error opening file for writing");

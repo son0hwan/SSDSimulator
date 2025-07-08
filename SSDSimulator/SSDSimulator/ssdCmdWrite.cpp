@@ -1,12 +1,13 @@
 #include "ssdCmdWrite.h"
 
 void SsdWriteCmd::run() {
-    //if (!CheckAddressRange(requestedAddress))return;
-    //readNandData(NAND_DATA_FILE);
-    //updateDataInInternalBuffer(this->requestedAddress, this->data);
-    //updateNandData();
-    //updateOutputWriteSuccess();
-    SsdSimulator::getInstance().write(this->requestedAddress, this->data);
+    if (!CheckAddressRange(requestedAddress))return;
+    readNandData(NAND_DATA_FILE);
+    updateDataInInternalBuffer(this->requestedAddress, this->data);
+    updateNandData();
+    updateOutputWriteSuccess();
+
+    //SsdSimulator::getInstance().write(this->requestedAddress, this->data);
 }
 
 bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
