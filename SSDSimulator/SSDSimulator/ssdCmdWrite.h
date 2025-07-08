@@ -21,12 +21,11 @@ class SsdWriteCmd : public SsdCmdInterface {
 public:
     // 생성자는 parser에서 불러줄 것
     SsdWriteCmd(long address, long data) : address(address), data(data) {}
-    void run() override {}
+    void run() override;
 
     void updateOutput();
 
     void updateOutputError();
-
     void updateDataToNAND();
     void WriteSectorAddressAndData(std::ofstream& nandDataFile, int addr);
 #if (1 == TEMPORARY_CODE_FOR_TESTING)  
