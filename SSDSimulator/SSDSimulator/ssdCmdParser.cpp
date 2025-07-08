@@ -16,10 +16,10 @@ bool SsdCmdParser::isHexString(const std::string& address) {
 	}
 }
 
-bool SsdCmdParser::isRightLba(const std::string& address) {
+bool SsdCmdParser::isLbaString(const std::string& address) {
 	try {
 		long lba = std::stol(address);
-		return 0 <= lba && lba <= 99;
+		return MIN_ADDRESS <= lba && lba <= MAX_ADDRESS;
 	}
 	catch (...) {
 		return false;
@@ -27,17 +27,17 @@ bool SsdCmdParser::isRightLba(const std::string& address) {
 }
 
 SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) {
-	if (args.empty()) return new SsdErrorCmd(-1);
+	if (args.empty()) return new SsdErrorCmd(INVALID_ADDRESS);
 
 	std::string cmd = args[0];
 
-	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isRightLba(args[1])) {
+	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isLbaString(args[1])) {
 		uint32_t address = std::stol(args[1]);
 		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
 		readCmd.setAddress(address);
 		return &SsdReadCmd::getInstance();
 	}
-	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isRightLba(args[1]) && isHexString(args[2]))) {
+	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isLbaString(args[1]) && isHexString(args[2]))) {
 		uint32_t address = std::stol(args[1]);
 		uint32_t value = std::stol(args[2], nullptr, 16); // hex format		
 		SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();

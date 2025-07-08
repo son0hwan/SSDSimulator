@@ -22,6 +22,12 @@ class ShellCmdParser {
   static constexpr const char* CMD_WRITE = "write";
   static constexpr const char* CMD_EXIT = "exit";
   static constexpr const char* CMD_HELP = "help";
+  static constexpr const char* CMD_SCRIPT_1 = "1_FullWriteAndReadCompare";
+  static constexpr const char* CMD_SCRIPT_2 = "2_PartialLBAWrite";
+  static constexpr const char* CMD_SCRIPT_3 = "3_WriteReadAging";
+  static constexpr const char* CMD_SCRIPT_SHORT_1 = "1_";
+  static constexpr const char* CMD_SCRIPT_SHORT_2 = "2_";
+  static constexpr const char* CMD_SCRIPT_SHORT_3 = "3_";
 
   bool isHexString(const std::string& address);
   bool isLbaString(const std::string& address);
@@ -30,4 +36,7 @@ class ShellCmdParser {
   bool isWriteCmd(const std::vector<std::string>& args);
   bool isExitCmd(const std::vector<std::string>& args);
   bool isHelpCmd(const std::vector<std::string>& args);
+  bool isTestScript1(const std::vector<std::string>& args);
+  bool isTestScript2(const std::vector<std::string>& args);
+  bool isTestScript3(const std::vector<std::string>& args);
 };

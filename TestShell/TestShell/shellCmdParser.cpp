@@ -8,16 +8,23 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
 
   if (isReadCmd(args)) {
     long address = std::stol(args[1]);
-    return new TestShellReadCmd(address);
+    return new TestShellReadCmd{address};
   } else if (isWriteCmd(args)) {
     long address = std::stol(args[1]);
     unsigned value = std::stoul(args[2], nullptr, 16);
-    return new TestShellWriteCmd(address, value);
+    return new TestShellWriteCmd{address, value};
   } else if (isHelpCmd(args)) {
-    return new TestShellHelpCmd(); 
+    return new TestShellHelpCmd{};
   } else if (isExitCmd(args)) {
     return TEST_SHELL_EXIT_CMD;
+  } else if (isTestScript1(args)) {
+    return new TestShellTestScript1Cmd{};
+  } else if (isTestScript2(args)) {
+    return new TestShellScript2Cmd{};
+  } else if (isTestScript3(args)) {
+    return new TestShellScript3Cmd{};
   }
+
   return new TestShellErrorCmd();
 }
 
@@ -46,6 +53,21 @@ bool ShellCmdParser::isHelpCmd(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
   if (args[0] != CMD_HELP) return false;
   return true;
+}
+
+bool ShellCmdParser::isTestScript1(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  return (args[0] == CMD_SCRIPT_1 || args[0] == CMD_SCRIPT_SHORT_1);
+}
+
+bool ShellCmdParser::isTestScript2(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  return (args[0] == CMD_SCRIPT_2 || args[0] == CMD_SCRIPT_SHORT_2);
+}
+
+bool ShellCmdParser::isTestScript3(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  return (args[0] == CMD_SCRIPT_3 || args[0] == CMD_SCRIPT_SHORT_3);
 }
 
 bool ShellCmdParser::isHexString(const std::string& address) {
