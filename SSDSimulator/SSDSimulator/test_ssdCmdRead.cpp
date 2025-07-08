@@ -25,8 +25,9 @@ public:
         EXPECT_EQ(fileContent, expectResult);
     }
 
-    void CreateNewNandFileAndInitForTest(std::ifstream& file)
+    void CreateNewNandFileAndInitForTest()
     {
+        std::ifstream file(NAND_FILENAME);
         if (!file) {
             std::ofstream newFile(NAND_FILENAME);
             for (int i = 0; i < 100; ++i) {
@@ -71,8 +72,7 @@ TEST_F(ReadTestFixture, ReadExecutedWithError) {
 
 TEST_F(ReadTestFixture, ReadValidData) {
     deleteFileIfExists(NAND_FILENAME);
-    std::ifstream file(NAND_FILENAME);
-    CreateNewNandFileAndInitForTest(file);
+    CreateNewNandFileAndInitForTest();
 
     EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
     EXPECT_EQ(readCmd.getReadData(), EXPECTED_DATA);
