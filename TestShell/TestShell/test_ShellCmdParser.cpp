@@ -80,6 +80,16 @@ TEST_F(ShellCmdParserFixture, HelpCommand) {
   EXPECT_TRUE(isCmdTypeOf<TestShellHelpCmd>(command));
 }
 
+TEST_F(ShellCmdParserFixture, FullWriteCommand) {
+    auto command = cmdParser.getCommand({ "fullwrite", "0xAAAABBBB" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellFullWriteCmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, FullReadCommand) {
+    auto command = cmdParser.getCommand({ "fullread" });
+    EXPECT_TRUE(isCmdTypeOf<TestShellFullReadCmd>(command));
+}
+
 TEST_F(ShellCmdParserFixture, ShellTestScript1Cmd1) {
     ShellCmdParser cmdParser;
     auto command = cmdParser.getCommand({ "1_FullWriteAndReadCompare" });
