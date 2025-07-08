@@ -9,8 +9,9 @@ public:
 
 	std::vector<std::string> generateAlphabet() {
 		std::vector<std::string> result;
-		for (char c = 'A'; c <= 'Z'; ++c) {
-			result.emplace_back(1, c);
+		const char HEX_DIGITS[] = "0123456789ABCDEF";
+		for (char c = 0; c < MAX_HEX_LENGTH; ++c) {
+			result.emplace_back(1, HEX_DIGITS[c]);
 		}
 		return result;
 	}
@@ -40,11 +41,11 @@ public:
 		std::string result;
 		std::vector<std::string> alphabetList = generateAlphabet();
 
-		std::string EXPECTED_STR = "0x";
-		for (int i = 0; i < MAX_VAL_LEN; i++)
-			EXPECTED_STR.append(alphabetList[rand() % MAX_ALPHABET_SIZE]);
-
 		for (int i = 0; i < 200; i++) {
+			std::string EXPECTED_STR = "0x";
+			for (int i = 0; i < MAX_VAL_LEN; i++)
+				EXPECTED_STR.append(alphabetList[rand() % MAX_HEX_LENGTH]);
+
 			result = executor->writeToSSD(0, stoi(EXPECTED_STR));
 			if (result == ERROR_STRING)
 				return;
