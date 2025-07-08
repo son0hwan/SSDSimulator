@@ -1,5 +1,6 @@
 #pragma once
 #include "ssdInterface.h"
+#include "ssdSimulator.h"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -20,7 +21,7 @@ public:
     void setAddress(uint32_t newAddress);
     void setWriteData(uint32_t newWriteData);
     void readNandData(const std::string& filename);
-    void updateOutput();
+    void updateOutputWriteSuccess();
     void updateOutputError();
     void updateNandData();
     void WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr);
@@ -43,7 +44,7 @@ private:
     const std::string OUTPUT_ERROR = "ERROR";
 
     bool CheckAddressRange(uint32_t address);
-    void ParseFile(const std::string& filename);
+    void loadDataFromNand(const std::string& filename);
     void updateDataInInternalBuffer(uint32_t address, uint32_t data);
 
     std::vector<ReadRawData> readRawData;

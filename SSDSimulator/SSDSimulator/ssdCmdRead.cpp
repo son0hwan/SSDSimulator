@@ -14,7 +14,7 @@ void SsdReadCmd::CheckAddressRange(uint32_t newAddress)
     }
 }
 
-void SsdReadCmd::ParseFile(const std::string& filename) {
+void SsdReadCmd::loadDataFromNand(const std::string& filename) {
     std::ifstream file(filename);
     if (!file) {
         throw std::exception("error opening file for reading");
@@ -48,7 +48,7 @@ void SsdReadCmd::ParseFile(const std::string& filename) {
 void SsdReadCmd::readNandData(const std::string& filename) {
     if (!readRawData.empty()) readRawData.clear();
     
-    ParseFile(filename);
+    loadDataFromNand(filename);
 
     // address와 일치하는 데이터를 찾아서 readData에 저장
     auto foundReadData = std::find_if(

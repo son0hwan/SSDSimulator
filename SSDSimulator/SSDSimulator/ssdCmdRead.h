@@ -32,7 +32,7 @@ private:
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
 
     void CheckAddressRange(uint32_t newAddress);
-    void ParseFile(const std::string& filename);
+    void loadDataFromNand(const std::string& filename);
 
     uint32_t requestedAddress;
     uint32_t readData;

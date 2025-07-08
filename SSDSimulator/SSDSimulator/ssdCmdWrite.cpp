@@ -1,11 +1,12 @@
 #include "ssdCmdWrite.h"
 
 void SsdWriteCmd::run() {
-    if (!CheckAddressRange(requestedAddress))return;
-    readNandData(NAND_DATA_FILE);
-    updateDataInInternalBuffer(this->requestedAddress, this->data);
-    updateNandData();
-    updateOutput();
+    //if (!CheckAddressRange(requestedAddress))return;
+    //readNandData(NAND_DATA_FILE);
+    //updateDataInInternalBuffer(this->requestedAddress, this->data);
+    //updateNandData();
+    //updateOutputWriteSuccess();
+    SsdSimulator::getInstance().write(this->requestedAddress, this->data);
 }
 
 bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
@@ -19,7 +20,7 @@ bool SsdWriteCmd::CheckAddressRange(uint32_t address) {
 void SsdWriteCmd::readNandData(const std::string& filename) {
     if (!readRawData.empty()) readRawData.clear();
     
-    ParseFile(filename);
+    loadDataFromNand(filename);
 
     // address와 일치하는 데이터를 찾아서 readData에 저장
     auto foundReadData = std::find_if(
@@ -60,7 +61,7 @@ void SsdWriteCmd::updateNandData()
     nandDataFile.close();
 }
 
-void SsdWriteCmd::updateOutput()
+void SsdWriteCmd::updateOutputWriteSuccess()
 {
     std::ofstream outputFile(OUTPUT_FILE);
     if (!outputFile) {
@@ -94,7 +95,7 @@ void SsdWriteCmd::setWriteData(uint32_t newWriteData) {
     data = newWriteData;
 }
 
-void SsdWriteCmd::ParseFile(const std::string& filename) {
+void SsdWriteCmd::loadDataFromNand(const std::string& filename) {
     std::ifstream file(filename);
     if (!file) {
         throw std::exception("error opening file for reading");
