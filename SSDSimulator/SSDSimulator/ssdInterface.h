@@ -18,7 +18,7 @@ private:
 	const long address;
 };
 
-struct ReadRawData {
-	uint32_t address;
-	uint32_t data;
-};
+//struct ReadRawData {
+//	uint32_t address;
+//	uint32_t data;
+//};

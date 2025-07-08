@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include "ssdSimulator.h"
 
 class SsdReadCmd : public SsdCmdInterface {
 public:
@@ -21,6 +22,8 @@ public:
     void run() override {
         CheckAddressRange(requestedAddress);
         readNandData("ssd_nand.txt");
+
+        //SsdSimulator::getInstance().read(requestedAddress);
     }
     uint32_t getAddress() const { return requestedAddress; }
     uint32_t getReadData() const { return readData; }
