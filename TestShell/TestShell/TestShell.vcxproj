@@ -144,6 +144,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="shellFixture.cpp" />
     <ClInclude Include="testShell.cpp" />
     <ClInclude Include="testShellCmdRead.h" />
   </ItemGroup>

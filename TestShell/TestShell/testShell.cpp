@@ -1,3 +1,4 @@
+#pragma once
 #include "executor.h"
 
 namespace {
