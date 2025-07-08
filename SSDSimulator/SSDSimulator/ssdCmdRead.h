@@ -14,17 +14,12 @@ public:
 
     // 주소 재설정 함수
     void setAddress(long newAddress) {
-        if (newAddress < 0 || newAddress > 99) {
-            throw std::invalid_argument("range를 벗어났습니다.");
-        }
+        CheckAddressRange(newAddress);
         requestedAddress = newAddress;
     }
 
     void run() override {
-        if (requestedAddress > 99 ||
-            requestedAddress < 0) {
-            throw std::invalid_argument("range를 벗어났습니다.");
-        }
+        CheckAddressRange(requestedAddress);
     }
     long getAddress() const { return requestedAddress; }
 
@@ -32,6 +27,8 @@ private:
     SsdReadCmd() : requestedAddress() {}
     SsdReadCmd(const SsdReadCmd&) = delete;
     SsdReadCmd& operator=(const SsdReadCmd&) = delete;
+
+    void CheckAddressRange(long newAddress);
 
     long requestedAddress;
     long readData;
