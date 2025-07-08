@@ -1,10 +1,9 @@
 #include <random>
 #include "mockExecutor.cpp"
 #include "testShell.cpp"
+#include "shellFixture.cpp"
 
-#define FULL_READ_COUNT 100
-#define MAX_STR_LENGTH 8
-#define MAX_ALPHABET_SIZE 26
+using namespace testing;
 
 std::vector<std::string> generateAlphabet() {
 	std::vector<std::string> result;
@@ -14,13 +13,11 @@ std::vector<std::string> generateAlphabet() {
 	return result;
 }
 
-TEST(TS_READ, READ_JUST_ONCE) {
-	MockSSD mockSSD;
-	TestShell testShell{ &mockSSD };
+TEST_F(ShellFixture, ReadJustOnce) {
 	std::vector<std::string> alphabetList = generateAlphabet();
 
 	std::string EXPECTED_STR = "0x";
-	for (int i = 0; i < MAX_STR_LENGTH; i++)
+	for (int i = 0; i < MAX_VAL_LEN; i++)
 		EXPECTED_STR.append(alphabetList[rand() % MAX_ALPHABET_SIZE]);
 		
 	EXPECT_CALL(mockSSD, readFromSSD)
@@ -29,13 +26,10 @@ TEST(TS_READ, READ_JUST_ONCE) {
 	EXPECT_EQ(EXPECTED_STR, testShell.read(50));
 }
 
-TEST(TS_READ, READ_FULL) {
-	MockSSD mockSSD;
-	TestShell testShell{ &mockSSD };
-
-	for (int i = 0; i < FULL_READ_COUNT; i++) {
+TEST_F(ShellFixture, FullRead) {
+	for (int i = 0; i < NUM_OF_LBA; i++) {
 		EXPECT_CALL(mockSSD, readFromSSD(i))
-			.WillOnce(testing::Return(""));
+			.WillOnce(testing::Return(WRITE_SUCCESS_STRING));
 	}
 
 	testShell.fullRead();

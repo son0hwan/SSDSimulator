@@ -6,6 +6,6 @@
 using namespace testing;
 class ShellFixture : public Test {
 public:
-	MockSSD mock;
-	TestShell shell{ &mock };
+	MockSSD mockSSD;
+	TestShell testShell{ &mockSSD };
 };

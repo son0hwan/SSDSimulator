@@ -6,6 +6,9 @@ namespace {
 	const int WRITE_ERROR = 1;
 	const char* WRITE_SUCCESS_STRING = "";
 	const char* WRITE_ERROR_STRING = "ERROR";
+	const int NUM_OF_LBA = 100;
+	const int MAX_VAL_LEN = 8;
+	const int MAX_ALPHABET_SIZE = 26;
 }
 
 class TestShell {
@@ -23,7 +26,7 @@ public:
 	int fullwrite(int value) {
 		std::string result;
 
-		for (int addr = 0; addr < 100; addr++) {
+		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 			result = executor->writeToSSD(addr, value);
 			if (result == WRITE_ERROR_STRING)
 				return WRITE_ERROR;
@@ -35,8 +38,8 @@ public:
 		return executor->readFromSSD(address);
 	}
 	bool fullRead() {
-		for (int i = 0; i < 100; i++) {
-			if (executor->readFromSSD(i) == "ERROR")
+		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
+			if (executor->readFromSSD(addr) == WRITE_ERROR_STRING)
 				return false;
 		}
 		return true;
