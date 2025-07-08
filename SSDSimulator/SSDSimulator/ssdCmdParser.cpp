@@ -2,7 +2,7 @@
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
 #include "ssdCmdParser.h"	
-#include<string>
+#include <string>
 #include <algorithm>
 
 bool SsdCmdParser::isHexString(const std::string& address) {

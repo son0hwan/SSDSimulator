@@ -129,7 +129,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssdCmdParser.cpp" />
+    <ClCompile Include="ssdCmdRead.cpp" />
+    <ClCompile Include="ssdCmdWrite.cpp" />
     <ClCompile Include="test_SsdCmdParser.cpp" />
+    <ClCompile Include="test_ssdCmdRead.cpp" />
+    <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ssdCmdParser.h" />
@@ -139,6 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ssd_nand.txt" />
+    <Text Include="ssd_output.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
