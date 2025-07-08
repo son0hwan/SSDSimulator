@@ -9,8 +9,12 @@
 
 class SsdWriteCmd : public SsdCmdInterface {
 public:
-    // »ý¼ºÀÚ´Â parser¿¡¼­ ºÒ·¯ÁÙ °Í
-    SsdWriteCmd(uint32_t address, uint32_t data) : address(address), data(data) {}
+    static SsdWriteCmd& getInstance() {
+        static SsdWriteCmd instance;
+        return instance;
+    }
+
+    //SsdWriteCmd(uint32_t address, uint32_t data) : requestedAddress(address), data(data) {}
 
     void run() override;
     void setAddress(uint32_t newAddress);
@@ -20,14 +24,16 @@ public:
     void updateOutputError();
     void updateNandData();
     void WriteSectorAddressAndDataToNAND(std::ofstream& nandDataFile, uint32_t addr);
-
-
-    long getAddress() { return address; }
-    long getValue() { return data;  }
-    long getData() const { return data; }
+    uint32_t getAddress() { return requestedAddress; }
+    uint32_t getValue() { return data;  }
+    uint32_t getData() const { return data; }
 
 private:
-    uint32_t address;
+    SsdWriteCmd() : requestedAddress() {}
+    SsdWriteCmd(const SsdWriteCmd&) = delete;
+    SsdWriteCmd& operator=(const SsdWriteCmd&) = delete;
+
+    uint32_t requestedAddress;
     uint32_t data;
     static const int DEVICE_MAX_ADDRESS = 99;
 
