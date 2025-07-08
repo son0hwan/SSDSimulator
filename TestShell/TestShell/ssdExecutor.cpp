@@ -9,7 +9,9 @@ class SSDExecutor : public Executor {
         int result = std::system(command.c_str());
         if (result != 0) {
             std::cout << "read fail : return code = " << result << std::endl;
+            return FAIL;
         }
+        return PASS;
     }
 
     std::string writeToSSD(int address, int value) override {
@@ -19,6 +21,8 @@ class SSDExecutor : public Executor {
         int result = std::system(command.c_str());
         if (result != 0) {
             std::cout << "write fail : return code = " << result << std::endl;
+            return FAIL;
         }
+        return PASS;
     }
 };

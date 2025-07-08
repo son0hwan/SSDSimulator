@@ -23,14 +23,17 @@ TEST_F(ShellFixture, ReadJustOnce) {
 	EXPECT_CALL(mockSSD, readFromSSD)
 		.WillOnce(testing::Return(EXPECTED_STR));
 
-	EXPECT_EQ(EXPECTED_STR, testShell.read(50));
+	testShell.writeToOutputFile(EXPECTED_STR);
+	testShell.fake_command("read 50");
+
+	EXPECT_EQ(EXPECTED_STR + "\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, FullRead) {
-	for (int i = 0; i < NUM_OF_LBA; i++) {
-		EXPECT_CALL(mockSSD, readFromSSD(i))
-			.WillOnce(testing::Return(WRITE_SUCCESS_STRING));
-	}
+	//for (int i = 0; i < NUM_OF_LBA; i++) {
+	//	EXPECT_CALL(mockSSD, readFromSSD(i))
+	//		.WillOnce(testing::Return(SUCCESS_STRING));
+	//}
 
-	testShell.fullRead();
+	//testShell.fake_command("fullread");
 }

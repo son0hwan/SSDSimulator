@@ -1,6 +1,6 @@
 #include "shellCmdParser.h"
-#include "testShellCmdRead.h"
-#include "testShellCmdWrite.h"
+#include "testShellCmdRead.cpp"
+#include "testShellCmdWrite.cpp"
 
 bool ShellCmdParser::isHexString(const std::string& address) {
   try {
