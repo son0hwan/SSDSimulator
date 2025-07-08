@@ -1,55 +1,50 @@
 #pragma once
 
 class TestShellCmdInterface {
-public:
-	virtual void run() = 0;
+ public:
+  virtual void run() = 0;
 };
 
+constexpr TestShellCmdInterface* TEST_SHELL_EXIT_CMD = nullptr;
 
-class TestShellExitCmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellExitCmd() {}
 
-	void run() override {}
+class TestShellInvalidCmd : public TestShellCmdInterface {
+ public:
+  TestShellInvalidCmd() {}
+
+  void run() override {}
 };
 
 class TestShellHelpCmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellHelpCmd() {}
+ public:
+  TestShellHelpCmd() {}
 
-	void run() override {}
+  void run() override {}
 };
 
-
 class TestShellTestScript1Cmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellTestScript1Cmd() {}
+ public:
+  TestShellTestScript1Cmd() {}
 
-	void run() override {}
+  void run() override {}
 };
 
 class TestShellScript2Cmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellScript2Cmd() {}
+ public:
+  TestShellScript2Cmd() {}
 
-	void run() override {}
+  void run() override {}
 };
 
 class TestShellScript3Cmd : public TestShellCmdInterface {
-public:
-	// 생성자는 parser에서 불러줄 것
-	TestShellScript3Cmd() {}
+ public:
+  TestShellScript3Cmd() {}
 
-	void run() override {}
+  void run() override {}
 };
 
 class TestShellErrorCmd : public TestShellCmdInterface {
  public:
-  // 생성자는 parser에서 불러줄 것
   TestShellErrorCmd() {}
 
   void run() override {}
