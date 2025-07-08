@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <random>
+#include <filesystem>
 
 struct ReadRawData {
     uint32_t address;
@@ -20,10 +21,27 @@ public:
     }
 
     void init() {
-        // Check if nand.txt file is there
-        // If not, create one? 
+        std::ifstream nandDataFile(NAND_DATA_FILE);
+        if (!nandDataFile) {
+            createNandDataFile();
+        }
     }
 
+    void createNandDataFile() {
+        std::ofstream nandDataFile(NAND_DATA_FILE);
+        for (int i = 0; i <= DEFAULT_MAX_LBA_OF_DEVICE; ++i) {
+            std::random_device rd;                          // Non-deterministic seed
+            std::mt19937 gen(rd());                         // Mersenne Twister engine
+            std::uniform_int_distribution<uint32_t> dist(MIN_DATA_VALUE, MAX_DATA_VALUE);
+            uint32_t random_number = dist(gen);
+
+            nandDataFile << std::hex << std::nouppercase;
+            nandDataFile << i << SEPARATOR << random_number << std::endl;
+        }
+        nandDataFile.close();
+    }
+
+ 
     void write(uint32_t address, uint32_t value) {
         // Temporary code to pass UT; will be gone once parser code is in place
         if (!checkAddressRange(numOfSectors)) {
@@ -164,6 +182,8 @@ private:
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE;
+    const static uint32_t MIN_DATA_VALUE = 0;
+    const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
     const std::string OUTPUT_FILE = "ssd_output.txt";
