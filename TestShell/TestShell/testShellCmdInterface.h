@@ -46,3 +46,10 @@ public:
 
 	void run() override {}
 };
+
+class TestShellErrorCmd : public TestShellCmdInterface {
+ public:
+  TestShellErrorCmd() {}
+
+  void run() override {}
+};

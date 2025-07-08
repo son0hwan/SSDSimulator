@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <cstdlib>  // for std::stol
 
+class SsdCmdInterface;
+
 class SsdCmdParser {
 public:
     SsdCmdInterface* getCommand(const std::vector<std::string>& args);
@@ -15,4 +17,7 @@ private:
 
     bool isHexString(const std::string& address);
     bool isRightLba(const std::string& address);
+
+    bool isReadCmd(const std::vector<std::string>& args);
+    bool isWriteCmd(const std::vector<std::string>& args);
 };
