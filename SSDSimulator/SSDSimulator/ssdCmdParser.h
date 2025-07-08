@@ -1,10 +1,18 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <stdexcept>
 #include <cstdlib>  // for std::stol
 
 class SsdCmdParser {
 public:
-    SsdCmdInterface* getCommand(const std::string& cmd, const std::string& arg1, const std::string& arg2 = "");
+    SsdCmdInterface* getCommand(const std::vector<std::string>& args);
+
+private:
+    const int NUM_OF_READ_ARGS = 2;
+    const int NUM_OF_WRITE_ARGS = 3;
+
+    bool isHexString(const std::string& address);
+    bool isRightLba(const std::string& address);
 };
