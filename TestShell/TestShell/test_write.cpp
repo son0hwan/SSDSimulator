@@ -2,8 +2,11 @@
 #include "mockExecutor.cpp"
 #include "testShell.cpp"
 #include "shellFixture.cpp"
+#include <vector>
+#include <random>
 
 using namespace testing;
+using std::vector;
 
 TEST_F(ShellFixture, WriteJustOnce) {
 	EXPECT_CALL(mockSSD, writeToSSD(1, 0x1000000))
