@@ -1,50 +1,74 @@
 #pragma once
 #include "executor.h"
+#include "shellCmdParser.h"
+#include "testShellCmdInterface.h"
+#include "executor.h"
 
-namespace {
-	const int WRITE_SUCCESS = 0;
-	const int WRITE_ERROR = 1;
-	const char* WRITE_SUCCESS_STRING = "";
-	const char* WRITE_ERROR_STRING = "ERROR";
-	const int NUM_OF_LBA = 100;
-	const int MAX_VAL_LEN = 8;
-	const int MAX_ALPHABET_SIZE = 26;
-}
+#define MOCK_TEST
+
+#ifdef MOCK_TEST
+#include <iostream>
+#include <fstream>
+#endif
 
 class TestShell {
 public:
-	TestShell(Executor* executor) : executor(executor) {}
-	int write(int address, int value) {
-		std::string result;
-		result = executor->writeToSSD(address, value);
-		if (result == WRITE_ERROR_STRING)
-			return WRITE_ERROR;
+	TestShell(Executor* executor) : executor { executor } {}
 
-		return WRITE_SUCCESS;
+	void run() {
+		while (true) {
+			std::string cmd;
+			ShellCmdParser shellCmdParser;
+
+			std::cout << "Shell> ";
+			std::getline(std::cin, cmd);
+
+			if (cmd.empty()) continue;
+
+			std::vector<std::string> token = splitBySpace(cmd);
+			TestShellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+			
+			if (exeCmd == nullptr) break;
+			
+			exeCmd->setExecutor(executor);
+			exeCmd->run();	
+		}
 	}
 
-	int fullwrite(int value) {
-		std::string result;
+	std::vector<std::string> splitBySpace(const std::string& str) {
+		std::istringstream iss(str);
+		std::vector<std::string> tokens;
+		std::string word;
 
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-			result = executor->writeToSSD(addr, value);
-			if (result == WRITE_ERROR_STRING)
-				return WRITE_ERROR;
+		while (iss >> word) {
+			tokens.push_back(word);
 		}
 
-		return WRITE_SUCCESS;
+		return tokens;
 	}
-	std::string read(int address) {
-		return executor->readFromSSD(address);
+
+#ifdef MOCK_TEST
+	void fake_command(std::string cmd) {
+		ShellCmdParser shellCmdParser;
+		std::vector<std::string> token = splitBySpace(cmd);
+		TestShellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+
+		if (exeCmd == nullptr) return;
+
+		exeCmd->setExecutor(executor);
+		exeCmd->run();
 	}
-	bool fullRead() {
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-			if (executor->readFromSSD(addr) == WRITE_ERROR_STRING)
-				return false;
+
+	void writeToOutputFile(std::string contents) {
+		std::ofstream file("ssd_output.txt"); 
+		if (!file.is_open()) {
+			std::cerr << "fail to open file";
+			return;
 		}
-		return true;
+		file << contents;  
+		file.close();     
 	}
-	
+#endif
 private:
 	Executor* executor;
 };

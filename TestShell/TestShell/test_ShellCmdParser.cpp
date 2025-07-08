@@ -4,8 +4,8 @@
 #include "shellCmdParser.h"
 #include "stdexcept"
 #include "testShellCmdInterface.h"
-#include "testShellCmdRead.h"
-#include "testShellCmdWrite.h"
+#include "testShellCmdRead.cpp"
+#include "testShellCmdWrite.cpp"
 
 using namespace testing;
 using namespace std;
