@@ -6,7 +6,7 @@ void SsdReadCmd::setAddress(uint32_t newAddress) {
 }
 
 void SsdReadCmd::run() {
-	SsdSimulator::getInstance().read(requestedAddress);
+	readData = SsdSimulator::getInstance().read(requestedAddress);
 }
 
 uint32_t SsdReadCmd::getAddress() const {

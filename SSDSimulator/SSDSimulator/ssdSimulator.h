@@ -19,13 +19,23 @@ public:
     }
 
     void init() {
-        // Check if nand.txt file is there
-        // If not, create one? 
+        createNandDataFile();
+    }
+
+    void createNandDataFile() {
+        std::ofstream nandDataFile(NAND_DATA_FILE);
+        for (int i = 0; i <= DEFAULT_MAX_LBA_OF_DEVICE; ++i) {
+            nandDataFile << std::hex << std::nouppercase;
+            nandDataFile << i << SEPARATOR;
+            nandDataFile << std::setw(8) << std::setfill('0') << INIT_NAND_DATA;
+            nandDataFile << std::endl;
+        }
+        nandDataFile.close();
     }
 
     void write(uint32_t address, uint32_t value) {
         // Temporary code to pass UT; will be gone once parser code is in place
-        if (!checkAddressRange(numOfSectors)) {
+        if (!checkAddressRange(address)) {
             updateOutputError();
             return;
         }
@@ -35,15 +45,16 @@ public:
         updateOutputWriteSuccess();
     }
 
-    void read(uint32_t address) {
+    uint32_t read(uint32_t address) {
         // Temporary code to pass UT; will be gone once parser code is in place
-        if (!checkAddressRange(numOfSectors)) {
+        if (!checkAddressRange(address)) {
             updateOutputError();
-            return;
+            return READ_ERROR;
         }
         loadDataFromNandAll();
         uint32_t readData = getReadData(address);
         updateOutputReadSuccess(readData);
+        return readData;
     }
 
     bool checkAddressRange(uint32_t address) {
@@ -53,8 +64,8 @@ public:
         return true;
     }
 
-    uint32_t getReadData(uint32_t address) const { 
-        return readRawData[address].data; 
+    uint32_t getReadData(uint32_t address) const {
+        return readRawData[address].data;
     }
 
     void updateOutputReadSuccess(uint32_t readData) {
@@ -66,13 +77,10 @@ public:
     }
 
     void loadDataFromNandAll() {
-        if (!readRawData.empty()) readRawData.clear();
-        std::ifstream file(NAND_DATA_FILE);
-        if (!file) {
-            throw std::exception("error opening file for reading");
-        }
+        clearBuffer();
+        if (!nandDataFileExist()) createNandDataFile();
 
-        std::string line;
+        std::ifstream file(NAND_DATA_FILE);
         FillReadRawAllDatas(file);
 
         file.close();
@@ -100,11 +108,22 @@ public:
 #endif
     }
 
+    void clearBuffer()
+    {
+        if (!readRawData.empty()) readRawData.clear();
+    }
+
+    bool nandDataFileExist() {
+        std::ifstream file(NAND_DATA_FILE);
+        if (!file) return false;
+        return true;
+    }
+
     void updateDataInInternalBuffer(uint32_t address, uint32_t data) {
         readRawData[address].data = data;
     }
 
-    void updateNandData(){
+    void updateNandData() {
         std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
         if (!nandDataFile) {
             throw std::exception("error opening file for writing");
@@ -137,7 +156,11 @@ public:
         outputFile.close();
     }
 
-private: 
+    uint32_t getMaxSector() {
+        return maxLba;
+    }
+
+private:
     SsdSimulator() {};
     SsdSimulator(const SsdSimulator&) = delete;
     SsdSimulator& operator=(const SsdSimulator&) = delete;
@@ -182,7 +205,11 @@ private:
     }
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
-    uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE;
+    uint32_t maxLba = DEFAULT_MAX_LBA_OF_DEVICE;
+    const static uint32_t INIT_NAND_DATA = 0;
+    const static uint32_t MIN_DATA_VALUE = 0;
+    const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
+    const static uint32_t READ_ERROR = 0xDEADBEEF;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
     const std::string OUTPUT_FILE = "ssd_output.txt";

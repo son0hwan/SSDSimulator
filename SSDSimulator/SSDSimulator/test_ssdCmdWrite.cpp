@@ -9,10 +9,33 @@ public:
 	SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
 	SsdReadCmd& readCmd = SsdReadCmd::getInstance();
 
-	void runWriteTest(unsigned long address, unsigned long data) {
+	void write(uint32_t address, uint32_t data) {
 		writeCmd.setAddress(address);
 		writeCmd.setWriteData(data);
 		writeCmd.run();
+	}
+
+	void read(uint32_t address) {
+		readCmd.setAddress(address);
+		readCmd.run();
+	}
+	
+	void verifyWriteAndRead(uint32_t address, uint32_t data) {
+		EXPECT_NO_THROW(write(VALID_ADDRESS, WRITE_DATA));
+		EXPECT_NO_THROW(read(VALID_ADDRESS));
+		EXPECT_EQ(getReadData(), WRITE_DATA);
+		CheckOutputFileValid(OUTPUT_VALID_READ);
+	}
+
+	void verifyWriteAndReadAll(uint32_t address, uint32_t data) {
+		uint32_t maxAddress = SsdSimulator::getInstance().getMaxSector();
+		for (uint32_t address = 0; address <= maxAddress; address++) {
+			verifyWriteAndRead(address, data);
+		}
+	}
+
+	uint32_t getReadData() {
+		return readCmd.getReadData();
 	}
 
 	void CheckOutputFileValid(const std::string& expectResult)
@@ -25,21 +48,17 @@ public:
 		EXPECT_EQ(fileContent, expectResult);
 	}
 
-	void runRead(uint32_t address) {
-		readCmd.setAddress(address);
-		readCmd.run();
-	}
 	void deleteFileIfExists(const std::string& filename) {
 		if (std::ifstream(filename)) {
 			std::remove(filename.c_str());  // 기존 파일 삭제
 		}
 	}
-	void CreateNewNandFileAndInitForTest()
-	{
+	void CreateNewNandFileAndInitForTest() {
 		std::ifstream file(NAND_FILENAME);
 		if (!file) {
 			std::ofstream newFile(NAND_FILENAME);
-			for (int i = 0; i < 100; ++i) {
+			uint32_t maxAddress = SsdSimulator::getInstance().getMaxSector();
+			for (int i = 0; i <= maxAddress; ++i) {
 				newFile << std::hex << std::nouppercase; // 소문자 hex
 				newFile << i << ";705ff43a" << std::endl;
 			}
@@ -53,34 +72,29 @@ protected:
 	static const uint32_t VALID_ADDRESS = 19;
 	static const uint32_t INVALID_ADDRESS = 100;
 	static const uint32_t WRITE_DATA = 0x705ff43a;
-	static const uint32_t EXPECTED_DATA = WRITE_DATA;
-	static const std::string OUTPUT_ERROR;
-	static const std::string OUTPUT_VALID_READ;
-	static const std::string OUTPUT_FILENAME;
-	static const std::string NAND_FILENAME;
+	const std::string OUTPUT_VALID_READ = "0x705FF43A";
+	const std::string OUTPUT_ERROR = "ERROR";
+	const std::string OUTPUT_FILENAME = "ssd_output.txt";
+	const std::string NAND_FILENAME = "ssd_nand.txt";
 };
 
-const std::string WriteTestFixture::OUTPUT_ERROR = "ERROR";
-const std::string WriteTestFixture::OUTPUT_FILENAME = "ssd_output.txt";
-const std::string WriteTestFixture::OUTPUT_VALID_READ = "0x705FF43A";
-const std::string WriteTestFixture::NAND_FILENAME = "ssd_nand.txt";
-
 TEST_F(WriteTestFixture, WriteExecutedWithoutError) {
-	EXPECT_NO_THROW(runWriteTest(VALID_ADDRESS, WRITE_DATA));
+	EXPECT_NO_THROW(write(VALID_ADDRESS, WRITE_DATA));
 }
 
 TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
-	runWriteTest(INVALID_ADDRESS, WRITE_DATA);
+	write(INVALID_ADDRESS, WRITE_DATA);
 	CheckOutputFileValid(OUTPUT_ERROR);
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
 	deleteFileIfExists(NAND_FILENAME);
 	CreateNewNandFileAndInitForTest();
+	verifyWriteAndRead(VALID_ADDRESS, WRITE_DATA);
+}
 
-	EXPECT_NO_THROW(runWriteTest(VALID_ADDRESS, WRITE_DATA));
-	EXPECT_NO_THROW(runRead(VALID_ADDRESS));
-	EXPECT_EQ(readCmd.getReadData(), WRITE_DATA);
-
-	CheckOutputFileValid(OUTPUT_VALID_READ);
+TEST_F(WriteTestFixture, WriteDataIntegrityFullCapacity) {
+	deleteFileIfExists(NAND_FILENAME);
+	CreateNewNandFileAndInitForTest();
+	verifyWriteAndReadAll(VALID_ADDRESS, WRITE_DATA);
 }
