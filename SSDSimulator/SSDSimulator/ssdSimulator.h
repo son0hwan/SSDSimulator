@@ -64,8 +64,8 @@ public:
         return true;
     }
 
-    uint32_t getReadData(uint32_t address) const { 
-        return readRawData[address].data; 
+    uint32_t getReadData(uint32_t address) const {
+        return readRawData[address].data;
     }
 
     void updateOutputReadSuccess(uint32_t readData) {
@@ -77,14 +77,10 @@ public:
     }
 
     void loadDataFromNandAll() {
-        if (!readRawData.empty()) readRawData.clear();
-        std::ifstream file(NAND_DATA_FILE);
-        if (!file) {
-            //throw std::exception("error opening file for reading");
-            createNandDataFile();
-        }
+        clearBuffer();
+        if (!nandDataFileExist()) createNandDataFile();
 
-        std::string line;
+        std::ifstream file(NAND_DATA_FILE);
         FillReadRawAllDatas(file);
 
         file.close();
@@ -112,11 +108,22 @@ public:
 #endif
     }
 
+    void clearBuffer()
+    {
+        if (!readRawData.empty()) readRawData.clear();
+    }
+
+    bool nandDataFileExist() {
+        std::ifstream file(NAND_DATA_FILE);
+        if (!file) return false;
+        return true;
+    }
+
     void updateDataInInternalBuffer(uint32_t address, uint32_t data) {
         readRawData[address].data = data;
     }
 
-    void updateNandData(){
+    void updateNandData() {
         std::ofstream nandDataFile(NAND_DATA_FILE); // Open file for writing
         if (!nandDataFile) {
             throw std::exception("error opening file for writing");
@@ -153,7 +160,7 @@ public:
         return maxLba;
     }
 
-private: 
+private:
     SsdSimulator() {};
     SsdSimulator(const SsdSimulator&) = delete;
     SsdSimulator& operator=(const SsdSimulator&) = delete;
