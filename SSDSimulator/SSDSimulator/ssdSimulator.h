@@ -49,7 +49,7 @@ public:
         // Temporary code to pass UT; will be gone once parser code is in place
         if (!checkAddressRange(address)) {
             updateOutputError();
-            return 0;
+            return READ_ERROR;
         }
         loadDataFromNandAll();
         uint32_t readData = getReadData(address);
@@ -199,11 +199,10 @@ private:
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     uint32_t maxLba = DEFAULT_MAX_LBA_OF_DEVICE;
-    //uint32_t numOfSectors = DEFAULT_MAX_LBA_OF_DEVICE + 1;
     const static uint32_t INIT_NAND_DATA = 0;
     const static uint32_t MIN_DATA_VALUE = 0;
     const static uint32_t MAX_DATA_VALUE = 0xFFFFFFFF;
-
+    const static uint32_t READ_ERROR = 0xDEADBEEF;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
     const std::string OUTPUT_FILE = "ssd_output.txt";
