@@ -89,26 +89,12 @@ public:
     }
 
     bool forceCreateFiveFreshBufferFiles() {
-        createBufferFolder();
-        try {
-            removeAllFilesInFolder();
-        }
-        catch (const std::exception& e) {
-            std::cout << e.what() << std::endl;
-            return false;
-        }
+        createEmptyBufferFolder();
         return createFiveFreshBufferFiles();
     }
 
     bool updateBufferFiles(const std::vector<std::string> buffers) {
-        createBufferFolder();
-        try {
-            removeAllFilesInFolder();
-        }
-        catch (const std::exception& e) {
-            std::cout << e.what() << std::endl;
-            return false;
-        }
+        createEmptyBufferFolder();
         return createFiveBufferFiles(buffers);
     }
 
@@ -184,6 +170,12 @@ private:
             if (!createBufferFile(BUFFER_FOLDER + fileName)) return false;
         }
         return true;
+    }
+
+    void createEmptyBufferFolder()
+    {
+        createBufferFolder();
+        removeAllFilesInFolder();
     }
 
     void createBufferFolder() {
