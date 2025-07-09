@@ -32,7 +32,7 @@ public:
 		for_each_addr(addr) {
 			if (isError(executor->writeToSSD(addr, data))) {
 				std::cout << "[FullWrite] Error" << std::endl;
-				break;
+				return;
 			}
 		}
 
