@@ -8,7 +8,7 @@
 
 using namespace testing;
 
-class MockCommandBufferStroage : public CommandBufferStroage {
+class MockCommandBufferStroage : public CommandBufferStorage {
 public:
 	MOCK_METHOD(CmdQ_type, getBufferFromStorage, (), (override));
 	MOCK_METHOD(void, setBufferToStorage, (CmdQ_type), (override));
@@ -16,7 +16,7 @@ public:
 
 class MockCommandBuffer : public CommandBuffer {
 public:
-	MockCommandBuffer(CommandBufferStroage& storage) : CommandBuffer(storage) {}
+	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
 	void clearBuffer() { cmdQ.clear(); }
 };
