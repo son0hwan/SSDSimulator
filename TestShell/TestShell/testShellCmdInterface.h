@@ -10,6 +10,10 @@ public:
 	void setExecutor(Executor* executor) {
 		this->executor = executor;
 	}
+
+	bool isError(const std::string& result) {
+		return result == ERROR_STRING;
+	}
 protected:
 	Executor* executor;
 };

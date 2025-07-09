@@ -48,7 +48,7 @@ public:
 
 	void run() override {
 		for_each_addr(addr) {
-			if (executor->readFromSSD(addr) == ERROR_STRING)
+			if (isError(executor->readFromSSD(addr)))
 				break;
 		}
 	}
