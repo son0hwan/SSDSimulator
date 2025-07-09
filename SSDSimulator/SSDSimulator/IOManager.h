@@ -11,6 +11,7 @@ public:
     void updateOutputError();
     void updateOutputWriteSuccess();
     void updateOutputReadSuccess(uint32_t readData);
+    void updateOutputEraseSuccess();
 
     BufferFile& buffer() { return bufferFile; }
     bool forceCreateFiveFreshBufferFiles();

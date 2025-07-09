@@ -57,10 +57,12 @@ protected:
 	const std::string OUTPUT_VALID_READ = "0x705FF43A";
 	const std::string OUTPUT_ERROR = "ERROR";
 	const std::string OUTPUT_FILENAME = "ssd_output.txt";
+	const std::string OUTPUT_WRITE_SUCCESS = "";
 };
 
 TEST_F(WriteTestFixture, WriteExecutedWithoutError) {
 	EXPECT_NO_THROW(write(VALID_ADDRESS, WRITE_DATA));
+	CheckOutputFileValid(OUTPUT_WRITE_SUCCESS);
 }
 
 TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
