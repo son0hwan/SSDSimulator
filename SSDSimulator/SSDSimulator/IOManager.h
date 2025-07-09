@@ -33,7 +33,10 @@ public:
 
     void updateOutputReadSuccess(uint32_t readData) {
         auto outputFile = openFile(OUTPUT_FILE);
-        outputFile << "0x" << std::hex << std::uppercase << readData << std::endl;
+        outputFile << "0x"
+            << std::uppercase << std::hex
+            << std::setw(8) << std::setfill('0')
+            << readData << std::endl;
     }
 
     void ProgramAllDatasToNand(const std::vector<LbaEntry> & lbaTable) {
