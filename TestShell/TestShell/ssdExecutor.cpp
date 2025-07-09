@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "executor.h"
+#include "common.h"
 
 class SSDExecutor : public Executor {
     std::string readFromSSD(int address) override {

@@ -48,6 +48,9 @@
     <ClCompile Include="ssdCmdErase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="test_ssdBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="ssdCmdFlush.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

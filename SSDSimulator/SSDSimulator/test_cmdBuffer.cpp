@@ -8,15 +8,15 @@
 
 using namespace testing;
 
-class MockCommandBufferStroage : public CommandBufferStroage {
+class MockCommandBufferStroage : public CommandBufferStorage {
 public:
-	MOCK_METHOD(CmdQ_type, getBufferFromStorage, (), (override));
-	MOCK_METHOD(void, setBufferToStorage, (CmdQ_type), (override));
+	MOCK_METHOD(vector<BufferedCmdInfo*>, getBufferFromStorage, (), (override));
+	MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
 };
 
 class MockCommandBuffer : public CommandBuffer {
 public:
-	MockCommandBuffer(CommandBufferStroage& storage) : CommandBuffer(storage) {}
+	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
 	void clearBuffer() { cmdQ.clear(); }
 };
@@ -27,7 +27,7 @@ public:
 		cmdBuffer.clearBuffer();
 	}
 
-	MockCommandBufferStroage mockStorage;
+	NiceMock<MockCommandBufferStroage> mockStorage;
 	MockCommandBuffer cmdBuffer{ mockStorage };
 };
 

@@ -4,30 +4,30 @@
 #include "ssdInterface.h"
 
 using std::vector;
-typedef vector<BufferedCmdInfo*> CmdQ_type;
+typedef vector<SsdCmdInterface*>CmdQ_type;
 
-class CommandBufferStroage {
+class CommandBufferStorage {
 public:
-	virtual CmdQ_type getBufferFromStorage();
-	virtual void setBufferToStorage(CmdQ_type cmdQ);
+	virtual vector<BufferedCmdInfo*> getBufferFromStorage();
+	virtual void setBufferToStorage(vector<BufferedCmdInfo*> cmdQ);
 };
 
 class CommandBuffer {
 public:
 	static CommandBuffer& getInstance() {
-		static CommandBufferStroage storage{};
+		static CommandBufferStorage storage{};
 		static CommandBuffer instance{ storage };
 		return instance;
 	}
 
-	CommandBuffer(CommandBufferStroage& stroage);
-	vector<SsdCmdInterface*> addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
-	vector<SsdCmdInterface*> popAllBuffer();
+	CommandBuffer(CommandBufferStorage& stroage);
+	CmdQ_type  addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
+	CmdQ_type  popAllBuffer();
 
 
 protected:
-	CmdQ_type cmdQ;
-	CommandBufferStroage& storage;
+	vector<BufferedCmdInfo*> cmdQ;
+	CommandBufferStorage& storage;
 
 	static const int Q_SIZE_LIMIT_TO_FLUSH = 5;
 };

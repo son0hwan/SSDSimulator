@@ -1,9 +1,9 @@
 #include "cmdBuffer.h"
 #include "bufferedCmdInfo.h"
 
-CommandBuffer::CommandBuffer(CommandBufferStroage& stroage)
-	: storage(storage) {
-	cmdQ = storage.getBufferFromStorage();
+CommandBuffer::CommandBuffer(CommandBufferStorage& newStorage)
+	: storage(newStorage) {
+	cmdQ = newStorage.getBufferFromStorage();
 }
 
 std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
@@ -15,7 +15,9 @@ std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInter
 	}
 
 	if (false == bufferedInfo->isBufferingRequired) {
-		//
+		delete(bufferedInfo);
+		resultQ.push_back(newCmd);
+		return resultQ;
 	}
 
 	if (cmdQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
@@ -39,6 +41,6 @@ vector<SsdCmdInterface*> CommandBuffer::popAllBuffer() {
 	return resultQ;
 }
 
-CmdQ_type CommandBufferStroage::getBufferFromStorage() { return CmdQ_type{}; }
+vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() { return vector<BufferedCmdInfo*>{}; }
 
-void CommandBufferStroage::setBufferToStorage(CmdQ_type cmdQ) {}
+void CommandBufferStorage::setBufferToStorage(vector<BufferedCmdInfo*> cmdQ) {}
