@@ -13,6 +13,8 @@ struct LbaEntry {
 
 class IOManager {
 public:
+    IOManager(uint32_t maxLbaOfDevice) : maxLbaOfDevice( maxLbaOfDevice ) {}
+
     void CheckAndCreateNandDataFile() {
         if (nandDataFileExist()) return;
 
@@ -102,7 +104,7 @@ private:
 
     void FillZeroDataToAllAddresses(std::ofstream& nandDataFile)
     {
-        for (int lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; ++lba) {
+        for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
             nandDataFile << std::hex << lba;
             nandDataFile << SEPARATOR;
             nandDataFile << std::setw(8) << std::setfill('0') << INIT_NAND_DATA;
@@ -112,7 +114,7 @@ private:
 
     void FillChangeDatasToAllAddresses(std::ofstream& nandDataFile, const std::vector<LbaEntry>& lbaTable)
     {
-        for (int lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; lba++) {
+        for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
             nandDataFile << std::hex << lba;
             nandDataFile << SEPARATOR;
             nandDataFile << std::hex << std::setw(8) << std::setfill('0') << lbaTable[lba].data;
@@ -135,6 +137,7 @@ private:
     }
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
+    const uint32_t maxLbaOfDevice;
     const static uint32_t INIT_NAND_DATA = 0;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";

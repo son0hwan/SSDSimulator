@@ -76,5 +76,5 @@ private:
     const static uint32_t READ_ERROR = 0xDEADBEEF;
 
     std::vector<LbaEntry> lbaTable;
-    IOManager ioManager;
+    IOManager ioManager{ DEFAULT_MAX_LBA_OF_DEVICE };
 };
