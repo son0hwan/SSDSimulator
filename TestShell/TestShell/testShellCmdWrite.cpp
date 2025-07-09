@@ -10,8 +10,10 @@ public:
 		std::string result;
 
 		result = executor->writeToSSD(address, data);
-		if (result == ERROR_STRING)
+		if (result == ERROR_STRING) {
+			std::cout << "[Write] Error" << std::endl;
 			return;
+		}
 		std::cout << "[Write] Done" << std::endl;
 	}
 
@@ -34,9 +36,13 @@ public:
 
 		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 			result = executor->writeToSSD(addr, data);
-			if (result == ERROR_STRING)
-				break;
+			if (result == ERROR_STRING) {
+				std::cout << "[FullWrite] Error" << std::endl;
+				return;
+			}
 		}
+
+		std::cout << "[FullWrite] Done" << std::endl;
 	}
 private:
 	const unsigned data;
