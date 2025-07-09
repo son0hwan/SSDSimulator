@@ -4,5 +4,6 @@
 TestShellFlushCmd::TestShellFlushCmd() {
 }
 
-void TestShellFlushCmd::run() {
+bool TestShellFlushCmd::run() {
+	return true;
 }

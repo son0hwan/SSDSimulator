@@ -11,7 +11,7 @@ using std::vector;
 
 TestShellScript1Cmd::TestShellScript1Cmd() {}
 
-void TestShellScript1Cmd::run() {
+bool TestShellScript1Cmd::run() {
 	vector<unsigned int> values;
 	int unitCount = 5;
 	int iterationCount = NUM_OF_LBA / unitCount;
@@ -29,7 +29,7 @@ void TestShellScript1Cmd::run() {
 
 			if (executor->writeToSSD(addr, value) == ERROR_STRING) {
 				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
+				return false;
 			}
 		}
 
@@ -41,17 +41,17 @@ void TestShellScript1Cmd::run() {
 
 			if (expectedValString != actualValString) {
 				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
+				return false;
 			}
 		}
 	}
 	std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
-	return;
+	return true;
 }
 
 TestShellScript2Cmd::TestShellScript2Cmd() {}
 
-void TestShellScript2Cmd::run() {
+bool TestShellScript2Cmd::run() {
 	vector<unsigned int> values;
 	for (int i = 0; i < 30; i++) {
 		unsigned int randomVal = static_cast<unsigned int>(rand());
@@ -59,7 +59,7 @@ void TestShellScript2Cmd::run() {
 	}
 	if (values.size() != 30) {
 		std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
-		return;
+		return false;
 	}
 
 	for (int cnt = 0; cnt < 30; cnt++) {
@@ -76,7 +76,7 @@ void TestShellScript2Cmd::run() {
 			std::string compStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 			if (valStr != compStr) {
 				std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
-				return;
+				return false;
 			}
 
 			valStr = compStr;
@@ -84,12 +84,12 @@ void TestShellScript2Cmd::run() {
 	}
 
 	std::cout << "[2_PartialLBAWrite] Done" << std::endl;
-	return;
+	return true; 
 }
 
 TestShellScript3Cmd::TestShellScript3Cmd() {}
 
-void TestShellScript3Cmd::run() {
+bool TestShellScript3Cmd::run() {
 	std::string result;
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
@@ -97,29 +97,31 @@ void TestShellScript3Cmd::run() {
 
 		result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
 		if (result == ERROR_STRING)
-			return;
+			return false;
 
 		executor->readFromSSD(0);
 		std::string resStrOf0 = getFirstLineFromFile(OUTPUT_FILE_NAME);
 
 		result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
 		if (result == ERROR_STRING)
-			return;
+			return false;
 
 		executor->readFromSSD(99);
 		std::string resStrOf99 = getFirstLineFromFile(OUTPUT_FILE_NAME);
 
 		if (resStrOf0 != resStrOf99) {
 			std::cout << "[3_WriteReadAging] Fail" << std::endl;
-			return;
+			return false;
 		}
 	}
 
 	std::cout << "[3_WriteReadAging] Done" << std::endl;
+	return true;
 }
 
 TestShellScript4Cmd::TestShellScript4Cmd() {
 }
 
-void TestShellScript4Cmd::run() {
+bool TestShellScript4Cmd::run() {
+	return true;
 }

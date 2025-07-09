@@ -6,25 +6,25 @@ constexpr TestShellCmdInterface* TEST_SHELL_EXIT_CMD = nullptr;
 class TestShellInvalidCmd : public TestShellCmdInterface {
 public:
 	TestShellInvalidCmd();
-	void run() override;
+	bool run() override;
 };
 
 class TestShellHelpCmd : public TestShellCmdInterface {
 public:
 	TestShellHelpCmd();
-	void run() override;
+	bool run() override;
 };
 
 class TestShellErrorCmd : public TestShellCmdInterface {
 public:
 	TestShellErrorCmd();
-	void run() override;
+	bool run() override;
 };
 
 class TestShellReadCmd : public TestShellCmdInterface {
 public:
 	TestShellReadCmd(long address);
-	void run() override;
+	bool run() override;
 
 	long getAddress();
 protected:
@@ -35,13 +35,13 @@ protected:
 class TestShellFullReadCmd : public TestShellCmdInterface {
 public:
 	TestShellFullReadCmd();
-	void run() override;
+	bool run() override;
 };
 
 class TestShellWriteCmd : public TestShellCmdInterface {
 public:
 	TestShellWriteCmd(long address, unsigned data);
-	void run() override;
+	bool run() override;
 
 	long getAddress();
 	long getData();
@@ -54,7 +54,7 @@ protected:
 class TestShellFullWriteCmd : public TestShellCmdInterface {
 public:
 	TestShellFullWriteCmd(unsigned data);
-	void run() override;
+	bool run() override;
 protected:
 	const unsigned data;
 };
@@ -63,21 +63,21 @@ protected:
 class TestShellScript1Cmd : public TestShellCmdInterface {
 public:
 	TestShellScript1Cmd();
-	void run() override;
+	bool run() override;
 };
 
 
 class TestShellScript2Cmd : public TestShellCmdInterface {
 public:
 	TestShellScript2Cmd();
-	void run() override;
+	bool run() override;
 };
 
 
 class TestShellScript3Cmd : public TestShellCmdInterface {
 public:
 	TestShellScript3Cmd();
-	void run() override;
+	bool run() override;
 private:
 	const int MAX_LOOP_COUNT = 200;
 };
@@ -86,7 +86,7 @@ private:
 class TestShellEraseCmd : public TestShellCmdInterface {
 public:
 	TestShellEraseCmd(long address, long size);
-	virtual void run() override;
+	virtual bool run() override;
 
 	long getAddress();
 	long getSize();
@@ -105,11 +105,11 @@ public:
 class TestShellScript4Cmd : public TestShellCmdInterface {
 public:
 	TestShellScript4Cmd();
-	void run() override;
+	bool run() override;
 };
 
 class TestShellFlushCmd : public TestShellCmdInterface {
 public:
 	TestShellFlushCmd();
-	void run() override;
+	bool run() override;
 };
