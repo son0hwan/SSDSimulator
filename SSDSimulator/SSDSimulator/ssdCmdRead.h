@@ -26,7 +26,5 @@ public:
         readData = cachedData;
     }
 
-    void run() override {
-        //Do not update readData
-    }
+    void run() override;
 };
