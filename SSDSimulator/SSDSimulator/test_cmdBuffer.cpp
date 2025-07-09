@@ -32,28 +32,28 @@ public:
 };
 
 TEST_F(CommandBufferFixture, addReadCmd) {
-	SsdReadCmd* cmd = &SsdReadCmd::getInstance();
-	CmdQ_type expected{ cmd };
+	SsdReadCmd cmd{};
+	CmdQ_type expected{ &cmd };
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
 
 	EXPECT_THAT(result, ContainerEq(expected));
 }
 
 TEST_F(CommandBufferFixture, addWriteCmd) {
-	SsdWriteCmd* cmd = &SsdWriteCmd::getInstance();
+	SsdWriteCmd cmd{ 0, 0x12345678 };
 	CmdQ_type expected{};
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
 
 	EXPECT_THAT(result, ContainerEq(expected));
 }
 
 TEST_F(CommandBufferFixture, addEraseCmd) {
-	SsdEraseCmd* cmd = &SsdEraseCmd::getInstance();
+	SsdEraseCmd cmd{ 0, 1 };
 	CmdQ_type expected{};
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
 
 	EXPECT_THAT(result, ContainerEq(expected));
 }

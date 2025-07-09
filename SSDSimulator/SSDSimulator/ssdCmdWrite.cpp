@@ -12,7 +12,7 @@ void SsdWriteCmd::setWriteData(uint32_t newWriteData) {
     data = newWriteData;
 }
 
-uint32_t SsdWriteCmd::getAddress() {
+uint32_t SsdWriteCmd::getAddress() const{
     return requestedAddress; 
 }
 uint32_t SsdWriteCmd::getData() const {

@@ -6,18 +6,18 @@ using namespace testing;
 
 class WriteTestFixture : public testing::Test {
 public:
-	SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
-	SsdReadCmd& readCmd = SsdReadCmd::getInstance();
+	SsdWriteCmd* writeCmd = new SsdWriteCmd();
+	SsdReadCmd* readCmd = new SsdReadCmd();
 
 	void write(uint32_t address, uint32_t data) {
-		writeCmd.setAddress(address);
-		writeCmd.setWriteData(data);
-		writeCmd.run();
+		writeCmd->setAddress(address);
+		writeCmd->setWriteData(data);
+		writeCmd->run();
 	}
 
 	void read(uint32_t address) {
-		readCmd.setAddress(address);
-		readCmd.run();
+		readCmd->setAddress(address);
+		readCmd->run();
 	}
 	
 	void verifyWriteAndRead(uint32_t address, uint32_t data) {
@@ -35,7 +35,7 @@ public:
 	}
 
 	uint32_t getReadData() {
-		return readCmd.getReadData();
+		return readCmd->getReadData();
 	}
 
 	void CheckOutputFileValid(const std::string& expectResult)

@@ -3,6 +3,9 @@
 CmdQ_type CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
   CmdQ_type resultQ;
   if (false == newCmd->isAllowBuffering()) {
+   //TBD : if buffer read and cached,  ssdBufferReadCmd(value);
+
+
     resultQ.push_back(newCmd);
     return resultQ;
   }

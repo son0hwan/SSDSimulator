@@ -3,13 +3,8 @@
 
 class SsdFlushCmd : public SsdCmdInterface {
 public:
-    static SsdFlushCmd& getInstance() {
-        static SsdFlushCmd instance;
-        return instance;
-    }
-
+    SsdFlushCmd() = default;
     void run() override;
-
     bool isAllowBuffering() override { return false; }
 
 };

@@ -1,4 +1,3 @@
-#include <random>
 #include "mockExecutor.cpp"
 #include "testShell.cpp"
 #include "shellFixture.cpp"
@@ -17,6 +16,10 @@ std::vector<std::string> generateAlphabet() {
 TEST_F(ShellFixture, ReadJustOnce) {
 	std::vector<std::string> alphabetList = generateAlphabet();
 
+	EXPECT_CALL(mockRandomGenerator, next())
+		.Times(MAX_VAL_LEN)
+		.WillRepeatedly(Return(1));
+
 	std::string EXPECTED_STR = "0x";
 	for (int i = 0; i < MAX_VAL_LEN; i++)
 		EXPECTED_STR.append(alphabetList[rand() % MAX_HEX_LENGTH]);
@@ -31,8 +34,8 @@ TEST_F(ShellFixture, ReadJustOnce) {
 }
 
 TEST_F(ShellFixture, FullRead) {
-	for (int i = 0; i < NUM_OF_LBA; i++) {
-		EXPECT_CALL(mockSSD, readFromSSD(i))
+	for_each_addr(addr) {
+		EXPECT_CALL(mockSSD, readFromSSD(addr))
 			.WillOnce(testing::Return(SUCCESS_STRING));
 	}
 

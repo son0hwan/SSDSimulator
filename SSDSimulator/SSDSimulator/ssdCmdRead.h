@@ -3,10 +3,10 @@
 
 class SsdReadCmd : public SsdCmdInterface {
 public:
-    static SsdReadCmd& getInstance() {
-        static SsdReadCmd instance;
-        return instance;
-    }
+    SsdReadCmd()
+        : requestedAddress(0), readData(0) {}
+    SsdReadCmd(uint32_t address)
+        : requestedAddress(address), readData(0) {}
 
     void run() override;
     void setAddress(uint32_t newAddress);
@@ -15,10 +15,6 @@ public:
     bool isAllowBuffering() override { return false; }
 
 private:
-    SsdReadCmd() : requestedAddress() {}
-    SsdReadCmd(const SsdReadCmd&) = delete;
-    SsdReadCmd& operator=(const SsdReadCmd&) = delete;
-
-    uint32_t requestedAddress;
-    uint32_t readData;
+    uint32_t requestedAddress{};
+    uint32_t readData{};
 };

@@ -7,18 +7,18 @@ using namespace testing;
 
 class EraseTestFixture : public testing::Test {
 public:
-	SsdEraseCmd& eraseCmd = SsdEraseCmd::getInstance();
-	SsdReadCmd& readCmd = SsdReadCmd::getInstance();
+	SsdEraseCmd* eraseCmd = new SsdEraseCmd();
+	SsdReadCmd* readCmd = new SsdReadCmd();
 
 	void erase(uint32_t address, uint32_t size) {
-		eraseCmd.setStartAddress(address);
-		eraseCmd.setEraseSize(size);
-		eraseCmd.run();
+		eraseCmd->setStartAddress(address);
+		eraseCmd->setEraseSize(size);
+		eraseCmd->run();
 	}
 
 	void read(uint32_t address) {
-		readCmd.setAddress(address);
-		readCmd.run();
+		readCmd->setAddress(address);
+		readCmd->run();
 	}
 
 	void verifyEraseAndRead(uint32_t address, uint32_t size) {
@@ -26,7 +26,7 @@ public:
 		std::vector<uint32_t> datas{};
 
 		for (uint32_t lba = address; lba <= address + size - 1; lba++) {
-			datas.push_back(readCmd.getReadData());
+			datas.push_back(readCmd->getReadData());
 			EXPECT_NO_THROW(read(address));
 			CheckOutputFileValid(EXPECT_DATA);
 		}
@@ -34,7 +34,7 @@ public:
 	}
 
 	uint32_t getReadData() {
-		return readCmd.getReadData();
+		return readCmd->getReadData();
 	}
 
 	void CheckOutputFileValid(const std::string& expectResult)

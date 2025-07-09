@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "randomGenerator.h"
 
 namespace {
 	const int SUCCESS = 0;
@@ -12,9 +13,23 @@ namespace {
 	const std::string PASS = "PASS_ON_EXE";
 	const std::string FAIL = "FAIL_ON_EXE";
 }
+	
+#define for_each_addr(addr) for (int addr = 0; addr < NUM_OF_LBA; addr++)
 
 class Executor {
 public:
+	Executor() {
+		randomGenerator = new RealRandomGenerator();
+	}
 	virtual std::string readFromSSD(int address) = 0;
 	virtual std::string writeToSSD(int address, int value) = 0;
+	
+	void setRandomGenerator(IRandomGenerator* randomGenerator) {
+		this->randomGenerator = randomGenerator;
+	}
+	unsigned int rand(void) {
+		return randomGenerator->next();
+	}
+private:
+	IRandomGenerator* randomGenerator;
 };
