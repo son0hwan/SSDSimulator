@@ -1,14 +1,15 @@
 #include "gmock/gmock.h"
 #include "stdexcept"
 #include "ssdCmdIncludes.h"
+#include <memory>
 
 using namespace testing;
 
 class SsdCmdParserFixture : public Test {
 public:
 	template <class T>
-	bool isCmdTypeOf(SsdCmdInterface* command) {
-		return (nullptr != dynamic_cast<T*>(command));
+	bool isCmdTypeOf(const std::shared_ptr<SsdCmdInterface>& command) {
+		return (nullptr != std::dynamic_pointer_cast<T>(command));
 	}
 
 	SsdCmdParser cmdParser;
@@ -17,32 +18,30 @@ public:
 
 TEST_F(SsdCmdParserFixture, EraseWithValidInput) {
 	std::vector<std::string> args = { "E", "2", "10" };
-	SsdCmdInterface* command = cmdParser.getCommand(args);
-
-	EXPECT_TRUE(nullptr != dynamic_cast<SsdEraseCmd*>(command));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	auto convertedCmd = std::dynamic_pointer_cast<SsdEraseCmd>(command);
+	EXPECT_TRUE(convertedCmd != nullptr); 
 	try {
-		SsdEraseCmd* convertedCmd = dynamic_cast<SsdEraseCmd*>(command);
 		EXPECT_EQ(2, convertedCmd->getStartAddress());
 		EXPECT_EQ(10, convertedCmd->getSize());
 	}
-	catch (std::exception e) {
+	catch (...) {
 		FAIL();
 	}
 }
 
 TEST_F(SsdCmdParserFixture, FlushCommand) {
 	std::vector<std::string> args = { "F" };
-	SsdCmdInterface* command = cmdParser.getCommand(args);
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
 	EXPECT_TRUE(isCmdTypeOf<SsdFlushCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {
 	std::vector<std::string> args = { "R", "3" };
-	SsdCmdInterface* command = cmdParser.getCommand(args);
-
-	EXPECT_TRUE(nullptr != dynamic_cast<SsdReadCmd*>(command));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	auto convertedCmd = std::dynamic_pointer_cast<SsdReadCmd>(command);
+	EXPECT_TRUE(convertedCmd != nullptr);
 	try {
-		SsdReadCmd* convertedCmd = dynamic_cast<SsdReadCmd*>(command);
 		EXPECT_EQ(3, convertedCmd->getAddress());
 	}
 	catch (std::exception& e) {
@@ -52,11 +51,10 @@ TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {
 
 TEST_F(SsdCmdParserFixture, WWithValidAddress) {
 	std::vector<std::string> args = { "W", "2", "0x00000001" };
-	SsdCmdInterface* command = cmdParser.getCommand(args);
-
-	EXPECT_TRUE(nullptr != dynamic_cast<SsdWriteCmd*>(command));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	auto convertedCmd = std::dynamic_pointer_cast<SsdWriteCmd>(command);
+	EXPECT_TRUE(convertedCmd != nullptr);
 	try {
-		SsdWriteCmd* convertedCmd = dynamic_cast<SsdWriteCmd*>(command);
 		EXPECT_EQ(2, convertedCmd->getAddress());
 		EXPECT_EQ(0x00000001, convertedCmd->getData());
 	}
@@ -67,58 +65,57 @@ TEST_F(SsdCmdParserFixture, WWithValidAddress) {
 
 TEST_F(SsdCmdParserFixture, InvalidCmd) {
 	std::vector<std::string> args = { "BBB" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, ReadWithNonAddress) {
 	std::vector<std::string> args = { "R", "BBB" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, WriteWithNonAddress) {
 	std::vector<std::string> args = { "W", "BBB", "0x00000001" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, WriteWithNonData) {
 	std::vector<std::string> args = { "W", "2", "BBB" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, ReadWithLessArg) {
 	std::vector<std::string> args = { "R" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, ReadWithManyArg) {
 	std::vector<std::string> args = { "R", "3", "BBB" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, WriteWithLessArg) {
 	std::vector<std::string> args = { "W", "2" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, WriteWithManyArg) {
 	std::vector<std::string> args = { "W", "2", "0x00000001", "BBB" };
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, NonArg) {
 	std::vector<std::string> args = {};
-	SsdCmdInterface* result = cmdParser.getCommand(args);
-	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
+	std::shared_ptr<SsdCmdInterface> command = cmdParser.getCommand(args);
+	EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(command));
 }
-
 
 TEST_F(SsdCmdParserFixture, EncodeWriteCmd) {
 	std::vector<std::string> result;
@@ -128,7 +125,6 @@ TEST_F(SsdCmdParserFixture, EncodeWriteCmd) {
 	result = cmdParser.getEncodedString(&cmd);
 	EXPECT_EQ(result, expected);
 }
-
 
 TEST_F(SsdCmdParserFixture, EncodeEraseCmd) {
 	std::vector<std::string> result;
