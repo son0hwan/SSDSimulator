@@ -1,6 +1,6 @@
 #include "gmock/gmock.h"
 #include "mockExecutor.cpp"
-#include "testShell.cpp"
+#include "shell.cpp"
 #include "shellFixture.cpp"
 
 using namespace testing;

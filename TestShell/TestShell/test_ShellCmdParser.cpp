@@ -3,10 +3,7 @@
 #include "gmock/gmock.h"
 #include "shellCmdParser.h"
 #include "stdexcept"
-#include "testShellCmdInterface.h"
-#include "testShellCmdRead.cpp"
-#include "testShellCmdWrite.cpp"
-#include "testShellCmdComplex.cpp"
+#include "testShellCmd.h"
 
 using namespace testing;
 using namespace std;

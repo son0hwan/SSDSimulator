@@ -11,36 +11,5 @@ public:
 		this->executor = executor;
 	}
 protected:
-	Executor* executor;
-};
-
-constexpr TestShellCmdInterface* TEST_SHELL_EXIT_CMD = nullptr;
-
-class TestShellInvalidCmd : public TestShellCmdInterface {
- public:
-  TestShellInvalidCmd() {}
-
-  void run() override {}
-};
-
-class TestShellHelpCmd : public TestShellCmdInterface {
- public:
-	TestShellHelpCmd() {}
-
-	void run() override {
-		std::cout << "\n [HELP]\n";
-		std::cout << " -. read [LBA] \n";
-		std::cout << " -. write [LBA] [DATA_IN_HEX] \n";
-		std::cout << " -. fullread \n";
-		std::cout << " -. fullwrite [DATA_IN_HEX] \n";
-		std::cout << " -. exit \n\n";
-	}
-};
-
-class TestShellErrorCmd : public TestShellCmdInterface {
- public:
-  TestShellErrorCmd() {}
-  void run() override {
-	  std::cout << "unknown command \n";
-  }
+	Executor* executor = nullptr;
 };
