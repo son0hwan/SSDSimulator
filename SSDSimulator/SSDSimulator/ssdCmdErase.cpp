@@ -1,4 +1,5 @@
 #include "ssdCmdErase.h"
+#include "bufferedCmdInfo.h"
 
 void SsdEraseCmd::run() {
     SsdSimulator::getInstance().erase(this->startAddress, this->eraseSize);
@@ -17,4 +18,8 @@ uint32_t SsdEraseCmd::getStartAddress() const{
 }
 uint32_t SsdEraseCmd::getSize() const {
     return eraseSize;
+}
+
+BufferedCmdInfo* SsdEraseCmd::getBufferedCmdInfo(void) {
+    return new BufferedCmdInfo(this);
 }

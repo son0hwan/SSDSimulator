@@ -1,14 +1,19 @@
 #pragma once
 #include <deque>
+#include <vector>
 #include "ssdInterface.h"
 
-using std::deque;
-typedef deque<SsdCmdInterface*> CmdQ_type;
+using std::vector;
+typedef vector<SsdCmdInterface*>CmdQ_type;
 
 class CommandBufferStorage {
 public:
-	virtual CmdQ_type getBufferFromStorage();
-	virtual void setBufferToStorage(CmdQ_type cmdQ);
+	virtual vector<BufferedCmdInfo*> getBufferFromStorage();
+	bool isValidFileName(std::string& line, int fileIdx);
+	virtual void setBufferToStorage(vector<BufferedCmdInfo*> cmdQ);
+private:
+	std::vector<std::string> splitByUnderBar(const std::string& str);
+	bool checkRemainIsEmpty(vector<std::string> fileNames, int startCheckIdx);
 };
 
 class CommandBuffer {
@@ -20,14 +25,17 @@ public:
 	}
 
 	CommandBuffer(CommandBufferStorage& stroage);
-	CmdQ_type addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
-	CmdQ_type popAllBuffer();
+	CmdQ_type  addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
+	CmdQ_type  popAllBuffer();
 
 
 protected:
-	CmdQ_type cmdQ;
+	vector<BufferedCmdInfo*> bufferingQ;
 	CommandBufferStorage& storage;
 
 	static const int Q_SIZE_LIMIT_TO_FLUSH = 5;
+
+private:
+	bool CheckBufferingCommand(BufferedCmdInfo* bufferedInfo, CmdQ_type& resultQ, SsdCmdInterface*& newCmd);
 };
 
