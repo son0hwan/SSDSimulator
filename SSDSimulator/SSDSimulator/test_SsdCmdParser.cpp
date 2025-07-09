@@ -3,6 +3,7 @@
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
 #include "ssdCmdError.h"
+#include "ssdCmdFlush.h"
 #include "ssdInterface.h"
 #include "ssdCmdParser.h"
 #include "ssdCmdErase.h"
@@ -33,6 +34,12 @@ TEST_F(SsdCmdParserFixture, EraseWithValidInput) {
     catch (std::exception e) {
         FAIL();
     }
+}
+
+TEST_F(SsdCmdParserFixture, FlushCommand) {
+    std::vector<std::string> args = { "F" };
+    SsdCmdInterface* command = cmdParser.getCommand(args);
+    EXPECT_TRUE(isCmdTypeOf<SsdFlushCmd>(command));
 }
 
 TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {

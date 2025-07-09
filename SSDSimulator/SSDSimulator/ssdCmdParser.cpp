@@ -3,6 +3,7 @@
 #include "ssdCmdWrite.h"
 #include "ssdCmdErase.h"
 #include "ssdCmdError.h"
+#include "ssdCmdFlush.h"
 #include "ssdCmdParser.h"	
 #include <string>
 #include <algorithm>
@@ -16,6 +17,7 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	if (cmd == "R") return handleReadCommand(args);
 	if (cmd == "W") return handleWriteCommand(args);
 	if (cmd == "E") return handleEraseCommand(args);
+	if (cmd == "F") return handleFlushCommand(args);
 
 	return new SsdErrorCmd();
 }
@@ -88,4 +90,10 @@ SsdCmdInterface* SsdCmdParser::getWriteCommandWithInput(const std::vector<std::s
 	writeCmd.setAddress(address);
 	writeCmd.setWriteData(value);
 	return &writeCmd;
+}
+
+SsdCmdInterface* SsdCmdParser::handleFlushCommand(const std::vector<std::string>& args)
+{
+	if (!(args.size() == NUM_OF_FLUSH_ARGS)) return new SsdErrorCmd();
+	return &SsdFlushCmd::getInstance();
 }
