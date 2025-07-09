@@ -8,89 +8,31 @@ public:
         return instance;
     }
 
-    IOManager& getIoManager() {
-        return ioManager;
-    }
+    IOManager& getIoManager();
 
-    void init() {
-        ioManager.CheckAndCreateNandDataFile();
-    }
+    void init();
 
-    uint32_t read(uint32_t address) {
-        if (!CheckAddressRange(address)) return READ_ERROR;
+    uint32_t read(uint32_t address);
 
-        LoadAllDatasFromNand();
-        uint32_t readData = ReadSpecificAddressData(address);
-        ioManager.updateOutputReadSuccess(readData);
+    void write(uint32_t address, uint32_t value);
 
-        return readData;
-    }
+    void erase(uint32_t startAddress, uint32_t eraseSize);
 
-    void write(uint32_t address, uint32_t value) {
-        if (!CheckAddressRange(address)) return;
-
-        LoadAllDatasFromNand();
-        WriteDataToSpecificAddress(address, value);
-        ioManager.ProgramAllDatasToNand(lbaTable);
-        ioManager.updateOutputWriteSuccess();
-    }
-
-    void erase(uint32_t startAddress, uint32_t eraseSize) {
-        uint32_t endAddress = startAddress + eraseSize - 1;
-        if (!CheckAddressRange(endAddress)) return;
-        if (!CheckEraseSize(eraseSize)) return;
-        LoadAllDatasFromNand();
-
-        for (uint32_t lba = startAddress; lba <= endAddress; lba++) {
-            WriteDataToSpecificAddress(lba, ZERO);
-        }
-        ioManager.ProgramAllDatasToNand(lbaTable);
-        ioManager.updateOutputWriteSuccess();
-    }
-
-    uint32_t getMaxSector() {
-        return DEFAULT_MAX_LBA_OF_DEVICE;
-    }
+    uint32_t getMaxSector();
 
 private:
     SsdSimulator() {};
     SsdSimulator(const SsdSimulator&) = delete;
     SsdSimulator& operator=(const SsdSimulator&) = delete;
 
-    bool CheckAddressRange(uint32_t address) {
-        if (address > DEFAULT_MAX_LBA_OF_DEVICE) {
-            ioManager.updateOutputError();
-            return false;
-        }
-        return true;
-    }
+    bool CheckAddressRange(uint32_t address);
+    bool CheckEraseSize(uint32_t eraseSize);
 
-    bool CheckEraseSize(uint32_t eraseSize) {
-        if (eraseSize < MIN_NUM_OF_LBA_TO_ERASE || 
-            eraseSize > MAX_NUM_OF_LBA_TO_ERASE) {
-            ioManager.updateOutputError();
-            return false;
-        }
-        return true;
-    }
+    void ClearInternalLbaTable();
+    void LoadAllDatasFromNand();
 
-    void ClearInternalLbaTable() {
-        if (!lbaTable.empty()) lbaTable.clear();
-    }
-
-    void LoadAllDatasFromNand() {
-        ClearInternalLbaTable();
-        ioManager.CheckAndCreateNandDataFile();
-        ioManager.ReadAllDatasToInternalBuffer(lbaTable);
-    }
-
-    void WriteDataToSpecificAddress(uint32_t address, uint32_t data) {
-        lbaTable[address].data = data;
-    }
-
-    uint32_t ReadSpecificAddressData(uint32_t address) const {
-        return lbaTable[address].data;
-    }
+    void WriteDataToSpecificAddress(uint32_t address, uint32_t data);
+    uint32_t ReadSpecificAddressData(uint32_t address) const;
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     const static uint32_t READ_ERROR = 0xDEADBEEF;
