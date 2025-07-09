@@ -1,8 +1,8 @@
 #include "cmdBuffer.h"
 
-CommandBuffer::CommandBuffer(CommandBufferStroage& stroage)
-	: storage(storage) {
-	cmdQ = storage.getBufferFromStorage();
+CommandBuffer::CommandBuffer(CommandBufferStorage& newStorage)
+	: storage(newStorage) {
+	cmdQ = newStorage.getBufferFromStorage();
 }
 
 CmdQ_type CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
@@ -33,6 +33,6 @@ CmdQ_type CommandBuffer::popAllBuffer() {
 	return result;
 }
 
-CmdQ_type CommandBufferStroage::getBufferFromStorage() { return CmdQ_type{}; }
+CmdQ_type CommandBufferStorage::getBufferFromStorage() { return CmdQ_type{}; }
 
-void CommandBufferStroage::setBufferToStorage(CmdQ_type cmdQ) {}
+void CommandBufferStorage::setBufferToStorage(CmdQ_type cmdQ) {}
