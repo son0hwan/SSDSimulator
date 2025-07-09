@@ -1,6 +1,7 @@
 #include "ssdInterface.h"
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
+#include "ssdCmdErase.h"
 #include "ssdCmdError.h"
 #include "ssdCmdParser.h"	
 #include <string>
@@ -14,6 +15,7 @@ SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) 
 	std::string cmd = args[0];
 	if (cmd == "R") return handleReadCommand(args);
 	if (cmd == "W") return handleWriteCommand(args);
+	if (cmd == "E") return handleEraseCommand(args);
 
 	return new SsdErrorCmd();
 }
@@ -49,6 +51,23 @@ SsdCmdInterface* SsdCmdParser::handleWriteCommand(const std::vector<std::string>
 	if (!isLbaString(args[1])) return new SsdErrorCmd();
 	if (!isHexString(args[2])) return new SsdErrorCmd();
 	return getWriteCommandWithInput(args);
+}
+
+SsdCmdInterface* SsdCmdParser::handleEraseCommand(const std::vector<std::string>& args) {
+	if (!(args.size() == NUM_OF_ERASE_ARGS)) return new SsdErrorCmd();
+	if (!isLbaString(args[1])) return new SsdErrorCmd();
+	if (!isLbaString(args[2])) return new SsdErrorCmd();
+	return getEraseCommandWithInput(args);
+}
+
+SsdCmdInterface* SsdCmdParser::getEraseCommandWithInput(const std::vector<std::string>& args) {
+	uint32_t address = std::stoul(args[1], nullptr, 10);
+	uint32_t size = std::stoul(args[2], nullptr, 10);
+
+	SsdEraseCmd& eraseCmd = SsdEraseCmd::getInstance();
+	eraseCmd.setStartAddress(address);
+	eraseCmd.setEraseSize(size);
+	return &eraseCmd;
 }
 
 bool SsdCmdParser::isHexString(const std::string& address) {

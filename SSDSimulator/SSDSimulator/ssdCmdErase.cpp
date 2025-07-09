@@ -11,3 +11,10 @@ void SsdEraseCmd::setStartAddress(uint32_t newAddress) {
 void SsdEraseCmd::setEraseSize(uint32_t eSize) {
     eraseSize = eSize;
 }
+
+uint32_t SsdEraseCmd::getStartAddress() {
+    return startAddress;
+}
+uint32_t SsdEraseCmd::getSize() const {
+    return eraseSize;
+}
