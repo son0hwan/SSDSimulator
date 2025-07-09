@@ -19,3 +19,7 @@ uint32_t SsdReadCmd::getReadData() const {
 BufferedCmdInfo* SsdReadCmd::getBufferedCmdInfo(void) {
 	return new BufferedCmdInfo(this);
 }
+
+void SsdCachedReadCmd::run(void) {
+	SsdSimulator::getInstance().getIoManager().updateOutputReadSuccess(readData);
+}
