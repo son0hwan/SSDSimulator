@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+namespace fs = std::filesystem;
+
 struct LbaEntry {
     uint32_t address;
     uint32_t data;
@@ -87,31 +89,37 @@ public:
     }
 
     bool forceCreateFiveFreshBufferFiles() {
-        std::filesystem::create_directory(BUFFER_FOLDER);
-        for (unsigned int buffer = 1; buffer <= NUM_OF_BUFFERS; buffer++) {
-            std::string fileName = std::to_string(buffer) + EMPTY_BUFFER_FILE_SUFFIX;
-            if (!createBufferFile(BUFFER_FOLDER + fileName)) return false;
+        createBufferFolder();
+        try {
+            removeAllFilesInFolder();
         }
-        return true;
+        catch (const std::exception& e) {
+            std::cout << e.what() << std::endl;
+            return false;
+        }
+        return createFiveFreshBufferFiles();
     }
 
-    bool createBufferFile(const std::string& fileName) {
-        std::ofstream file(fileName, std::ios::trunc);  // trunc: overwrite if exists
-        return file.is_open();
+    bool updateBufferFiles(const std::vector<std::string> buffers) {
+        createBufferFolder();
+        try {
+            removeAllFilesInFolder();
+        }
+        catch (const std::exception& e) {
+            std::cout << e.what() << std::endl;
+            return false;
+        }
+        return createFiveBufferFiles(buffers);
     }
 
-    std::vector<std::string> listBufferFiles() {
-        std::vector<std::string> files;
-        for (const auto& file : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
-            if (file.is_regular_file()) {
-                files.push_back(removeFolderPath(file));
+    std::vector<std::string> getBufferFileList() {
+        std::vector<std::string> buffers;
+        for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
+            if (fileName.is_regular_file()) {
+                buffers.push_back(removeFolderPathFrom(fileName));
             }
         }
-        return files;
-    }
-    
-    std::string removeFolderPath(const std::filesystem::directory_entry& file) {
-        return file.path().filename().string();
+        return buffers;
     }
 
 private:
@@ -158,6 +166,58 @@ private:
         catch (const std::exception& e) {
             std::cerr << "Fail convert string to unsigned long :";
             std::cerr << e.what() << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    bool createFiveBufferFiles(const std::vector<std::string> buffers) {
+        for (auto bufferFileName : buffers) {
+            if (!createBufferFile(BUFFER_FOLDER + bufferFileName)) return false;
+        }
+        return true;
+    }
+
+    bool createFiveFreshBufferFiles() {
+        for (unsigned int buffer = 1; buffer <= NUM_OF_BUFFERS; buffer++) {
+            std::string fileName = std::to_string(buffer) + EMPTY_BUFFER_FILE_SUFFIX;
+            if (!createBufferFile(BUFFER_FOLDER + fileName)) return false;
+        }
+        return true;
+    }
+
+    void createBufferFolder() {
+        std::filesystem::create_directory(BUFFER_FOLDER);
+    }
+
+    bool removeAllFilesInFolder() {
+        try {
+            for (const auto& entry : fs::directory_iterator(BUFFER_FOLDER)) {
+                if (entry.is_regular_file()) {
+                    fs::remove(entry.path());
+                }
+            }
+            return true;
+        }
+        catch (const fs::filesystem_error& e) {
+            std::cerr << "Error removing files: " << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool createBufferFile(const std::string& fileName) {
+        std::ofstream file(fileName, std::ios::trunc);  // trunc: overwrite if exists
+        return file.is_open();
+    }
+
+    std::string removeFolderPathFrom(const std::filesystem::directory_entry& file) {
+        return file.path().filename().string();
+    }
+
+    bool fileExists(const std::string fileName) {
+        fs::path filePath = fs::path(BUFFER_FOLDER) / fileName;
+        if (!fs::exists(filePath)) {
+            std::cerr << "File not found: " << filePath << std::endl;
             return false;
         }
         return true;
