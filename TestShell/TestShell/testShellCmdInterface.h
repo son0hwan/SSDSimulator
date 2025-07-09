@@ -44,3 +44,35 @@ class TestShellErrorCmd : public TestShellCmdInterface {
 	  std::cout << "unknown command \n";
   }
 };
+
+class TestShellEraseCmd : public TestShellCmdInterface {
+ public:
+  TestShellEraseCmd(long address, long size) : address(address), size(size) {}
+  virtual void run() override {}
+
+  long getAddress() { return address; }
+  long getSize() { return size; }
+ protected:
+  const long address;
+  const long size;
+};
+
+class TestShellEraseRangeCmd : public TestShellEraseCmd {
+ public:
+  TestShellEraseRangeCmd(long startAddress, long endAddress)
+      : TestShellEraseCmd(startAddress, (endAddress - startAddress + 1)) {}
+  long getStartAddress() { return getAddress(); }
+  long getEndAddress() { return getAddress() + getSize() - 1; }	
+};
+
+class TestShellScript4Cmd : public TestShellCmdInterface {
+ public:
+  TestShellScript4Cmd() {}
+  void run() override {}
+};
+
+class TestShellFlushCmd : public TestShellCmdInterface {
+ public:
+  TestShellFlushCmd() {}
+  void run() override {}
+};
