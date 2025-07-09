@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-class TestShellCmdInterface;
+class shellCmdInterface;
 
 class ShellCmdParser {
  public:
-  TestShellCmdInterface* getCommand(const std::vector<std::string>& args);
+  shellCmdInterface* getCommand(const std::vector<std::string>& args);
 
  private:
   static const int NUM_OF_READ_ARGS = 2;

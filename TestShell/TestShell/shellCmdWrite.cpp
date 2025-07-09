@@ -1,35 +1,38 @@
 #pragma once
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
-TestShellWriteCmd::TestShellWriteCmd(long address, unsigned data)
+ShellWriteCmd::ShellWriteCmd(long address, unsigned data)
 	: address(address), data(data) {
+	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void TestShellWriteCmd::run() {
+void ShellWriteCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	std::string result;
 
 	result = executor->writeToSSD(address, data);
 	if (result == ERROR_STRING) {
-		std::cout << "[Write] Error" << std::endl;
+		std::cout << "[Write] ERROR" << std::endl;
 		return;
 	}
 	std::cout << "[Write] Done" << std::endl;
 }
 
-long TestShellWriteCmd::getAddress() { 
+long ShellWriteCmd::getAddress() { 
 	return address; 
 }
 
-long TestShellWriteCmd::getData() {
+long ShellWriteCmd::getData() {
 	return data; 
 }
 
-TestShellFullWriteCmd::TestShellFullWriteCmd(unsigned data)
+ShellFullWriteCmd::ShellFullWriteCmd(unsigned data)
 	: data(data) {}
 
-void TestShellFullWriteCmd::run() {
+void ShellFullWriteCmd::run() {
 	std::string result;
 
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {

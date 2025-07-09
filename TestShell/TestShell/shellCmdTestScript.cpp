@@ -4,14 +4,14 @@
 #include <fstream>
 #include <vector>
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
 using std::vector;
 
-TestShellScript1Cmd::TestShellScript1Cmd() {}
+ShellScript1Cmd::ShellScript1Cmd() {}
 
-void TestShellScript1Cmd::run() {
+void ShellScript1Cmd::run() {
 	vector<unsigned int> values;
 	int unitCount = 5;
 	int iterationCount = NUM_OF_LBA / unitCount;
@@ -49,9 +49,9 @@ void TestShellScript1Cmd::run() {
 	return;
 }
 
-TestShellScript2Cmd::TestShellScript2Cmd() {}
+ShellScript2Cmd::ShellScript2Cmd() {}
 
-void TestShellScript2Cmd::run() {
+void ShellScript2Cmd::run() {
 	vector<unsigned int> values;
 	for (int i = 0; i < 30; i++) {
 		unsigned int randomVal = static_cast<unsigned int>(rand());
@@ -87,9 +87,9 @@ void TestShellScript2Cmd::run() {
 	return;
 }
 
-TestShellScript3Cmd::TestShellScript3Cmd() {}
+ShellScript3Cmd::ShellScript3Cmd() {}
 
-void TestShellScript3Cmd::run() {
+void ShellScript3Cmd::run() {
 	std::string result;
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
@@ -118,8 +118,8 @@ void TestShellScript3Cmd::run() {
 	std::cout << "[3_WriteReadAging] Done" << std::endl;
 }
 
-TestShellScript4Cmd::TestShellScript4Cmd() {
+ShellScript4Cmd::ShellScript4Cmd() {
 }
 
-void TestShellScript4Cmd::run() {
+void ShellScript4Cmd::run() {
 }

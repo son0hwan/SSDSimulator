@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
 static void printReadInfo(long address, unsigned int value)
@@ -16,14 +16,18 @@ static void printReadInfo(long address, unsigned int value)
 		<< std::endl;
 }
 
-TestShellReadCmd::TestShellReadCmd(long address) : address{ address } {}
+ShellReadCmd::ShellReadCmd(long address) : address{ address } {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void TestShellReadCmd::run() {
+void ShellReadCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	executor->readFromSSD(address);
 
 	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 	if (hexStr._Equal("ERROR")) {
-		std::cout << "[Read] ERROR";
+		std::cout << "[Read] ERROR\n";
 		return;
 	}
 
@@ -31,13 +35,13 @@ void TestShellReadCmd::run() {
 	printReadInfo(address, value);
 }
 
-long TestShellReadCmd::getAddress() { 
+long ShellReadCmd::getAddress() { 
 	return address; 
 }
 
-TestShellFullReadCmd::TestShellFullReadCmd() {}
+ShellFullReadCmd::ShellFullReadCmd() {}
 
-void TestShellFullReadCmd::run() {
+void ShellFullReadCmd::run() {
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {

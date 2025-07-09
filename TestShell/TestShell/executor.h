@@ -11,6 +11,7 @@ public:
 	}
 	virtual std::string readFromSSD(int address) = 0;
 	virtual std::string writeToSSD(int address, int value) = 0;
+	virtual std::string eraseToSSD(int address, int size) = 0;
 	
 	void setRandomGenerator(IRandomGenerator* randomGenerator) {
 		this->randomGenerator = randomGenerator;
