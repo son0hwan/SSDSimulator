@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iomanip>
 
-struct ReadRawData {
+struct LbaEntry {
     uint32_t address;
     uint32_t data;
 };
@@ -34,25 +34,25 @@ public:
         outputFile << "0x" << std::hex << std::uppercase << readData << std::endl;
     }
 
-    void ProgramAllDatasToNand(const std::vector<ReadRawData> &readRawData) {
+    void ProgramAllDatasToNand(const std::vector<LbaEntry> & lbaTable) {
         auto nandDataFile = openFile(NAND_DATA_FILE);
-        FillChangeDatasToAllAddresses(nandDataFile, readRawData);
+        FillChangeDatasToAllAddresses(nandDataFile, lbaTable);
     }
 
-    void ReadAllDatasToInternalBuffer(std::vector<ReadRawData>& readRawData)
+    void ReadAllDatasToInternalBuffer(std::vector<LbaEntry>& lbaTable)
     {
         std::ifstream file(NAND_DATA_FILE);
         std::string line;
         while (std::getline(file, line)) {
             if (line.empty()) continue;
 
-            ReadRawData splitDatas;
+            LbaEntry splitDatas;
             if (false == SplitStringToAddressAndData(line, &splitDatas)) continue;
-            readRawData.push_back({ splitDatas.address, splitDatas.data });
+            lbaTable.push_back({ splitDatas.address, splitDatas.data });
         }
     }
 
-    bool SplitStringToAddressAndData(std::string& line, ReadRawData* splitDatas)
+    bool SplitStringToAddressAndData(std::string& line, LbaEntry* splitDatas)
     {
         std::string addrStr, dataStr;
         size_t delimiterPos = line.find(SEPARATOR.c_str());
@@ -69,7 +69,7 @@ public:
     {
         std::ifstream file(NAND_DATA_FILE);
         if (!file) {
-            std::vector<ReadRawData> readDatas{};
+            std::vector<LbaEntry> readDatas{};
             uint32_t initAddress = 0x705FF427;
             for (uint32_t lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; ++lba) {
                 readDatas.push_back({ lba, initAddress++ });
@@ -110,17 +110,17 @@ private:
         }
     }
 
-    void FillChangeDatasToAllAddresses(std::ofstream& nandDataFile, const std::vector<ReadRawData>& readRawData)
+    void FillChangeDatasToAllAddresses(std::ofstream& nandDataFile, const std::vector<LbaEntry>& lbaTable)
     {
         for (int lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; lba++) {
             nandDataFile << std::hex << lba;
             nandDataFile << SEPARATOR;
-            nandDataFile << std::hex << std::setw(8) << std::setfill('0') << readRawData[lba].data;
+            nandDataFile << std::hex << std::setw(8) << std::setfill('0') << lbaTable[lba].data;
             nandDataFile << std::endl;
         }
     }
 
-    bool SuccessConvertToUINT(ReadRawData* splitDatas, std::string& addrStr, std::string& dataStr)
+    bool SuccessConvertToUINT(LbaEntry* splitDatas, std::string& addrStr, std::string& dataStr)
     {
         try {
             (*splitDatas).address = std::stoul(addrStr, nullptr, 16);

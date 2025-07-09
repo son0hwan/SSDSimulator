@@ -21,7 +21,7 @@ public:
 
         LoadAllDatasFromNand();
         WriteDataToSpecificAddress(address, value);
-        ioManager.ProgramAllDatasToNand(readRawData);
+        ioManager.ProgramAllDatasToNand(lbaTable);
         ioManager.updateOutputWriteSuccess();
     }
 
@@ -54,27 +54,27 @@ private:
         return true;
     }
 
-    void ClearBuffer() {
-        if (!readRawData.empty()) readRawData.clear();
+    void ClearInternalLbaTable() {
+        if (!lbaTable.empty()) lbaTable.clear();
     }
 
     void LoadAllDatasFromNand() {
-        ClearBuffer();
+        ClearInternalLbaTable();
         ioManager.CheckAndCreateNandDataFile();
-        ioManager.ReadAllDatasToInternalBuffer(readRawData);
+        ioManager.ReadAllDatasToInternalBuffer(lbaTable);
     }
 
     void WriteDataToSpecificAddress(uint32_t address, uint32_t data) {
-        readRawData[address].data = data;
+        lbaTable[address].data = data;
     }
 
     uint32_t ReadSpecificAddressData(uint32_t address) const {
-        return readRawData[address].data;
+        return lbaTable[address].data;
     }
 
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     const static uint32_t READ_ERROR = 0xDEADBEEF;
 
-    std::vector<ReadRawData> readRawData;
+    std::vector<LbaEntry> lbaTable;
     IOManager ioManager;
 };
