@@ -41,10 +41,8 @@ public:
         // Temporary code to pass UT; will be gone once parser code is in place
         uint32_t endAddress = startAddress + eraseSize - 1;
         if (!CheckAddressRange(endAddress)) return;
-        if (eraseSize < 1 || eraseSize > 10) {
-            ioManager.updateOutputError();
-            return;
-        }
+        if (!CheckEraseSize(eraseSize)) return;
+
         LoadAllDatasFromNand();
 
         for (uint32_t lba = startAddress; lba <= endAddress; lba++) {
@@ -52,6 +50,15 @@ public:
         }
         ioManager.ProgramAllDatasToNand(readRawData);
         ioManager.updateOutputWriteSuccess();
+    }
+
+    bool CheckEraseSize(uint32_t eraseSize)
+    {
+        if (eraseSize < ERASE_MIN_SIZE || eraseSize > ERASE_MAX_SIZE) {
+            ioManager.updateOutputError();
+            return false;
+        }
+        return true;
     }
 
     uint32_t getMaxSector() {
@@ -92,6 +99,8 @@ private:
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     const static uint32_t READ_ERROR = 0xDEADBEEF;
     const static uint32_t ZERO = 0x00000000;
+    const static uint32_t ERASE_MIN_SIZE = 1;
+    const static uint32_t ERASE_MAX_SIZE = 10;
 
     std::vector<ReadRawData> readRawData;
     IOManager ioManager;
