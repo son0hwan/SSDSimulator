@@ -1,0 +1,132 @@
+name: Build and Run Integration Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-driver:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages for SSDSimulator
+      run: nuget restore SSDSimulator/SSDSimulator.sln
+
+    - name: Build SSDSimulator (Release)
+      run: msbuild SSDSimulator/SSDSimulator.sln /p:Configuration=Release
+
+    - name: Upload ssd.exe
+      uses: actions/upload-artifact@v4
+      with:
+        name: ssd_exe
+        path: SSDSimulator/x64/Release/ssd.exe
+
+  build-shell:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages for TestShell
+      run: nuget restore TestShell/TestShell.sln
+
+    - name: Build TestShell (Release)
+      run: msbuild TestShell/TestShell.sln /p:Configuration=Release
+
+    - name: Upload TestShel.exe
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestShell_exe
+        path: TestShell/x64/Release/TestShell.exe
+
+  integration-test:
+    runs-on: windows-latest
+    needs: [build-driver, build-shell]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download ssd.exe
+      uses: actions/download-artifact@v4
+      with:
+        name: ssd_exe
+        path: SSDSimulator/x64/Release/
+
+    - name: Download TestShell.exe
+      uses: actions/download-artifact@v4
+      with:
+        name: TestShell_exe
+        path: TestShell/x64/Release/
+
+    - name: Run TestShell with test input
+      shell: pwsh
+      run: |
+        "write 0 0x00000001" | Out-File -Encoding ASCII -FilePath input.txt
+        "read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "fullwrite 0x00000002" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "fullread" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "erase 0 10" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "exit" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        $workDir = "$(Resolve-Path 'SSD_TestShell/x64/Release')"
+        $exePath = "$workDir\SSD_TestShell.exe"
+        $inputPath = "$(Resolve-Path 'input.txt')"
+        $outputPath = "$workDir\output.txt"
+
+        $process = Start-Process -FilePath $exePath `
+                                 -WorkingDirectory $workDir `
+                                 -RedirectStandardInput $inputPath `
+                                 -RedirectStandardOutput $outputPath `
+                                 -NoNewWindow -Wait -PassThru
+
+        $output = Get-Content $outputPath
+        Write-Output $output
+
+        $outputStr = $output -join "`n"
+
+        if ($outputStr -match "file open fail" -or $process.ExitCode -ne 0) {
+          Write-Error "Integration test failed. Detected 'file open fail' or non-zero exit code."
+          exit 1
+        }
+
+        if ($outputStr -notmatch "\[Read\] LBA 00\s*:\s*0x00000001") {
+          Write-Error "Expected value 0x00000001 not found in read output"
+          exit 1
+        }
+
+        if ($outputStr -notmatch "(?s)\[Full Read\]\s*LBA 00\s*:\s*0x00000002") {
+          Write-Error "Expected value 0x00000002 not found in fullread output"
+          exit 1
+        }
+
+        if ($outputStr -notmatch "\[Write\]\s*Done") {
+          Write-Error "Expected '[Write] Done' message not found."
+          exit 1
+        }
+
+        if ($outputStr -notmatch "\[Full Write\]\s*Done") {
+          Write-Error "Expected '[Full Write] Done' message not found."
+        }
+
+        if ($outputStr -notmatch "\[Erase\]\s*Done") {
+          Write-Error "Expected value 0x00000001 not found in read output"
+          exit 1
+        }
+
+        if ($outputStr -notmatch "\[Read\] LBA 00\s*:\s*0x00000000") {
+          Write-Error "Expected value 0x00000001 not found in read output"
+          exit 1
+        }
