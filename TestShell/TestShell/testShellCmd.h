@@ -1,5 +1,6 @@
 #pragma once
 #include "testShellCmdInterface.h"
+#include <vector>
 
 constexpr TestShellCmdInterface* TEST_SHELL_EXIT_CMD = nullptr;
 
@@ -64,6 +65,12 @@ class TestShellScript1Cmd : public TestShellCmdInterface {
 public:
 	TestShellScript1Cmd();
 	void run() override;
+	int writeFiveTimesFromIdx(unsigned int value, int startIdx);
+	int readFiveTimesFromIdx(std::vector<unsigned int>& values, int startIdx);
+	int checkValueIsSame(unsigned int writeValue, const std::vector<unsigned int>& readValues);
+private:
+	int unitCount = 5;
+	int iterationCount = NUM_OF_LBA / unitCount;
 };
 
 

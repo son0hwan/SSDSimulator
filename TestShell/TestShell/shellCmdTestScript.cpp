@@ -11,38 +11,55 @@ using std::vector;
 
 TestShellScript1Cmd::TestShellScript1Cmd() {}
 
+int TestShellScript1Cmd::writeFiveTimesFromIdx(unsigned int value, int startIdx) {
+	for (int i = 0; i < unitCount; i++) {
+		int addr = startIdx + unitCount;
+		if (executor->writeToSSDWithResult(addr, value))
+			return ERROR;
+	}
+	return SUCCESS;
+}
+
+int TestShellScript1Cmd::readFiveTimesFromIdx(vector<unsigned int>& values, int startIdx) {
+	for (int i = 0; i < unitCount; i++) {
+		int addr = startIdx + unitCount;
+		unsigned int value;
+		if (executor->readFromSSDWithResult(addr, &value))
+			return ERROR;
+
+		values.emplace_back(value);
+	}
+	return SUCCESS;
+}
+
+int TestShellScript1Cmd::checkValueIsSame(unsigned int writeValue, const vector<unsigned int>& readValues) {
+	for (int i = 0; i < unitCount; i++) {
+		if (writeValue != readValues.at(i))
+			return ERROR;
+	}
+	return SUCCESS;
+}
+
 void TestShellScript1Cmd::run() {
-	vector<unsigned int> values;
-	int unitCount = 5;
-	int iterationCount = NUM_OF_LBA / unitCount;
-
 	for (int idx = 0; idx < iterationCount; idx++) {
-		values.emplace_back(rand());
-	}
+		unsigned int writeValue = rand();
+		vector<unsigned int> readValues;
 
-	for (int idx = 0; idx < values.size(); idx++) {
-		int startIdx = idx * 5;
-		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
-			int addr = startIdx + unitIdx;
-			unsigned int value = values.at(idx);
-
-			if (executor->writeToSSDWithResult(addr, value)) {
-				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
-			}
+		if (writeFiveTimesFromIdx(writeValue, idx * unitCount)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return;
 		}
-
-		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
-			int addr = startIdx + unitIdx;
-			unsigned int value;
-			if (executor->readFromSSDWithResult(addr, &value)) {
-				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
-			}
+		if (readFiveTimesFromIdx(readValues, idx * unitCount)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return;
 		}
+		if (checkValueIsSame(writeValue, readValues)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return;
+		}
+		std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
+		return;
 	}
-	std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
-	return;
 }
 
 TestShellScript2Cmd::TestShellScript2Cmd() {}
