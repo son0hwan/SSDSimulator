@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="executor.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="randomGenerator.h" />
     <ClCompile Include="shellCmdParser.cpp" />
     <ClCompile Include="ssdExecutor.cpp" />
     <ClCompile Include="mockExecutor.cpp" />

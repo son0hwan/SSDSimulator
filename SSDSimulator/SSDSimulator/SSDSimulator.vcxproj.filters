@@ -42,12 +42,6 @@
     <ClCompile Include="test_ssdCmdWrite.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="test_ssdCmdErase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -55,6 +49,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="test_ssdBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ssdCmdFlush.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,6 +78,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="IOManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ssdCmdFlush.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ssdCmdIncludes.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

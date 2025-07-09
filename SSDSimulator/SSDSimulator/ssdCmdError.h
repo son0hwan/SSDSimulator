@@ -3,6 +3,7 @@
 #include "ssdSimulator.h"
 
 class SsdErrorCmd : public SsdCmdInterface {
-public:
-    void run() override;
+ public:
+  void run() override;
+  bool isAllowBuffering() override { return false; }
 };

@@ -10,7 +10,7 @@ using namespace testing;
 
 class ReadTestFixture : public Test {
 public:
-    SsdReadCmd& readCmd = SsdReadCmd::getInstance();
+    SsdReadCmd readCmd;
     void runReadTest(uint32_t address) {
         readCmd.setAddress(address);
         readCmd.run();
