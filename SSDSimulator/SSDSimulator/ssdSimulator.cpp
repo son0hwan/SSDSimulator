@@ -39,7 +39,7 @@ void SsdSimulator::erase(uint32_t startAddress, uint32_t eraseSize) {
 		WriteDataToSpecificAddress(lba, ZERO);
 	}
 	ioManager.ProgramAllDatasToNand(lbaTable);
-	ioManager.updateOutputWriteSuccess();
+	ioManager.updateOutputEraseSuccess();
 }
 
 uint32_t SsdSimulator::getMaxSector() {
