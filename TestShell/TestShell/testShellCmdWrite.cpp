@@ -38,7 +38,7 @@ public:
 			result = executor->writeToSSD(addr, data);
 			if (result == ERROR_STRING) {
 				std::cout << "[FullWrite] Error" << std::endl;
-				break;
+				return;
 			}
 		}
 
