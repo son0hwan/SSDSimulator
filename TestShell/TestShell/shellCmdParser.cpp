@@ -43,7 +43,6 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
     return new TestShellScript4Cmd{};
   }
 
-
   return new TestShellErrorCmd();
 }
 
