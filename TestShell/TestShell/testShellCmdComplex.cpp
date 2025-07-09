@@ -14,8 +14,7 @@ public:
 		int iterationCount = NUM_OF_LBA / unitCount;
 
 		for (int idx = 0; idx < iterationCount; idx++) {
-			unsigned int randomVal = static_cast<unsigned int>(rand());
-			values.emplace_back(randomVal);
+			values.emplace_back(rand());
 		}
 
 		for (int idx = 0; idx < values.size(); idx++) {
@@ -24,7 +23,7 @@ public:
 				int addr = startIdx + unitIdx;
 				unsigned int value = values.at(idx);
 
-				if (executor->writeToSSD(addr, value) == ERROR_STRING) {
+				if (isError(executor->writeToSSD(addr, value))) {
 					std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
 					return;
 				}
@@ -75,8 +74,7 @@ public:
 	void run() override {
 		vector<unsigned int> values;
 		for (int i = 0; i < 30; i++) {
-			unsigned int randomVal = static_cast<unsigned int>(rand());
-			values.emplace_back(randomVal);
+			values.emplace_back(rand());
 		}
 		if (values.size() != 30) {
 			std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
@@ -145,23 +143,21 @@ public:
 	}
 
 	void run() override {
-		std::string result;
 		std::vector<std::string> alphabetList = generateAlphabet();
 
 		for (int i = 0; i < 200; i++) {
 			std::string EXPECTED_STR = "0x";
-			for (int i = 0; i < MAX_VAL_LEN; i++)
+			for (int j = 0; j < MAX_VAL_LEN; j++)
 				EXPECTED_STR.append(alphabetList[rand() % MAX_HEX_LENGTH]);
 
-			result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
-			if (result == ERROR_STRING)
+			if (isError(executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16))))
 				return;
 
 			executor->readFromSSD(0);
 			std::string resStrOf0 = readOutputFile();
 
-			result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
-			if (result == ERROR_STRING)
+			if (isError(executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16))))
+
 				return;
 
 			executor->readFromSSD(99);

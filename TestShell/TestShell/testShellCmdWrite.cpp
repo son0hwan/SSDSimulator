@@ -7,10 +7,7 @@ public:
 	}
 
 	void run() override {
-		std::string result;
-
-		result = executor->writeToSSD(address, data);
-		if (result == ERROR_STRING) {
+		if (isError(executor->writeToSSD(address, data))) {
 			std::cout << "[Write] Error" << std::endl;
 			return;
 		}
@@ -32,11 +29,8 @@ public:
 	}
 
 	void run() override {
-		std::string result;
-
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-			result = executor->writeToSSD(addr, data);
-			if (result == ERROR_STRING) {
+		for_each_addr(addr) {
+			if (isError(executor->writeToSSD(addr, data))) {
 				std::cout << "[FullWrite] Error" << std::endl;
 				return;
 			}

@@ -55,9 +55,8 @@ public:
 
 	void run() override {
 		std::cout << "[Full Read] \n";
-		
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-			if (executor->readFromSSD(addr) == ERROR_STRING)
+		for_each_addr(addr) {
+			if (isError(executor->readFromSSD(addr)))
 				return;
 			readOutputFile(addr);
 		}
