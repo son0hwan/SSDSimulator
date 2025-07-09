@@ -1,26 +1,22 @@
 #pragma once
-#pragma once
 #include "ssdInterface.h"
 #include "ssdSimulator.h"
 
 class SsdEraseCmd : public SsdCmdInterface {
 public:
-    static SsdEraseCmd& getInstance() {
-        static SsdEraseCmd instance;
-        return instance;
-    }
+    SsdEraseCmd()
+        : startAddress(0), eraseSize(0) {}
+
+    SsdEraseCmd(uint32_t address, uint32_t size)
+        : startAddress(address), eraseSize(size) {}
 
     void run() override;
     void setStartAddress(uint32_t newAddress);
     void setEraseSize(uint32_t eSize);
-    uint32_t getStartAddress();
+    uint32_t getStartAddress() const;
     uint32_t getSize() const;
 
 private:
-    SsdEraseCmd() : startAddress() {}
-    SsdEraseCmd(const SsdEraseCmd&) = delete;
-    SsdEraseCmd& operator=(const SsdEraseCmd&) = delete;
-
-    uint32_t startAddress = 0;
-    uint32_t eraseSize = 0;
+    uint32_t startAddress;
+    uint32_t eraseSize;
 };

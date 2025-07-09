@@ -1,18 +1,15 @@
 #include <string>
 #include <vector>
-
 #include "gmock/gmock.h"
 #include "ssdCmdParser.h"
 #include "ssdInterface.h"
-#ifdef _DEBUG
 
+#ifdef _DEBUG
 int main() {
   ::testing::InitGoogleMock();
   return RUN_ALL_TESTS();
 }
-
 #else
-
 using std::string;
 using std::vector;
 
