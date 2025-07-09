@@ -38,10 +38,7 @@ public:
     void erase(uint32_t startAddress, uint32_t eraseSize) {
         uint32_t endAddress = startAddress + eraseSize - 1;
         if (!CheckAddressRange(endAddress)) return;
-        if (eraseSize < 1 || eraseSize > 10) {
-            ioManager.updateOutputError();
-            return;
-        }
+        if (!CheckEraseSize(eraseSize)) return;
         LoadAllDatasFromNand();
 
         for (uint32_t lba = startAddress; lba <= endAddress; lba++) {
@@ -62,6 +59,15 @@ private:
 
     bool CheckAddressRange(uint32_t address) {
         if (address > DEFAULT_MAX_LBA_OF_DEVICE) {
+            ioManager.updateOutputError();
+            return false;
+        }
+        return true;
+    }
+
+    bool CheckEraseSize(uint32_t eraseSize) {
+        if (eraseSize < MIN_NUM_OF_LBA_TO_ERASE || 
+            eraseSize > MAX_NUM_OF_LBA_TO_ERASE) {
             ioManager.updateOutputError();
             return false;
         }
@@ -89,6 +95,8 @@ private:
     const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     const static uint32_t READ_ERROR = 0xDEADBEEF;
     const static uint32_t ZERO = 0x00000000;
+    const static uint32_t MIN_NUM_OF_LBA_TO_ERASE = 1;
+    const static uint32_t MAX_NUM_OF_LBA_TO_ERASE = 10;
 
     std::vector<LbaEntry> lbaTable;
     IOManager ioManager{ DEFAULT_MAX_LBA_OF_DEVICE };
