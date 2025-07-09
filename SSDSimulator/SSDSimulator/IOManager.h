@@ -1,15 +1,5 @@
 #pragma once
-#include <direct.h>
-#include <errno.h>
-#include <sys/types.h>
-
-#include <cstdint>
-#include <filesystem>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <string>
-#include <vector>
+#include "outputFile.h"
 
 namespace fs = std::filesystem;
 
@@ -22,10 +12,15 @@ class IOManager {
 public:
     IOManager(uint32_t maxLbaOfDevice) : maxLbaOfDevice(maxLbaOfDevice) {}
 
-    void CheckAndCreateNandDataFile();
+    OutputFile& output() { return outputFile; }
+#if 1 /*Output-related functions <-- Need to be gone later*/
     void updateOutputError();
     void updateOutputWriteSuccess();
     void updateOutputReadSuccess(uint32_t readData);
+    // OpenFile 
+#endif
+
+    void CheckAndCreateNandDataFile();
     void ProgramAllDatasToNand(const std::vector<LbaEntry>& lbaTable);
     void ReadAllDatasToInternalBuffer(std::vector<LbaEntry>& lbaTable);
     bool SplitStringToAddressAndData(std::string& line, LbaEntry* splitDatas);
@@ -37,6 +32,8 @@ public:
     std::vector<std::string> getBufferFileList();
 
 private:
+    OutputFile outputFile;
+
     bool nandDataFileExist();
     std::ofstream openFile(const std::string& filename);
     void FillZeroDataToAllAddresses(std::ofstream& nandDataFile);
@@ -58,8 +55,6 @@ private:
     const static uint32_t INIT_NAND_DATA = 0;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";
-    const std::string OUTPUT_FILE = "ssd_output.txt";
-    const std::string OUTPUT_ERROR = "ERROR";
     const std::string SEPARATOR = ";";
 
     static const uint32_t NUM_OF_BUFFERS = 5;

@@ -8,18 +8,15 @@ void IOManager::CheckAndCreateNandDataFile() {
 }
 
 void IOManager::updateOutputError() {
-    auto outputFile = openFile(OUTPUT_FILE);
-    outputFile << OUTPUT_ERROR;
+    output().updateOutputError();
 }
 
 void IOManager::updateOutputWriteSuccess() {
-    auto outputFile = openFile(OUTPUT_FILE);
+    output().updateOutputWriteSuccess();
 }
 
 void IOManager::updateOutputReadSuccess(uint32_t readData) {
-    auto outputFile = openFile(OUTPUT_FILE);
-    outputFile << "0x" << std::uppercase << std::hex << std::setw(8)
-        << std::setfill('0') << readData << std::endl;
+    output().updateOutputReadSuccess(readData);
 }
 
 void IOManager::ProgramAllDatasToNand(const std::vector<LbaEntry>& lbaTable) {
