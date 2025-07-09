@@ -23,7 +23,7 @@ std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInter
 	bufferingQ.push_back(bufferedInfo);
 	// need change buffer file name
 
-	//storage.setBufferToStorage(cmdQ);
+	storage.setBufferToStorage(bufferingQ);
 	return outstandingQ;
 }
 
@@ -108,4 +108,25 @@ std::vector<std::string> CommandBufferStorage::splitByUnderBar(const std::string
 	return results;
 }
 
-void CommandBufferStorage::setBufferToStorage(vector<BufferedCmdInfo*> cmdQ) {}
+void CommandBufferStorage::setBufferToStorage(vector<BufferedCmdInfo*> cmdQ) {
+	SsdCmdParser parser;
+	std::vector<std::string> buffer;
+
+	uint32_t index = 1;
+	for (auto cmd : cmdQ) {
+		std::vector<std::string> cmdInfo = parser.getEncodedString(cmd->getCmd());
+		if (cmdInfo.empty()) {
+			throw std::exception("improper command info in cmd Q");
+		}
+		std::string fileName = "";
+		std::string indexStr = std::to_string(index);
+		index++;
+
+		fileName += indexStr + "_" + cmdInfo[0] + "_" + cmdInfo[1] + "_" + cmdInfo[2];
+		buffer.push_back(fileName);
+	}
+
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector()};
+	ioManager.buffer().updateBufferFiles(buffer);
+
+}

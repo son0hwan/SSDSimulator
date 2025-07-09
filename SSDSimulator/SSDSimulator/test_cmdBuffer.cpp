@@ -11,7 +11,7 @@ using namespace testing;
 class MockCommandBufferStroage : public CommandBufferStorage {
 public:
 	MOCK_METHOD(vector<BufferedCmdInfo*>, getBufferFromStorage, (), (override));
-	MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
+	//MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
 };
 
 class MockCommandBuffer : public CommandBuffer {
@@ -75,4 +75,28 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 
 	CmdQ_type expected{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
 	EXPECT_THAT(result, ContainerEq(expected));
+}
+
+TEST_F(CommandBufferFixture, BufferFileUpdatedToReflectCommands) {
+	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
+	SsdWriteCmd cmd2{ 1, 0xDEADDEAD };
+	SsdWriteCmd cmd3{ 2, 0xABBAABBA };
+	SsdWriteCmd cmd4{ 3, 0xAAAABBBB};
+	SsdWriteCmd cmd5{ 4, 0x00011112 };
+
+	std::vector<std::string> expected = { "1_W_0_0xBEEFBEEF", "2_W_1_0xDEADDEAD", "3_W_2_0xABBAABBA",  "4_W_3_0xAAAABBBB",  "5_W_4_0x00011112", };
+
+	std::vector<BufferedCmdInfo*> v;
+	v.push_back(cmd1.getBufferedCmdInfo());
+	v.push_back(cmd2.getBufferedCmdInfo());
+	v.push_back(cmd3.getBufferedCmdInfo());
+	v.push_back(cmd4.getBufferedCmdInfo());
+	v.push_back(cmd5.getBufferedCmdInfo());
+
+	mockStorage.setBufferToStorage(v);
+
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+	std::vector<std::string> actual = ioManager.getBufferFileList();
+
+	EXPECT_EQ(expected, actual);
 }
