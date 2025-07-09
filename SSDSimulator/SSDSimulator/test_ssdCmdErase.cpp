@@ -27,8 +27,9 @@ public:
 
 		for (uint32_t lba = address; lba <= address + size - 1; lba++) {
 			datas.push_back(readCmd.getReadData());
+			EXPECT_NO_THROW(read(address));
+			CheckOutputFileValid(EXPECT_DATA);
 		}
-		EXPECT_NO_THROW(read(address));
 		EXPECT_EQ(datas, expectDatas);
 	}
 
@@ -56,6 +57,7 @@ protected:
 	static const uint32_t ERASE_SIZE = 10;
 	const std::string OUTPUT_ERROR = "ERROR";
 	const std::string OUTPUT_FILENAME = "ssd_output.txt";
+	const std::string EXPECT_DATA = "0x00000000";
 };
 
 TEST_F(EraseTestFixture, EraseExecutedWithoutError) {
