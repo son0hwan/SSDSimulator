@@ -16,6 +16,7 @@ using std::vector;
 int main(int argc, char* argv[]) {
   SsdCmdParser parser;
   auto command = parser.getCommand({argv + 1, argv + argc});
+  
   command->run();
 }
 #endif

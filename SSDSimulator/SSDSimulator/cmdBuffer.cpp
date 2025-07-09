@@ -10,11 +10,13 @@ CmdQ_type CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
     return resultQ;
   }
 
+  if (cmdQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
+      resultQ = popAllBuffer();
+  }
+
   cmdQ.push_back(newCmd);
 
-  if (cmdQ.size() > Q_SIZE_LIMIT_TO_FLUSH) {
-    resultQ = popAllBuffer();
-  }
+
 
   //storage.setBufferToStorage(cmdQ);
   return resultQ;
