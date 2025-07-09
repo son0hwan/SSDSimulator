@@ -54,11 +54,9 @@ public:
         ioManager.updateOutputWriteSuccess();
     }
 
-#ifdef _DEBUG
     uint32_t getMaxSector() {
         return DEFAULT_MAX_LBA_OF_DEVICE;
     }
-#endif
 
 private:
     SsdSimulator() {};
