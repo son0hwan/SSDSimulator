@@ -96,7 +96,9 @@ std::vector<std::string> SsdCmdParser::getWriteCommandString(SsdCmdInterface* cm
 	result.push_back("W");
 	result.push_back(std::to_string(writeCmd->getAddress()));
 
-	ss << std::hex << std::nouppercase<< std::showbase << writeCmd->getData();
+	ss << "0x"; 
+	ss << std::uppercase << std::hex << std::setw(8) << std::setfill('0') << writeCmd->getData();
+
 	result.push_back(ss.str());
 	return result;
 }
