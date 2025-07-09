@@ -12,6 +12,7 @@ public:
 
     void updateOutputWriteSuccess() {
         auto outputFile = openFile(OUTPUT_FILE);
+        outputFile << OUTPUT_WRITE_SUCCESS;
     }
 
     void updateOutputReadSuccess(uint32_t readData) {
@@ -23,6 +24,7 @@ public:
 private:
     const std::string OUTPUT_FILE = "ssd_output.txt";
     const std::string OUTPUT_ERROR = "ERROR";
+    const std::string OUTPUT_WRITE_SUCCESS = "";
 
     std::ofstream openFile(const std::string& filename) {
         std::ofstream file(filename);
