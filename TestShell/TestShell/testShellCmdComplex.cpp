@@ -153,14 +153,14 @@ public:
 			for (int i = 0; i < MAX_VAL_LEN; i++)
 				EXPECTED_STR.append(alphabetList[rand() % MAX_HEX_LENGTH]);
 
-			result = executor->writeToSSD(0, stoi(EXPECTED_STR));
+			result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
 			if (result == ERROR_STRING)
 				return;
 
 			executor->readFromSSD(0);
 			std::string resStrOf0 = readOutputFile();
 
-			result = executor->writeToSSD(99, stoi(EXPECTED_STR));
+			result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
 			if (result == ERROR_STRING)
 				return;
 

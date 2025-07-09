@@ -65,7 +65,6 @@ public:
         return SuccessConvertToUINT(splitDatas, addrStr, dataStr);
     }
 
-#ifdef _DEBUG
     void CreateNewTempNandFileAndInitForTest()
     {
         std::ifstream file(NAND_DATA_FILE);
@@ -84,7 +83,6 @@ public:
             std::remove(NAND_DATA_FILE.c_str());  // 기존 파일 삭제
         }
     }
-#endif
 
 private:
     bool nandDataFileExist() {
