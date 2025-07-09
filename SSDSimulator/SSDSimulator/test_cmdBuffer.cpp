@@ -77,7 +77,7 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	EXPECT_THAT(result, ContainerEq(expected));
 }
 
-TEST_F(CommandBufferFixture, BufferFileUpdatedToReflectCommands) {
+TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
 	SsdWriteCmd cmd2{ 1, 0xDEADDEAD };
 	SsdWriteCmd cmd3{ 2, 0xABBAABBA };
@@ -94,6 +94,35 @@ TEST_F(CommandBufferFixture, BufferFileUpdatedToReflectCommands) {
 	v.push_back(cmd5.getBufferedCmdInfo());
 
 	mockStorage.setBufferToStorage(v);
+
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+	std::vector<std::string> actual = ioManager.getBufferFileList();
+
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CommandBufferFixture, BufferFileUpdatePartiallyFullCmdQ) {
+	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
+	std::vector<std::string> expected = { "1_W_0_0xBEEFBEEF", "2_empty", "3_empty",  "4_empty",  "5_empty", };
+
+	std::vector<BufferedCmdInfo*> v;
+	v.push_back(cmd1.getBufferedCmdInfo());
+
+	CommandBufferStorage bufferStorage;
+	bufferStorage.setBufferToStorage(v);
+
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+	std::vector<std::string> actual = ioManager.getBufferFileList();
+
+	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
+	std::vector<std::string> expected = { "1_empty", "2_empty", "3_empty",  "4_empty",  "5_empty", };
+
+	std::vector<BufferedCmdInfo*> v;
+	CommandBufferStorage bufferStorage;
+	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	std::vector<std::string> actual = ioManager.getBufferFileList();
