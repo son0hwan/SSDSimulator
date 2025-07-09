@@ -10,6 +10,8 @@ class CommandBufferStorage {
 public:
 	virtual vector<BufferedCmdInfo*> getBufferFromStorage();
 	virtual void setBufferToStorage(vector<BufferedCmdInfo*> cmdQ);
+private:
+	std::vector<std::string> splitByUnderBar(const std::string& str);
 };
 
 class CommandBuffer {
