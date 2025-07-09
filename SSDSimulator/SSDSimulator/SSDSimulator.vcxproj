@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssdCmdErase.cpp" />
     <ClCompile Include="ssdCmdError.cpp" />
+    <ClCompile Include="ssdCmdFlush.cpp" />
     <ClCompile Include="ssdCmdParser.cpp" />
     <ClCompile Include="ssdCmdRead.cpp" />
     <ClCompile Include="ssdCmdWrite.cpp" />
@@ -142,8 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cmdBuffer.h" />
+    <ClInclude Include="IOManager.h" />
     <ClInclude Include="ssdCmdErase.h" />
     <ClInclude Include="ssdCmdError.h" />
+    <ClInclude Include="ssdCmdFlush.h" />
     <ClInclude Include="ssdCmdParser.h" />
     <ClInclude Include="ssdCmdRead.h" />
     <ClInclude Include="ssdCmdWrite.h" />

@@ -14,6 +14,8 @@ public:
     void setStartAddress(uint32_t newAddress);
     void setEraseSize(uint32_t eSize);
     bool isAllowBuffering() override { return true; }
+    uint32_t getStartAddress();
+    uint32_t getSize() const;
 
    private:
     SsdEraseCmd() : startAddress() {}
