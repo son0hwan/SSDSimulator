@@ -15,10 +15,17 @@ bool ShellWriteCmd::run() {
 
 	result = executor->writeToSSD(address, data);
 	if (result == ERROR_STRING) {
-		std::cout << "[Write] Error" << std::endl;
+		std::cout << "[Write] Error" << std::endl << std::endl;
 		return false;
 	}
-	std::cout << "[Write] Done" << std::endl;
+
+	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+	if (hexStr._Equal("ERROR")) {
+		std::cout << "[Write] ERROR" << std::endl << std::endl;
+		return false;
+	}
+
+	std::cout << "[Write] Done" << std::endl << std::endl;
 	return true;
 }
 
@@ -42,12 +49,19 @@ bool ShellFullWriteCmd::run() {
 
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 		result = executor->writeToSSD(addr, data);
+		
 		if (result == ERROR_STRING) {
-			std::cout << "[FullWrite] Error" << std::endl;
+			std::cout << "[Full Write] Error" << std::endl<< std::endl;
+			return false;
+		}
+
+		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+		if (hexStr._Equal("ERROR")) {
+			std::cout << "[Full Write] ERROR" << std::endl << std::endl;
 			return false;
 		}
 	}
 
-	std::cout << "[FullWrite] Done" << std::endl;
+	std::cout << "[Full Write] Done" << std::endl << std::endl;
 	return true;
 }

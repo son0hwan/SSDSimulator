@@ -16,6 +16,15 @@ static void printReadInfo(long address, unsigned int value)
 		<< std::endl;
 }
 
+static void printReadInfoWithoutHeader(long address, unsigned int value)
+{
+	std::cout << "LBA "
+		<< std::setw(2) << std::setfill('0') << std::dec << address
+		<< " : 0x"
+		<< std::setw(8) << std::setfill('0') << std::hex << std::uppercase << value
+		<< std::endl;
+}
+
 ShellReadCmd::ShellReadCmd(long address) : address{ address } {
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
@@ -27,7 +36,7 @@ bool ShellReadCmd::run() {
 
 	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 	if (hexStr._Equal("ERROR")) {
-		std::cout << "[Read] ERROR";
+		std::cout << "[Read] ERROR" << std::endl << std::endl;
 		return false;
 	}
 
@@ -55,12 +64,12 @@ bool ShellFullReadCmd::run() {
 
 		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 		if (hexStr._Equal("ERROR")) {
-			std::cout << "[Read] ERROR";
+			std::cout << "[Full Read] ERROR" << std::endl << std::endl;
 			return false;
 		}
 
 		unsigned int value = std::stoul(hexStr, nullptr, 16);
-		printReadInfo(addr, value);
+		printReadInfoWithoutHeader(addr, value);
 	}
 	return true;
 }
