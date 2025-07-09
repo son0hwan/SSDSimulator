@@ -7,6 +7,7 @@ void IOManager::CheckAndCreateNandDataFile() {
     FillZeroDataToAllAddresses(nandDataFile);
 }
 
+#if OUTPUT_REFACTORING
 void IOManager::updateOutputError() {
     output().updateOutputError();
 }
@@ -18,6 +19,15 @@ void IOManager::updateOutputWriteSuccess() {
 void IOManager::updateOutputReadSuccess(uint32_t readData) {
     output().updateOutputReadSuccess(readData);
 }
+
+std::ofstream IOManager::openFile(const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file) {
+        throw std::runtime_error("error opening file");
+    }
+    return file;
+}
+#endif
 
 void IOManager::ProgramAllDatasToNand(const std::vector<LbaEntry>& lbaTable) {
     auto nandDataFile = openFile(NAND_DATA_FILE);
@@ -65,38 +75,35 @@ void IOManager::deleteFileIfExists() {
     }
 }
 
+#if BUFFER_REFACTORING 
 bool IOManager::forceCreateFiveFreshBufferFiles() {
-    createEmptyBufferFolder();
-    return createFiveFreshBufferFiles();
+    //createEmptyBufferFolder();
+    //return createFiveFreshBufferFiles();
+    return buffer().forceCreateFiveFreshBufferFiles();
 }
 
 bool IOManager::updateBufferFiles(const std::vector<std::string> buffers) {
-    createEmptyBufferFolder();
-    return createFiveBufferFiles(buffers);
+    //createEmptyBufferFolder();
+    //return createFiveBufferFiles(buffers);
+    return buffer().updateBufferFiles(buffers);
 }
 
 std::vector<std::string> IOManager::getBufferFileList() {
-    std::vector<std::string> buffers;
-    for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
-        if (fileName.is_regular_file()) {
-            buffers.push_back(removeFolderPathFrom(fileName));
-        }
-    }
-    return buffers;
+    //std::vector<std::string> buffers;
+    //for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
+    //    if (fileName.is_regular_file()) {
+    //        buffers.push_back(removeFolderPathFrom(fileName));
+    //    }
+    //}
+    //return buffers;
+    return buffer().getBufferFileList();
 }
+#endif
 
 bool IOManager::nandDataFileExist() {
     std::ifstream file(NAND_DATA_FILE);
     if (!file) return false;
     return true;
-}
-
-std::ofstream IOManager::openFile(const std::string& filename) {
-    std::ofstream file(filename);
-    if (!file) {
-        throw std::runtime_error("error opening file");
-    }
-    return file;
 }
 
 void IOManager::FillZeroDataToAllAddresses(std::ofstream& nandDataFile) {
@@ -133,59 +140,3 @@ bool IOManager::SuccessConvertToUINT(LbaEntry* splitDatas, std::string& addrStr,
     return true;
 }
 
-bool IOManager::createFiveBufferFiles(const std::vector<std::string> buffers) {
-    for (auto bufferFileName : buffers) {
-        if (!createBufferFile(BUFFER_FOLDER + bufferFileName)) return false;
-    }
-    return true;
-}
-
-bool IOManager::createFiveFreshBufferFiles() {
-    for (unsigned int buffer = 1; buffer <= NUM_OF_BUFFERS; buffer++) {
-        std::string fileName = std::to_string(buffer) + EMPTY_BUFFER_FILE_SUFFIX;
-        if (!createBufferFile(BUFFER_FOLDER + fileName)) return false;
-    }
-    return true;
-}
-
-void IOManager::createEmptyBufferFolder() {
-    createBufferFolder();
-    removeAllFilesInFolder();
-}
-
-void IOManager::createBufferFolder() {
-    std::filesystem::create_directory(BUFFER_FOLDER);
-}
-
-bool IOManager::removeAllFilesInFolder() {
-    try {
-        for (const auto& entry : fs::directory_iterator(BUFFER_FOLDER)) {
-            if (entry.is_regular_file()) {
-                fs::remove(entry.path());
-            }
-        }
-        return true;
-    }
-    catch (const fs::filesystem_error& e) {
-        std::cerr << "Error removing files: " << e.what() << std::endl;
-        return false;
-    }
-}
-
-bool IOManager::createBufferFile(const std::string& fileName) {
-    std::ofstream file(fileName, std::ios::trunc);  // trunc: overwrite if exists
-    return file.is_open();
-}
-
-std::string IOManager::removeFolderPathFrom(const std::filesystem::directory_entry& file) {
-    return file.path().filename().string();
-}
-
-bool IOManager::fileExists(const std::string fileName) {
-    fs::path filePath = fs::path(BUFFER_FOLDER) / fileName;
-    if (!fs::exists(filePath)) {
-        std::cerr << "File not found: " << filePath << std::endl;
-        return false;
-    }
-    return true;
-}

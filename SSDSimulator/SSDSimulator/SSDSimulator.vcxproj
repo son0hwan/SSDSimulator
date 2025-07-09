@@ -145,8 +145,11 @@
     <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bufferFile.h" />
     <ClInclude Include="cmdBuffer.h" />
+    <ClInclude Include="fileIO.h" />
     <ClInclude Include="IOManager.h" />
+    <ClInclude Include="outputFile.h" />
     <ClInclude Include="ssdCmdErase.h" />
     <ClInclude Include="ssdCmdError.h" />
     <ClInclude Include="ssdCmdFlush.h" />
