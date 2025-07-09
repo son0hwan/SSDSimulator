@@ -9,7 +9,11 @@ typedef vector<SsdCmdInterface*>CmdQ_type;
 class CommandBufferStorage {
 public:
 	virtual vector<BufferedCmdInfo*> getBufferFromStorage();
+	bool isValidFileName(std::string& line, int fileIdx);
 	virtual void setBufferToStorage(vector<BufferedCmdInfo*> cmdQ);
+private:
+	std::vector<std::string> splitByUnderBar(const std::string& str);
+	bool checkRemainIsEmpty(vector<std::string> fileNames, int startCheckIdx);
 };
 
 class CommandBuffer {
