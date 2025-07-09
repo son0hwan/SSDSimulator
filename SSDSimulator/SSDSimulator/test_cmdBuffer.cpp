@@ -18,7 +18,7 @@ class MockCommandBuffer : public CommandBuffer {
 public:
 	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
-	void clearBuffer() { cmdQ.clear(); }
+	void clearBuffer() { bufferingQ.clear(); }
 };
 
 class CommandBufferFixture : public Test {
