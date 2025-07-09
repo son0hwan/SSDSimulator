@@ -35,6 +35,7 @@ protected:
     static const uint32_t INIT_READ_DATA = 0x00000000;
     static const std::string OUTPUT_ERROR;
     static const std::string OUTPUT_VALID_READ;
+    static const std::string OUTPUT_INIT_READ;
     static const std::string OUTPUT_FILENAME;
     static const std::string NAND_FILENAME;
 };
@@ -42,6 +43,7 @@ protected:
 const std::string ReadTestFixture::OUTPUT_ERROR = "ERROR";
 const std::string ReadTestFixture::OUTPUT_FILENAME = "ssd_output.txt";
 const std::string ReadTestFixture::OUTPUT_VALID_READ = "0x705FF43A";
+const std::string ReadTestFixture::OUTPUT_INIT_READ = "0x00000000";
 const std::string ReadTestFixture::NAND_FILENAME = "ssd_nand.txt";
 
 TEST_F(ReadTestFixture, ReadExecutedWithoutError) {
@@ -68,5 +70,5 @@ TEST_F(ReadTestFixture, ReadNoInputAutoCreateFileAndInitializeToZero) {
     ioManager.deleteFileIfExists();
     EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
     EXPECT_EQ(readCmd.getReadData(), INIT_READ_DATA);
-    // Check output file
+    CheckOutputFileValid(OUTPUT_INIT_READ);
 }
