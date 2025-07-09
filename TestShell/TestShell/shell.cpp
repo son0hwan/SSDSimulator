@@ -1,7 +1,7 @@
 #pragma once
 #include "executor.h"
 #include "shellCmdParser.h"
-#include "testShellCmdInterface.h"
+#include "shellCmdInterface.h"
 #include "common.h"
 
 #define MOCK_TEST
@@ -16,6 +16,8 @@ public:
 	TestShell(Executor* executor) : executor { executor } {}
 
 	void run() {
+		Logger::getInstance().initLogFile();
+
 		while (true) {
 			std::string cmd;
 			ShellCmdParser shellCmdParser;
@@ -25,13 +27,15 @@ public:
 
 			if (cmd.empty()) continue;
 
+			LOG(cmd);
+
 			std::vector<std::string> token = splitBySpace(cmd);
-			TestShellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+			shellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
 			
 			if (exeCmd == nullptr) break;
 			
 			exeCmd->setExecutor(executor);
-			exeCmd->run();	
+			exeCmd->run();
 		}
 	}
 
@@ -51,7 +55,7 @@ public:
 	void fake_command(std::string cmd) {
 		ShellCmdParser shellCmdParser;
 		std::vector<std::string> token = splitBySpace(cmd);
-		TestShellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+		shellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
 
 		if (exeCmd == nullptr) return;
 

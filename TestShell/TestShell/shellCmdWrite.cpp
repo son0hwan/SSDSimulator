@@ -1,37 +1,46 @@
 #pragma once
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
-TestShellWriteCmd::TestShellWriteCmd(long address, unsigned data)
+ShellWriteCmd::ShellWriteCmd(long address, unsigned data)
 	: address(address), data(data) {
+	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void TestShellWriteCmd::run() {
+bool ShellWriteCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	if (executor->writeToSSDWithResult(address, data)) {
 		std::cout << "[Write] Error" << std::endl;
-		return;
+		return false;
 	}
 	std::cout << "[Write] Done" << std::endl;
+	return true;
 }
 
-long TestShellWriteCmd::getAddress() { 
+long ShellWriteCmd::getAddress() { 
 	return address; 
 }
 
-long TestShellWriteCmd::getData() {
+long ShellWriteCmd::getData() {
 	return data; 
 }
 
-TestShellFullWriteCmd::TestShellFullWriteCmd(unsigned data)
-	: data(data) {}
+ShellFullWriteCmd::ShellFullWriteCmd(unsigned data)
+	: data(data) {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void TestShellFullWriteCmd::run() {
+bool ShellFullWriteCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 		if (executor->writeToSSDWithResult(addr, data)) {
 			std::cout << "[FullWrite] Error" << std::endl;
-			return;
+			return false;
 		}
 	}
 	std::cout << "[FullWrite] Done" << std::endl;
+	return true;
 }

@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 	SsdCmdParser parser;
 	auto parsedCmd = parser.getCommand({ argv + 1, argv + argc });
 
-	auto commandList = CommandBuffer::getInstance().addBufferAndGetCmdToRun(parsedCmd);
+	auto commandList = CommandBuffer::getInstance().addBufferAndGetCmdToRun(parsedCmd.get());
 	for (SsdCmdInterface* command : commandList) {
 		command->run();
 	}

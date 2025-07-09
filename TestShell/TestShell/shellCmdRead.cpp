@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
 static void printReadInfo(long address, unsigned int value)
@@ -16,26 +16,35 @@ static void printReadInfo(long address, unsigned int value)
 		<< std::endl;
 }
 
-TestShellReadCmd::TestShellReadCmd(long address) : address{ address } {}
+ShellReadCmd::ShellReadCmd(long address) : address{ address } {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void TestShellReadCmd::run() {
+bool ShellReadCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	unsigned int value;
 
 	if (executor->readFromSSDWithResult(address, &value)) {
 		std::cout << "[Read] ERROR";
-		return;
+		return false;
 	}
 
 	printReadInfo(address, value);
+	return true;
 }
 
-long TestShellReadCmd::getAddress() { 
+long ShellReadCmd::getAddress() { 
 	return address; 
 }
 
-TestShellFullReadCmd::TestShellFullReadCmd() {}
+ShellFullReadCmd::ShellFullReadCmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void TestShellFullReadCmd::run() {
+bool ShellFullReadCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
@@ -43,9 +52,10 @@ void TestShellFullReadCmd::run() {
 
 		if (executor->readFromSSDWithResult(addr, &value)) {
 			std::cout << "[Read] ERROR";
-			return;
+			return false;
 		}
 
 		printReadInfo(addr, value);
 	}
+	return true;
 }

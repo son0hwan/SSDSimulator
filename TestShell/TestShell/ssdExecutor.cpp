@@ -26,4 +26,16 @@ class SSDExecutor : public Executor {
         }
         return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
+
+    std::string eraseToSSD(int address, int size) override {
+        std::string command = "ssd.exe E " + std::to_string(address) + " " + std::to_string(size);
+        
+        int result = std::system(command.c_str());
+        if (result != 0) {
+            std::cout << "erase fail : return code = " << result << std::endl;
+            return FAIL;
+        }
+
+        return getFirstLineFromFile(OUTPUT_FILE_NAME);
+    }
 };
