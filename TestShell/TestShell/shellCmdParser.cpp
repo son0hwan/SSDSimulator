@@ -1,7 +1,8 @@
 #include "shellCmdParser.h"
+
+#include "testShellCmdComplex.cpp"
 #include "testShellCmdRead.cpp"
 #include "testShellCmdWrite.cpp"
-#include "testShellCmdComplex.cpp"
 
 TestShellCmdInterface* ShellCmdParser::getCommand(
     const std::vector<std::string>& args) {
@@ -74,16 +75,16 @@ bool ShellCmdParser::isHelpCmd(const std::vector<std::string>& args) {
 }
 
 bool ShellCmdParser::isFullWriteCmd(const std::vector<std::string>& args) {
-    if (args.size() != NUM_OF_FULL_WRITE_ARGS) return false;
-    if (args[0] != CMD_FULL_WRITE) return false;
-    if (false == isHexString(args[1])) return false;
-    return true;
+  if (args.size() != NUM_OF_FULL_WRITE_ARGS) return false;
+  if (args[0] != CMD_FULL_WRITE) return false;
+  if (false == isHexString(args[1])) return false;
+  return true;
 }
 
 bool ShellCmdParser::isFullReadCmd(const std::vector<std::string>& args) {
-    if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
-    if (args[0] != CMD_FULL_READ) return false;
-    return true;
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  if (args[0] != CMD_FULL_READ) return false;
+  return true;
 }
 
 bool ShellCmdParser::isTestScript1(const std::vector<std::string>& args) {
@@ -118,9 +119,9 @@ bool ShellCmdParser::isEraseRangeCmd(const std::vector<std::string>& args) {
 }
 
 bool ShellCmdParser::isFlushCmd(const std::vector<std::string>& args) {
-    if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
-    if (args[0] != CMD_FLUSH) return false;
-    return true;
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  if (args[0] != CMD_FLUSH) return false;
+  return true;
 }
 
 bool ShellCmdParser::isTestScript4(const std::vector<std::string>& args) {
@@ -139,9 +140,9 @@ bool ShellCmdParser::isHexString(const std::string& address) {
 
 bool ShellCmdParser::isLbaString(const std::string& address) {
   try {
-      size_t pos;
-      std::stoul(address, &pos);
-      return pos == address.size();
+    size_t pos;
+    std::stoul(address, &pos);
+    return pos == address.size();
   } catch (...) {
     return false;
   }

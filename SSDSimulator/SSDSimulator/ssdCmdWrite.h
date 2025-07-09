@@ -14,6 +14,7 @@ public:
     void setWriteData(uint32_t newWriteData);   
     uint32_t getAddress();
     uint32_t getData() const;
+    bool isAllowBuffering() override { return true; }
 
 private:
     SsdWriteCmd() : requestedAddress() {}

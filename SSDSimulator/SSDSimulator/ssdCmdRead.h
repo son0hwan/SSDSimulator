@@ -12,6 +12,7 @@ public:
     void setAddress(uint32_t newAddress);
     uint32_t getAddress() const;
     uint32_t getReadData() const;
+    bool isAllowBuffering() override { return false; }
 
 private:
     SsdReadCmd() : requestedAddress() {}
