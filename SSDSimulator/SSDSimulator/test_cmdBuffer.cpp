@@ -23,7 +23,7 @@ public:
 
 class CommandBufferFixture : public Test {
 public:
-	void SetUp() override {  
+	void SetUp() override {
 		cmdBuffer.clearBuffer();
 	}
 
@@ -59,5 +59,20 @@ TEST_F(CommandBufferFixture, addEraseCmd) {
 }
 
 TEST_F(CommandBufferFixture, add5WriteCmd) {
-	///TBD, Need to release writeCmd singleton
+	SsdWriteCmd cmd1{ 0, 0x12345678 };
+	SsdWriteCmd cmd2{ 1, 0x12345678 };
+	SsdWriteCmd cmd3{ 2, 0x12345678 };
+	SsdWriteCmd cmd4{ 3, 0x12345678 };
+	SsdWriteCmd cmd5{ 4, 0x12345678 };
+	SsdWriteCmd cmd6{ 5, 0x12345678 };
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+
+	CmdQ_type expected{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
+	EXPECT_THAT(result, ContainerEq(expected));
 }
