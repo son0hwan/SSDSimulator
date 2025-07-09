@@ -8,10 +8,7 @@ TestShellWriteCmd::TestShellWriteCmd(long address, unsigned data)
 }
 
 void TestShellWriteCmd::run() {
-	std::string result;
-
-	result = executor->writeToSSD(address, data);
-	if (result == ERROR_STRING) {
+	if (executor->writeToSSDWithResult(address, data)) {
 		std::cout << "[Write] Error" << std::endl;
 		return;
 	}
@@ -30,15 +27,11 @@ TestShellFullWriteCmd::TestShellFullWriteCmd(unsigned data)
 	: data(data) {}
 
 void TestShellFullWriteCmd::run() {
-	std::string result;
-
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-		result = executor->writeToSSD(addr, data);
-		if (result == ERROR_STRING) {
+		if (executor->writeToSSDWithResult(addr, data)) {
 			std::cout << "[FullWrite] Error" << std::endl;
 			return;
 		}
 	}
-
 	std::cout << "[FullWrite] Done" << std::endl;
 }

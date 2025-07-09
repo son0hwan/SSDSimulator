@@ -26,7 +26,7 @@ void TestShellScript1Cmd::run() {
 			int addr = startIdx + unitIdx;
 			unsigned int value = values.at(idx);
 
-			if (executor->writeToSSD(addr, value) == ERROR_STRING) {
+			if (executor->writeToSSDWithResult(addr, value)) {
 				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
 				return;
 			}
@@ -58,11 +58,11 @@ void TestShellScript2Cmd::run() {
 	}
 
 	for (int cnt = 0; cnt < 30; cnt++) {
-		executor->writeToSSD(4, values.at(cnt));
-		executor->writeToSSD(0, values.at(cnt));
-		executor->writeToSSD(3, values.at(cnt));
-		executor->writeToSSD(1, values.at(cnt));
-		executor->writeToSSD(2, values.at(cnt));
+		executor->writeToSSDWithResult(4, values.at(cnt));
+		executor->writeToSSDWithResult(0, values.at(cnt));
+		executor->writeToSSDWithResult(3, values.at(cnt));
+		executor->writeToSSDWithResult(1, values.at(cnt));
+		executor->writeToSSDWithResult(2, values.at(cnt));
 
 		unsigned int value;
 		if (executor->readFromSSDWithResult(0, &value)) {
@@ -95,12 +95,9 @@ void TestShellScript3Cmd::run() {
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		std::string EXPECTED_STR = genRandomString(MAX_VAL_LEN);
 
-		result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
-		if (result == ERROR_STRING)
+		if (executor->writeToSSDWithResult(0, stoul(EXPECTED_STR, nullptr, 16)))
 			return;
-
-		result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
-		if (result == ERROR_STRING)
+		if (executor->writeToSSDWithResult(99, stoul(EXPECTED_STR, nullptr, 16)))
 			return;
 
 		unsigned int resOf0, resOf99;
