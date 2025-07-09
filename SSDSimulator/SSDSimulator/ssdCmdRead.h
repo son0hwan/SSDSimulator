@@ -12,7 +12,7 @@ public:
     void setAddress(uint32_t newAddress);
     uint32_t getAddress() const;
     uint32_t getReadData() const;
-    bool isAllowBuffering() override { return false; }
+    BufferedCmdInfo* getBufferedCmdInfo(void) override;
 
 private:
     uint32_t requestedAddress{};
