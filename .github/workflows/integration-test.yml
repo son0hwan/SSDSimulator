@@ -74,13 +74,13 @@ jobs:
     - name: Run TestShell with test input
       shell: pwsh
       run: |
-        "write 0 0x00000001" | Out-File -Encoding ASCII -FilePath input.txt
-        "read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        "fullwrite 0x00000002" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        "fullread" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        "erase 0 10" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        "read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        "exit" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> write 0 0x00000001" | Out-File -Encoding ASCII -FilePath input.txt
+        "Shell> read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> fullwrite 0x00000002" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> fullread" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> erase 0 10" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
+        "Shell> exit" | Out-File -Append -Encoding ASCII -FilePath input.txt
         $workDir = "$(Resolve-Path 'TestShell/x64/Release')"
         $exePath = "$workDir\TestShell.exe"
         $inputPath = "$(Resolve-Path 'input.txt')"
