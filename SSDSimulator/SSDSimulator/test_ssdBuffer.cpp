@@ -25,16 +25,6 @@ TEST(BufferIOTest, RenameBuffer) {
 	EXPECT_EQ(createdBuffer, expectedBuffer);
 }
 
-TEST(BufferIOTest, GetValidBuffer) {
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> expectedBuffer = { "1_W_1_0x12345678", "2_W_2_0x12345678", "3_E_3_2", "4_W_5_0x12345678", "5_E_6_10" };
-	ioManager.updateBufferFiles(expectedBuffer);
-
-	CommandBufferStorage storage;
-	auto result = storage.getBufferFromStorage();
-	EXPECT_EQ(result.size(), 5);
-}
-
 class CommonBufferStorageFixture : public Test {
 public:
 
@@ -45,6 +35,13 @@ public:
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	CommandBufferStorage storage;
 };
+
+TEST_F(CommonBufferStorageFixture, GetValidBuffer) {
+	setExistingFileNames({ "1_W_1_0x12345678", "2_W_2_0x12345678", "3_E_3_2", "4_W_5_0x12345678", "5_E_6_10" });
+
+	auto result = storage.getBufferFromStorage();
+	EXPECT_EQ(result.size(), 5);
+}
 
 TEST_F(CommonBufferStorageFixture, GetInvalidBufferSmallFile) {
 	setExistingFileNames({ "1_W_2" });
