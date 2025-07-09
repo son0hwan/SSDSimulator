@@ -30,5 +30,8 @@ protected:
 	CommandBufferStorage& storage;
 
 	static const int Q_SIZE_LIMIT_TO_FLUSH = 5;
+
+private:
+	bool CheckBufferingCommand(BufferedCmdInfo* bufferedInfo, CmdQ_type& resultQ, SsdCmdInterface*& newCmd);
 };
 
