@@ -4,22 +4,20 @@
 
 class SsdWriteCmd : public SsdCmdInterface {
 public:
-    static SsdWriteCmd& getInstance() {
-        static SsdWriteCmd instance;
-        return instance;
-    }
+    SsdWriteCmd()
+        : requestedAddress(0), data(0) {}
+
+    SsdWriteCmd(uint32_t address, uint32_t writeData)
+        : requestedAddress(address), data(writeData) {}
 
     void run() override;
     void setAddress(uint32_t newAddress);
-    void setWriteData(uint32_t newWriteData);   
-    uint32_t getAddress();
+    void setWriteData(uint32_t newWriteData);
+    uint32_t getAddress() const;
     uint32_t getData() const;
+    bool isAllowBuffering() override { return true; }
 
 private:
-    SsdWriteCmd() : requestedAddress() {}
-    SsdWriteCmd(const SsdWriteCmd&) = delete;
-    SsdWriteCmd& operator=(const SsdWriteCmd&) = delete;
-
-    uint32_t requestedAddress = 0;
-    uint32_t data = 0;
+    uint32_t requestedAddress;
+    uint32_t data;
 };

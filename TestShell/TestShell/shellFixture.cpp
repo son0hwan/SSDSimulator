@@ -9,14 +9,20 @@ public:
 	void SetUp() override {
 		std::streambuf* backup = std::cout.rdbuf();
 		std::cout.set_rdbuf(localStream.rdbuf());
+		mockSSD.setRandomGenerator(&mockRandomGenerator);
 	}
 
 	void TearDown() override { std::cout.set_rdbuf(backup); }
 
 	std::string getPrintedString() const { return localStream.str(); }
+	
+	unsigned int rand() {
+		return mockSSD.rand();
+	}
 
 	MockSSD mockSSD;
 	TestShell testShell{ &mockSSD };
+	MockRandomGenerator mockRandomGenerator;
 private:
 	std::ostringstream localStream;
 	std::streambuf* backup = nullptr;

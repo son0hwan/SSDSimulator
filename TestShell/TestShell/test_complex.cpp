@@ -6,10 +6,12 @@
 using namespace testing;
 
 TEST_F(ShellFixture, FullWriteAndReadCompare) {
-		EXPECT_CALL(mockSSD, writeToSSD(_, _))
+	EXPECT_CALL(mockSSD, writeToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
 		.WillRepeatedly(Return(PASS));
+	EXPECT_CALL(mockRandomGenerator, next)
+		.WillRepeatedly(Return(1));
 
 	testShell.fake_command("1_FullWriteAndReadCompare");
 
@@ -21,6 +23,8 @@ TEST_F(ShellFixture, PartialLBAWrite) {
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
 		.WillRepeatedly(Return(PASS));
+	EXPECT_CALL(mockRandomGenerator, next)
+		.WillRepeatedly(Return(1));
 
 	testShell.fake_command("2_PartialLBAWrite");
 
@@ -32,6 +36,8 @@ TEST_F(ShellFixture, WriteReadAging) {
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
 		.WillRepeatedly(Return(PASS));
+	EXPECT_CALL(mockRandomGenerator, next)
+		.WillRepeatedly(Return(1));
 
 	testShell.fake_command("3_WriteReadAging");
 

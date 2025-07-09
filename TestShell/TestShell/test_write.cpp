@@ -27,8 +27,8 @@ TEST_F(ShellFixture, WriteFailureWithWrongAddress) {
 }
 
 TEST_F(ShellFixture, FullWrite) {
-	for (int address = 0; address < NUM_OF_LBA; address++) {
-		EXPECT_CALL(mockSSD, writeToSSD(address, 0x1000000))
+	for_each_addr(addr) {
+		EXPECT_CALL(mockSSD, writeToSSD(addr, 0x1000000))
 			.Times(1)
 			.WillOnce(Return(SUCCESS_STRING));
 	}

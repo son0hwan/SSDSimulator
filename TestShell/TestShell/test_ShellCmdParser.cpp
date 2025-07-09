@@ -120,3 +120,42 @@ TEST_F(ShellCmdParserFixture, ShellTestScript3Cmd2) {
     auto command = cmdParser.getCommand({ "3_" });
     EXPECT_TRUE(isCmdTypeOf<TestShellScript3Cmd>(command));
 }
+
+TEST_F(ShellCmdParserFixture, EraseCmd) {
+  auto command = cmdParser.getCommand({"erase", "0", "20"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellEraseCmd>(command));
+  try {
+    auto* convertedCmd = dynamic_cast<TestShellEraseCmd*>(command);
+    EXPECT_EQ(0, convertedCmd->getAddress());
+    EXPECT_EQ(20, convertedCmd->getSize());
+  } catch (...) {
+    FAIL();
+  }
+}
+
+TEST_F(ShellCmdParserFixture, EraseRangeCmd) {
+  auto command = cmdParser.getCommand({"erase_range", "20", "22"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellEraseRangeCmd>(command));
+  try {
+    auto* convertedCmd = dynamic_cast<TestShellEraseRangeCmd*>(command);
+    EXPECT_EQ(20, convertedCmd->getStartAddress());
+    EXPECT_EQ(22, convertedCmd->getEndAddress());
+  } catch (...) {
+    FAIL();
+  }
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript4Cmd1) {
+  auto command = cmdParser.getCommand({"4_EraseAndWriteAging"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellScript4Cmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, ShellTestScript4Cmd2) {
+  auto command = cmdParser.getCommand({"4_"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellScript4Cmd>(command));
+}
+
+TEST_F(ShellCmdParserFixture, FlushCmd) {
+  auto command = cmdParser.getCommand({"flush"});
+  EXPECT_TRUE(isCmdTypeOf<TestShellFlushCmd>(command));
+}

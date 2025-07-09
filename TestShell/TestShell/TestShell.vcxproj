@@ -127,20 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="common.cpp" />
     <ClCompile Include="executor.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shellCmdErase.cpp" />
     <ClCompile Include="shellCmdError.cpp" />
     <ClCompile Include="shellCmdFlush.cpp" />
     <ClCompile Include="shellCmdHelp.cpp" />
     <ClCompile Include="shellCmdInvalid.cpp" />
+    <ClCompile Include="randomGenerator.h" />
     <ClCompile Include="shellCmdParser.cpp" />
+    <ClCompile Include="shellCmdRangedErase.cpp" />
     <ClCompile Include="ssdExecutor.cpp" />
     <ClCompile Include="mockExecutor.cpp" />
-    <ClCompile Include="shellCmdComplex.cpp" />
+    <ClCompile Include="shellCmdTestScript.cpp" />
     <ClCompile Include="testShellCmdInterface.h" />
     <ClCompile Include="shellCmdRead.cpp" />
     <ClCompile Include="shellCmdWrite.cpp" />
@@ -165,6 +164,9 @@
     <ClInclude Include="shellFixture.cpp" />
     <ClInclude Include="shell.cpp" />
     <ClInclude Include="testShellCmd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

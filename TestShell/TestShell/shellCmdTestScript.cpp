@@ -117,3 +117,9 @@ void TestShellScript3Cmd::run() {
 
 	std::cout << "[3_WriteReadAging] Done" << std::endl;
 }
+
+TestShellScript4Cmd::TestShellScript4Cmd() {
+}
+
+void TestShellScript4Cmd::run() {
+}

@@ -6,13 +6,15 @@
 #include <fstream>
 #include <iomanip>
 
-struct ReadRawData {
+struct LbaEntry {
     uint32_t address;
     uint32_t data;
 };
 
 class IOManager {
 public:
+    IOManager(uint32_t maxLbaOfDevice) : maxLbaOfDevice( maxLbaOfDevice ) {}
+
     void CheckAndCreateNandDataFile() {
         if (nandDataFileExist()) return;
 
@@ -25,35 +27,37 @@ public:
         outputFile << OUTPUT_ERROR;
     }
     
-    void updateOutputWriteSuccess()
-    {
+    void updateOutputWriteSuccess() {
         auto outputFile = openFile(OUTPUT_FILE);
     }
 
     void updateOutputReadSuccess(uint32_t readData) {
         auto outputFile = openFile(OUTPUT_FILE);
-        outputFile << "0x" << std::hex << std::uppercase << readData << std::endl;
+        outputFile << "0x"
+            << std::uppercase << std::hex
+            << std::setw(8) << std::setfill('0')
+            << readData << std::endl;
     }
 
-    void ProgramAllDatasToNand(const std::vector<ReadRawData> &readRawData) {
+    void ProgramAllDatasToNand(const std::vector<LbaEntry> & lbaTable) {
         auto nandDataFile = openFile(NAND_DATA_FILE);
-        FillChangeDatasToAllAddresses(nandDataFile, readRawData);
+        FillChangeDatasToAllAddresses(nandDataFile, lbaTable);
     }
 
-    void ReadAllDatasToInternalBuffer(std::vector<ReadRawData>& readRawData)
+    void ReadAllDatasToInternalBuffer(std::vector<LbaEntry>& lbaTable)
     {
         std::ifstream file(NAND_DATA_FILE);
         std::string line;
         while (std::getline(file, line)) {
             if (line.empty()) continue;
 
-            ReadRawData splitDatas;
+            LbaEntry splitDatas;
             if (false == SplitStringToAddressAndData(line, &splitDatas)) continue;
-            readRawData.push_back({ splitDatas.address, splitDatas.data });
+            lbaTable.push_back({ splitDatas.address, splitDatas.data });
         }
     }
 
-    bool SplitStringToAddressAndData(std::string& line, ReadRawData* splitDatas)
+    bool SplitStringToAddressAndData(std::string& line, LbaEntry* splitDatas)
     {
         std::string addrStr, dataStr;
         size_t delimiterPos = line.find(SEPARATOR.c_str());
@@ -65,14 +69,13 @@ public:
         return SuccessConvertToUINT(splitDatas, addrStr, dataStr);
     }
 
-#ifdef _DEBUG
     void CreateNewTempNandFileAndInitForTest()
     {
         std::ifstream file(NAND_DATA_FILE);
         if (!file) {
-            std::vector<ReadRawData> readDatas{};
+            std::vector<LbaEntry> readDatas{};
             uint32_t initAddress = 0x705FF427;
-            for (uint32_t lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; ++lba) {
+            for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
                 readDatas.push_back({ lba, initAddress++ });
             }
             ProgramAllDatasToNand(readDatas);
@@ -81,10 +84,9 @@ public:
 
     void deleteFileIfExists() {
         if (std::ifstream(NAND_DATA_FILE)) {
-            std::remove(NAND_DATA_FILE.c_str());  // 기존 파일 삭제
+            std::remove(NAND_DATA_FILE.c_str()); 
         }
     }
-#endif
 
 private:
     bool nandDataFileExist() {
@@ -103,7 +105,7 @@ private:
 
     void FillZeroDataToAllAddresses(std::ofstream& nandDataFile)
     {
-        for (int lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; ++lba) {
+        for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
             nandDataFile << std::hex << lba;
             nandDataFile << SEPARATOR;
             nandDataFile << std::setw(8) << std::setfill('0') << INIT_NAND_DATA;
@@ -111,17 +113,17 @@ private:
         }
     }
 
-    void FillChangeDatasToAllAddresses(std::ofstream& nandDataFile, const std::vector<ReadRawData>& readRawData)
+    void FillChangeDatasToAllAddresses(std::ofstream& nandDataFile, const std::vector<LbaEntry>& lbaTable)
     {
-        for (int lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; lba++) {
+        for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
             nandDataFile << std::hex << lba;
             nandDataFile << SEPARATOR;
-            nandDataFile << std::hex << std::setw(8) << std::setfill('0') << readRawData[lba].data;
+            nandDataFile << std::hex << std::setw(8) << std::setfill('0') << lbaTable[lba].data;
             nandDataFile << std::endl;
         }
     }
 
-    bool SuccessConvertToUINT(ReadRawData* splitDatas, std::string& addrStr, std::string& dataStr)
+    bool SuccessConvertToUINT(LbaEntry* splitDatas, std::string& addrStr, std::string& dataStr)
     {
         try {
             (*splitDatas).address = std::stoul(addrStr, nullptr, 16);
@@ -135,7 +137,7 @@ private:
         return true;
     }
 
-    const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
+    const uint32_t maxLbaOfDevice;
     const static uint32_t INIT_NAND_DATA = 0;
 
     const std::string NAND_DATA_FILE = "ssd_nand.txt";

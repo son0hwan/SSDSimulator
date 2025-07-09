@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include "executor.h"
+#include "common.h"
 
 class TestShellCmdInterface {
 public:
@@ -9,6 +10,14 @@ public:
 
 	void setExecutor(Executor* executor) {
 		this->executor = executor;
+	}
+
+	bool isError(const std::string& result) {
+		return result == ERROR_STRING;
+	}
+	
+	unsigned int rand() {
+		return executor->rand();
 	}
 protected:
 	Executor* executor = nullptr;

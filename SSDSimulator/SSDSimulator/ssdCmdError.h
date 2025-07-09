@@ -3,11 +3,7 @@
 #include "ssdSimulator.h"
 
 class SsdErrorCmd : public SsdCmdInterface {
-public:
-    SsdErrorCmd(long address) : address(address) {}
-
-    void run() override;
-
-private:
-    const long address;
+ public:
+  void run() override;
+  bool isAllowBuffering() override { return false; }
 };

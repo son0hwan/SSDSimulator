@@ -82,3 +82,34 @@ private:
 	const int MAX_LOOP_COUNT = 200;
 };
 
+
+class TestShellEraseCmd : public TestShellCmdInterface {
+public:
+	TestShellEraseCmd(long address, long size);
+	virtual void run() override;
+
+	long getAddress();
+	long getSize();
+protected:
+	const long address;
+	const long size;
+};
+
+class TestShellEraseRangeCmd : public TestShellEraseCmd {
+public:
+	TestShellEraseRangeCmd(long startAddress, long endAddress);
+	long getStartAddress();
+	long getEndAddress();
+};
+
+class TestShellScript4Cmd : public TestShellCmdInterface {
+public:
+	TestShellScript4Cmd();
+	void run() override;
+};
+
+class TestShellFlushCmd : public TestShellCmdInterface {
+public:
+	TestShellFlushCmd();
+	void run() override;
+};
