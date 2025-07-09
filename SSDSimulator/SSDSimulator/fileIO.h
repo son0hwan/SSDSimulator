@@ -12,3 +12,4 @@ namespace fs = std::filesystem;
 
 #define OUTPUT_REFACTORING (1)
 #define BUFFER_REFACTORING  (1)
+#define NAND_REFACTORING    (1)
