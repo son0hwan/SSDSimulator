@@ -19,9 +19,7 @@ public:
 		return instance;
 	}
 
-	CommandBuffer(CommandBufferStroage& stroage)
-		: storage(storage) {}
-
+	CommandBuffer(CommandBufferStroage& stroage);
 	CmdQ_type addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
 	CmdQ_type popAllBuffer();
 
