@@ -4,6 +4,7 @@
 TestShellInvalidCmd::TestShellInvalidCmd() {
 }
 
-void TestShellInvalidCmd::run() {
+bool TestShellInvalidCmd::run() {
 	std::cout << "invalid command \n";
+	return false;
 }

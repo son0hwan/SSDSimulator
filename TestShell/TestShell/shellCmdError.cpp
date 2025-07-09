@@ -4,6 +4,7 @@
 TestShellErrorCmd::TestShellErrorCmd() {
 }
 
-void TestShellErrorCmd::run() {
+bool TestShellErrorCmd::run() {
 	std::cout << "unknown command \n";
+	return false;
 }

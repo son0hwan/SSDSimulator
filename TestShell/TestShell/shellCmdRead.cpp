@@ -18,17 +18,18 @@ static void printReadInfo(long address, unsigned int value)
 
 TestShellReadCmd::TestShellReadCmd(long address) : address{ address } {}
 
-void TestShellReadCmd::run() {
+bool TestShellReadCmd::run() {
 	executor->readFromSSD(address);
 
 	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 	if (hexStr._Equal("ERROR")) {
 		std::cout << "[Read] ERROR";
-		return;
+		return false;
 	}
 
 	unsigned int value = std::stoul(hexStr, nullptr, 16);
 	printReadInfo(address, value);
+	return true;
 }
 
 long TestShellReadCmd::getAddress() { 
@@ -37,20 +38,21 @@ long TestShellReadCmd::getAddress() {
 
 TestShellFullReadCmd::TestShellFullReadCmd() {}
 
-void TestShellFullReadCmd::run() {
+bool TestShellFullReadCmd::run() {
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 		if (executor->readFromSSD(addr) == ERROR_STRING)
-			return;
+			return false;
 
 		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 		if (hexStr._Equal("ERROR")) {
 			std::cout << "[Read] ERROR";
-			return;
+			return false;
 		}
 
 		unsigned int value = std::stoul(hexStr, nullptr, 16);
 		printReadInfo(addr, value);
 	}
+	return true;
 }
