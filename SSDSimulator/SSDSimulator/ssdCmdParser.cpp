@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdint>
+#include <sstream>
 
 
 SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) {
@@ -85,4 +86,33 @@ SsdCmdInterface* SsdCmdParser::handleFlushCommand(const std::vector<std::string>
 {
 	if (!(args.size() == NUM_OF_FLUSH_ARGS)) return new SsdErrorCmd();
 	return new SsdFlushCmd();
+}
+
+std::vector<std::string> SsdCmdParser::getEncodedString(SsdCmdInterface* cmd) {
+	if (nullptr != dynamic_cast<SsdWriteCmd*>(cmd)) return getWriteCommandString(cmd);
+	if (nullptr != dynamic_cast<SsdEraseCmd*>(cmd)) return getEraseCommandString(cmd);
+	return {};
+}
+
+std::vector<std::string> SsdCmdParser::getWriteCommandString(SsdCmdInterface* cmd) {
+	std::vector<std::string> result;
+	std::stringstream ss;
+	auto writeCmd = dynamic_cast<SsdWriteCmd*>(cmd);
+
+	result.push_back("W");
+	result.push_back(std::to_string(writeCmd->getAddress()));
+
+	ss << std::hex << std::nouppercase<< std::showbase << writeCmd->getData();
+	result.push_back(ss.str());
+	return result;
+}
+
+std::vector<std::string> SsdCmdParser::getEraseCommandString(SsdCmdInterface* cmd) {
+	std::vector<std::string> result;
+	auto eraseCmd = dynamic_cast<SsdEraseCmd*>(cmd);
+
+	result.push_back("E");
+	result.push_back(std::to_string(eraseCmd->getStartAddress()));
+	result.push_back(std::to_string(eraseCmd->getSize()));
+	return result;
 }

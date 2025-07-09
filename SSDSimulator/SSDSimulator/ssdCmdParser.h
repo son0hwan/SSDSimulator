@@ -8,6 +8,7 @@
 class SsdCmdParser {
 public:
     SsdCmdInterface* getCommand(const std::vector<std::string>& args);
+    std::vector<std::string> getEncodedString(SsdCmdInterface* cmd);
 
 private:
     const int NUM_OF_READ_ARGS = 2;
@@ -24,4 +25,7 @@ private:
     SsdCmdInterface* getWriteCommandWithInput(const std::vector<std::string>& args);
     bool isHexString(const std::string& address);
     bool isLbaString(const std::string& address);
+
+    std::vector<std::string> getWriteCommandString(SsdCmdInterface* cmd);
+    std::vector<std::string> getEraseCommandString(SsdCmdInterface* cmd);
 };
