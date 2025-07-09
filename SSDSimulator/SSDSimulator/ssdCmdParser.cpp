@@ -1,11 +1,74 @@
 #include "ssdInterface.h"
 #include "ssdCmdRead.h"
 #include "ssdCmdWrite.h"
+#include "ssdCmdErase.h"
 #include "ssdCmdError.h"
 #include "ssdCmdParser.h"	
 #include <string>
 #include <algorithm>
 #include <cstdint>
+
+
+SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) {
+	if (args.empty()) return new SsdErrorCmd();
+
+	std::string cmd = args[0];
+	if (cmd == "R") return handleReadCommand(args);
+	if (cmd == "W") return handleWriteCommand(args);
+	if (cmd == "E") return handleEraseCommand(args);
+
+	return new SsdErrorCmd();
+}
+
+SsdCmdInterface* SsdCmdParser::handleReadCommand(const std::vector<std::string>& args)
+{
+	if (!(args.size() == NUM_OF_READ_ARGS)) return new SsdErrorCmd();
+	if (!isLbaString(args[1])) return new SsdErrorCmd();
+	return getReadCommandWithInput(args);
+}
+
+bool SsdCmdParser::isLbaString(const std::string& address) {
+	try {
+		size_t pos;
+		std::stoul(address, &pos);
+		return pos == address.size();
+	}
+	catch (...) {
+		return false;
+	}
+}
+
+SsdCmdInterface* SsdCmdParser::getReadCommandWithInput(const std::vector<std::string>& args) {
+	uint32_t address = std::stol(args[1], nullptr, 10);
+
+	SsdReadCmd& readCmd = SsdReadCmd::getInstance();
+	readCmd.setAddress(address);
+	return &readCmd;
+}
+
+SsdCmdInterface* SsdCmdParser::handleWriteCommand(const std::vector<std::string>& args) {
+	if (!(args.size() == NUM_OF_WRITE_ARGS)) return new SsdErrorCmd();
+	if (!isLbaString(args[1])) return new SsdErrorCmd();
+	if (!isHexString(args[2])) return new SsdErrorCmd();
+	return getWriteCommandWithInput(args);
+}
+
+SsdCmdInterface* SsdCmdParser::handleEraseCommand(const std::vector<std::string>& args) {
+	if (!(args.size() == NUM_OF_ERASE_ARGS)) return new SsdErrorCmd();
+	if (!isLbaString(args[1])) return new SsdErrorCmd();
+	if (!isLbaString(args[2])) return new SsdErrorCmd();
+	return getEraseCommandWithInput(args);
+}
+
+SsdCmdInterface* SsdCmdParser::getEraseCommandWithInput(const std::vector<std::string>& args) {
+	uint32_t address = std::stoul(args[1], nullptr, 10);
+	uint32_t size = std::stoul(args[2], nullptr, 10);
+
+	SsdEraseCmd& eraseCmd = SsdEraseCmd::getInstance();
+	eraseCmd.setStartAddress(address);
+	eraseCmd.setEraseSize(size);
+	return &eraseCmd;
+}
 
 bool SsdCmdParser::isHexString(const std::string& address) {
 	try {
@@ -17,37 +80,12 @@ bool SsdCmdParser::isHexString(const std::string& address) {
 	}
 }
 
-bool SsdCmdParser::isLbaString(const std::string& address) {
-	try {
-		long lba = std::stol(address);
-		return MIN_ADDRESS <= lba && lba <= MAX_ADDRESS;
-	}
-	catch (...) {
-		return false;
-	}
-}
+SsdCmdInterface* SsdCmdParser::getWriteCommandWithInput(const std::vector<std::string>& args) {
+	uint32_t address = std::stoul(args[1], nullptr, 10);
+	uint32_t value = std::stoul(args[2], nullptr, 16);
 
-SsdCmdInterface* SsdCmdParser::getCommand(const std::vector<std::string>& args) {
-	if (args.empty()) return new SsdErrorCmd(INVALID_ADDRESS);
-
-	std::string cmd = args[0];
-
-	if ((cmd == "R" && args.size() == NUM_OF_READ_ARGS) && isLbaString(args[1])) {
-		uint32_t address = std::stol(args[1]);
-		SsdReadCmd& readCmd = SsdReadCmd::getInstance();
-		readCmd.setAddress(address);
-		return &SsdReadCmd::getInstance();
-	}
-	else if ((cmd == "W" && args.size() == NUM_OF_WRITE_ARGS) && (isLbaString(args[1]) && isHexString(args[2]))) {
-		uint32_t address = std::stol(args[1]);
-		uint32_t value = std::stol(args[2], nullptr, 16); // hex format		
-		SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
-		writeCmd.setAddress(address);
-		writeCmd.setWriteData(value);
-		return &SsdWriteCmd::getInstance();
-	}
-	else {
-		return new SsdErrorCmd(-1); // -1 is a placeholder for error command
-	}
-	return nullptr;
+	SsdWriteCmd& writeCmd = SsdWriteCmd::getInstance();
+	writeCmd.setAddress(address);
+	writeCmd.setWriteData(value);
+	return &writeCmd;
 }

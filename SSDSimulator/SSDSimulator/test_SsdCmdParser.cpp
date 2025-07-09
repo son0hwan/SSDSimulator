@@ -5,6 +5,7 @@
 #include "ssdCmdError.h"
 #include "ssdInterface.h"
 #include "ssdCmdParser.h"
+#include "ssdCmdErase.h"
 
 using namespace testing;
 
@@ -18,6 +19,21 @@ class SsdCmdParserFixture : public Test {
      SsdCmdParser cmdParser;
      std::vector<std::string> args;
 };
+
+TEST_F(SsdCmdParserFixture, EraseWithValidInput) {
+    std::vector<std::string> args = { "E", "2", "10" };
+    SsdCmdInterface* command = cmdParser.getCommand(args);
+
+    EXPECT_TRUE(nullptr != dynamic_cast<SsdEraseCmd*>(command));
+    try {
+        SsdEraseCmd* convertedCmd = dynamic_cast<SsdEraseCmd*>(command);
+        EXPECT_EQ(2, convertedCmd->getStartAddress());
+        EXPECT_EQ(10, convertedCmd->getSize());
+    }
+    catch (std::exception e) {
+        FAIL();
+    }
+}
 
 TEST_F(SsdCmdParserFixture, ReadWithValidAddress) {
     std::vector<std::string> args = { "R", "3" };
