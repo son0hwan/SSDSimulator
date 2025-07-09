@@ -8,7 +8,6 @@ struct LbaEntry {
 
 class NandFile {
 public:
-    NandFile() : maxLbaOfDevice(0) {};
     NandFile(uint32_t maxLbaOfDevice) : maxLbaOfDevice(maxLbaOfDevice) {}
 
     void CheckAndCreateNandDataFile() {
