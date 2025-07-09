@@ -16,7 +16,7 @@ class SSDExecutor : public Executor {
     }
 
     std::string writeToSSD(int address, int value) override {
-        char hexStr[10];
+        char hexStr[11];
         std::snprintf(hexStr, sizeof(hexStr), "0x%X", value);
         std::string command = "ssd.exe W " + std::to_string(address) + " " + hexStr;
         int result = std::system(command.c_str());
@@ -25,5 +25,17 @@ class SSDExecutor : public Executor {
             return FAIL;
         }
         return PASS;
+    }
+
+    std::string eraseToSSD(int address, int size) override {
+        std::string command = "ssd.exe E " + std::to_string(address) + " " + std::to_string(size);
+        
+        int result = std::system(command.c_str());
+        if (result != 0) {
+            std::cout << "erase fail : return code = " << result << std::endl;
+            return FAIL;
+        }
+
+        return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
 };

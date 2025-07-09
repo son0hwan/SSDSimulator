@@ -4,14 +4,18 @@
 #include <fstream>
 #include <vector>
 
-#include "testShellCmd.h"
+#include "shellCmd.h"
 #include "common.h"
 
 using std::vector;
 
-TestShellScript1Cmd::TestShellScript1Cmd() {}
+ShellScript1Cmd::ShellScript1Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-bool TestShellScript1Cmd::run() {
+bool ShellScript1Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	vector<unsigned int> values;
 	int unitCount = 5;
 	int iterationCount = NUM_OF_LBA / unitCount;
@@ -49,9 +53,13 @@ bool TestShellScript1Cmd::run() {
 	return true;
 }
 
-TestShellScript2Cmd::TestShellScript2Cmd() {}
+ShellScript2Cmd::ShellScript2Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-bool TestShellScript2Cmd::run() {
+bool ShellScript2Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	vector<unsigned int> values;
 	for (int i = 0; i < 30; i++) {
 		unsigned int randomVal = static_cast<unsigned int>(rand());
@@ -87,9 +95,13 @@ bool TestShellScript2Cmd::run() {
 	return true; 
 }
 
-TestShellScript3Cmd::TestShellScript3Cmd() {}
+ShellScript3Cmd::ShellScript3Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-bool TestShellScript3Cmd::run() {
+bool ShellScript3Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	std::string result;
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
@@ -119,9 +131,11 @@ bool TestShellScript3Cmd::run() {
 	return true;
 }
 
-TestShellScript4Cmd::TestShellScript4Cmd() {
+ShellScript4Cmd::ShellScript4Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-bool TestShellScript4Cmd::run() {
+bool ShellScript4Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
 	return true;
 }

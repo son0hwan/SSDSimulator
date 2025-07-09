@@ -4,7 +4,7 @@
 #include "executor.h"
 #include "common.h"
 
-class TestShellCmdInterface {
+class shellCmdInterface {
 public:
 	virtual bool run() = 0;
 

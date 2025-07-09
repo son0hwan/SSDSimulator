@@ -1,59 +1,59 @@
 #include "shellCmdParser.h"
-#include "testShellCmd.h"
+#include "shellCmd.h"
 
-TestShellCmdInterface* ShellCmdParser::getCommand(
+shellCmdInterface* ShellCmdParser::getCommand(
 	const std::vector<std::string>& args) {
-	if (args.empty()) return new TestShellErrorCmd{};
+	if (args.empty()) return new ShellErrorCmd{};
 
 	if (isReadCmd(args)) {
 		long address = std::stol(args[1]);
-		return new TestShellReadCmd{ address };
+		return new ShellReadCmd{ address };
 	}
 	else if (isWriteCmd(args)) {
 		long address = std::stol(args[1]);
 		unsigned value = std::stoul(args[2], nullptr, 16);
-		return new TestShellWriteCmd{ address, value };
+		return new ShellWriteCmd{ address, value };
 	}
 	else if (isHelpCmd(args)) {
-		return new TestShellHelpCmd{};
+		return new ShellHelpCmd{};
 	}
 	else if (isFullWriteCmd(args)) {
 		unsigned value = std::stoul(args[1], nullptr, 16);
-		return new TestShellFullWriteCmd{ value };
+		return new ShellFullWriteCmd{ value };
 	}
 	else if (isFullReadCmd(args)) {
-		return new TestShellFullReadCmd{};
+		return new ShellFullReadCmd{};
 	}
 	else if (isExitCmd(args)) {
-		return TEST_SHELL_EXIT_CMD;
+		return SHELL_EXIT_CMD;
 	}
 	else if (isTestScript1(args)) {
-		return new TestShellScript1Cmd{};
+		return new ShellScript1Cmd{};
 	}
 	else if (isTestScript2(args)) {
-		return new TestShellScript2Cmd{};
+		return new ShellScript2Cmd{};
 	}
 	else if (isTestScript3(args)) {
-		return new TestShellScript3Cmd{};
+		return new ShellScript3Cmd{};
 	}
 	else if (isEraseCmd(args)) {
 		long address = std::stol(args[1]);
 		long size = std::stol(args[2]);
-		return new TestShellEraseCmd{ address, size };
+		return new ShellEraseCmd{ address, size };
 	}
 	else if (isEraseRangeCmd(args)) {
 		long startAddress = std::stol(args[1]);
 		long endAddress = std::stol(args[2]);
-		return new TestShellEraseRangeCmd{ startAddress, endAddress };
+		return new ShellEraseRangeCmd{ startAddress, endAddress };
 	}
 	else if (isFlushCmd(args)) {
-		return new TestShellFlushCmd{};
+		return new ShellFlushCmd{};
 	}
 	else if (isTestScript4(args)) {
-		return new TestShellScript4Cmd{};
+		return new ShellScript4Cmd{};
 	}
 
-	return new TestShellErrorCmd();
+	return new ShellErrorCmd();
 }
 
 bool ShellCmdParser::isReadCmd(const std::vector<std::string>& args) {
