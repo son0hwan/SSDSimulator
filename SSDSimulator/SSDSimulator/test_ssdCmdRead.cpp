@@ -27,7 +27,7 @@ public:
     }
 
 protected:
-    IOManager ioManager;
+    IOManager ioManager{SsdSimulator::getInstance().getMaxSector()};
 
     static const uint32_t VALID_ADDRESS = 19;
     static const uint32_t INVALID_ADDRESS = 100;
