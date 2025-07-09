@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+
 namespace {
 	const int SUCCESS = 0;
 	const int ERROR = 1;
@@ -12,6 +13,8 @@ namespace {
 	const std::string PASS = "PASS_ON_EXE";
 	const std::string FAIL = "FAIL_ON_EXE";
 }
+	
+#define for_each_addr(addr) for (int addr = 0; addr < NUM_OF_LBA; addr++)
 
 class Executor {
 public:

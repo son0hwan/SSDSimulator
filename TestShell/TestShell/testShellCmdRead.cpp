@@ -47,7 +47,7 @@ public:
 	TestShellFullReadCmd() {}
 
 	void run() override {
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
+		for_each_addr(addr) {
 			if (executor->readFromSSD(addr) == ERROR_STRING)
 				break;
 		}

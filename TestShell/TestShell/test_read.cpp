@@ -31,8 +31,8 @@ TEST_F(ShellFixture, ReadJustOnce) {
 }
 
 TEST_F(ShellFixture, FullRead) {
-	for (int i = 0; i < NUM_OF_LBA; i++) {
-		EXPECT_CALL(mockSSD, readFromSSD(i))
+	for_each_addr(addr) {
+		EXPECT_CALL(mockSSD, readFromSSD(addr))
 			.WillOnce(testing::Return(SUCCESS_STRING));
 	}
 

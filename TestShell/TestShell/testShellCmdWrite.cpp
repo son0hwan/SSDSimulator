@@ -33,8 +33,8 @@ public:
 
 	void run() override {
 		std::string result;
-
-		for (int addr = 0; addr < NUM_OF_LBA; addr++) {
+		
+		for_each_addr(addr) {
 			result = executor->writeToSSD(addr, data);
 			if (result == ERROR_STRING) {
 				std::cout << "[FullWrite] Error" << std::endl;
