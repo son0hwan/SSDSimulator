@@ -1,0 +1,125 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+#include "testShellCmd.h"
+#include "common.h"
+
+using std::vector;
+
+TestShellScript1Cmd::TestShellScript1Cmd() {}
+
+void TestShellScript1Cmd::run() {
+	vector<unsigned int> values;
+	int unitCount = 5;
+	int iterationCount = NUM_OF_LBA / unitCount;
+
+	for (int idx = 0; idx < iterationCount; idx++) {
+		unsigned int randomVal = static_cast<unsigned int>(rand());
+		values.emplace_back(randomVal);
+	}
+
+	for (int idx = 0; idx < values.size(); idx++) {
+		int startIdx = idx * 5;
+		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
+			int addr = startIdx + unitIdx;
+			unsigned int value = values.at(idx);
+
+			if (executor->writeToSSD(addr, value) == ERROR_STRING) {
+				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+				return;
+			}
+		}
+
+		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
+			int addr = startIdx + unitIdx;
+			unsigned int value = values.at(idx);
+			std::string expectedValString = "PASS_ON_EXE";
+			std::string actualValString = executor->readFromSSD(addr);
+
+			if (expectedValString != actualValString) {
+				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+				return;
+			}
+		}
+	}
+	std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
+	return;
+}
+
+TestShellScript2Cmd::TestShellScript2Cmd() {}
+
+void TestShellScript2Cmd::run() {
+	vector<unsigned int> values;
+	for (int i = 0; i < 30; i++) {
+		unsigned int randomVal = static_cast<unsigned int>(rand());
+		values.emplace_back(randomVal);
+	}
+	if (values.size() != 30) {
+		std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
+		return;
+	}
+
+	for (int cnt = 0; cnt < 30; cnt++) {
+		executor->writeToSSD(4, values.at(cnt));
+		executor->writeToSSD(0, values.at(cnt));
+		executor->writeToSSD(3, values.at(cnt));
+		executor->writeToSSD(1, values.at(cnt));
+		executor->writeToSSD(2, values.at(cnt));
+
+		executor->readFromSSD(0);
+		std::string valStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+		for (int addr = 1; addr <= 4; addr++) {
+			executor->readFromSSD(addr);
+			std::string compStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+			if (valStr != compStr) {
+				std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
+				return;
+			}
+
+			valStr = compStr;
+		}
+	}
+
+	std::cout << "[2_PartialLBAWrite] Done" << std::endl;
+	return;
+}
+
+TestShellScript3Cmd::TestShellScript3Cmd() {}
+
+void TestShellScript3Cmd::run() {
+	std::string result;
+
+	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
+		std::string EXPECTED_STR = genRandomString(MAX_VAL_LEN);
+
+		result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
+		if (result == ERROR_STRING)
+			return;
+
+		executor->readFromSSD(0);
+		std::string resStrOf0 = getFirstLineFromFile(OUTPUT_FILE_NAME);
+
+		result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
+		if (result == ERROR_STRING)
+			return;
+
+		executor->readFromSSD(99);
+		std::string resStrOf99 = getFirstLineFromFile(OUTPUT_FILE_NAME);
+
+		if (resStrOf0 != resStrOf99) {
+			std::cout << "[3_WriteReadAging] Fail" << std::endl;
+			return;
+		}
+	}
+
+	std::cout << "[3_WriteReadAging] Done" << std::endl;
+}
+
+TestShellScript4Cmd::TestShellScript4Cmd() {
+}
+
+void TestShellScript4Cmd::run() {
+}

@@ -2,7 +2,7 @@
 #include "executor.h"
 #include "shellCmdParser.h"
 #include "testShellCmdInterface.h"
-#include "executor.h"
+#include "common.h"
 
 #define MOCK_TEST
 
@@ -60,7 +60,7 @@ public:
 	}
 
 	void writeToOutputFile(std::string contents) {
-		std::ofstream file("ssd_output.txt"); 
+		std::ofstream file(OUTPUT_FILE_NAME);
 		if (!file.is_open()) {
 			std::cerr << "fail to open file";
 			return;
