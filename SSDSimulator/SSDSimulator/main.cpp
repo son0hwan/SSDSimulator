@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
   SsdCmdParser parser;
   auto command = parser.getCommand({argv + 1, argv + argc});
   
-  newcommand = addBufferAndGetCmdToRun(command)
   command->run();
 }
 #endif
