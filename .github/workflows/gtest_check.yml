@@ -1,4 +1,4 @@
-name: Build and Run Unit Test (Simulator + Shell)
+name: Build and Gtest Check (Simulator + Shell)
 
 on:
   push:
