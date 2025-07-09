@@ -32,7 +32,6 @@ public:
 		address = 0;
 		type = CT_FLUSH;
 		isBufferingRequired = false;
-		isFlush = true;
 	}
 
 	SsdCmdInterface* getCmd() { return cmd; }
@@ -40,12 +39,8 @@ public:
 	//make field as needed
 	long address = 0;
 	long size = 1;
-	long valueToWrite = 0;
 	bool isBufferingRequired = false;
-	bool isFlush = false;
-	bool isRead;
+
 	commandType type;
-
 	SsdCmdInterface* cmd;
-
 };
