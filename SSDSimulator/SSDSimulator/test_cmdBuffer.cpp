@@ -11,7 +11,7 @@ using namespace testing;
 class MockCommandBufferStroage : public CommandBufferStorage {
 public:
 	MOCK_METHOD(vector<BufferedCmdInfo*>, getBufferFromStorage, (), (override));
-	//MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
+	MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
 };
 
 class MockCommandBuffer : public CommandBuffer {
@@ -93,7 +93,8 @@ TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	v.push_back(cmd4.getBufferedCmdInfo());
 	v.push_back(cmd5.getBufferedCmdInfo());
 
-	mockStorage.setBufferToStorage(v);
+	CommandBufferStorage bufferStorage;
+	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	std::vector<std::string> actual = ioManager.getBufferFileList();
