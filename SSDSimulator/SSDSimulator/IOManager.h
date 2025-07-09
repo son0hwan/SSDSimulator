@@ -72,7 +72,7 @@ public:
         if (!file) {
             std::vector<LbaEntry> readDatas{};
             uint32_t initAddress = 0x705FF427;
-            for (uint32_t lba = 0; lba <= DEFAULT_MAX_LBA_OF_DEVICE; ++lba) {
+            for (uint32_t lba = 0; lba <= maxLbaOfDevice; ++lba) {
                 readDatas.push_back({ lba, initAddress++ });
             }
             ProgramAllDatasToNand(readDatas);
@@ -134,7 +134,6 @@ private:
         return true;
     }
 
-    const static uint32_t DEFAULT_MAX_LBA_OF_DEVICE = 99;
     const uint32_t maxLbaOfDevice;
     const static uint32_t INIT_NAND_DATA = 0;
 
