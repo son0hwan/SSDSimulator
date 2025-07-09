@@ -1,10 +1,4 @@
-#include "ssdInterface.h"
-#include "ssdCmdRead.h"
-#include "ssdCmdWrite.h"
-#include "ssdCmdErase.h"
-#include "ssdCmdError.h"
-#include "ssdCmdFlush.h"
-#include "ssdCmdParser.h"	
+#include "ssdCmdIncludes.h"
 #include <string>
 #include <algorithm>
 #include <cstdint>
