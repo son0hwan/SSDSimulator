@@ -81,8 +81,8 @@ jobs:
         "erase 0 10" | Out-File -Append -Encoding ASCII -FilePath input.txt
         "read 0" | Out-File -Append -Encoding ASCII -FilePath input.txt
         "exit" | Out-File -Append -Encoding ASCII -FilePath input.txt
-        $workDir = "$(Resolve-Path 'SSD_TestShell/x64/Release')"
-        $exePath = "$workDir\SSD_TestShell.exe"
+        $workDir = "$(Resolve-Path 'TestShell/x64/Release')"
+        $exePath = "$workDir\TestShell.exe"
         $inputPath = "$(Resolve-Path 'input.txt')"
         $outputPath = "$workDir\output.txt"
 
