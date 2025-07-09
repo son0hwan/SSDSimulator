@@ -11,13 +11,8 @@ public:
     NandFile() : maxLbaOfDevice(0) {};
     NandFile(uint32_t maxLbaOfDevice) : maxLbaOfDevice(maxLbaOfDevice) {}
 
-    void setDeviceMaxLba(uint32_t deviceMaxLba) {
-        this->maxLbaOfDevice = deviceMaxLba;
-    }
-
     void CheckAndCreateNandDataFile() {
         if (nandDataFileExist()) return;
-
         auto nandDataFile = openFile(NAND_DATA_FILE);
         FillZeroDataToAllAddresses(nandDataFile);
     }
@@ -67,6 +62,7 @@ public:
             std::remove(NAND_DATA_FILE.c_str());
         }
     }
+
 private:
     uint32_t maxLbaOfDevice;
     const static uint32_t INIT_NAND_DATA = 0;
