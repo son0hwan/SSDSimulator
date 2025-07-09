@@ -14,8 +14,7 @@ public:
 		int iterationCount = NUM_OF_LBA / unitCount;
 
 		for (int idx = 0; idx < iterationCount; idx++) {
-			unsigned int randomVal = static_cast<unsigned int>(rand());
-			values.emplace_back(randomVal);
+			values.emplace_back(rand());
 		}
 
 		for (int idx = 0; idx < values.size(); idx++) {
@@ -75,8 +74,7 @@ public:
 	void run() override {
 		vector<unsigned int> values;
 		for (int i = 0; i < 30; i++) {
-			unsigned int randomVal = static_cast<unsigned int>(rand());
-			values.emplace_back(randomVal);
+			values.emplace_back(rand());
 		}
 		if (values.size() != 30) {
 			std::cout << "[2_PartialLBAWrite] Fail" << std::endl;

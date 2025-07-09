@@ -14,6 +14,10 @@ public:
 	bool isError(const std::string& result) {
 		return result == ERROR_STRING;
 	}
+	
+	unsigned int rand() {
+		return executor->rand();
+	}
 protected:
 	Executor* executor;
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "randomGenerator.h"
 
 namespace {
 	const int SUCCESS = 0;
@@ -18,6 +18,18 @@ namespace {
 
 class Executor {
 public:
+	Executor() {
+		randomGenerator = new RealRandomGenerator();
+	}
 	virtual std::string readFromSSD(int address) = 0;
 	virtual std::string writeToSSD(int address, int value) = 0;
+	
+	void setRandomGenerator(IRandomGenerator* randomGenerator) {
+		this->randomGenerator = randomGenerator;
+	}
+	unsigned int rand(void) {
+		return randomGenerator->next();
+	}
+private:
+	IRandomGenerator* randomGenerator;
 };
