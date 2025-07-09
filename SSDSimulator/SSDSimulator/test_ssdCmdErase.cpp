@@ -48,7 +48,7 @@ public:
 	}
 
 protected:
-	IOManager ioManager;
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	std::vector<uint32_t> expectDatas{ 0,0,0,0,0,0,0,0,0,0 };
 
 	static const uint32_t VALID_ADDRESS = 19;
