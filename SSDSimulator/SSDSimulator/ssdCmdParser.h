@@ -7,7 +7,7 @@
 
 class SsdCmdParser {
 public:
-    SsdCmdInterface* getCommand(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> getCommand(const std::vector<std::string>& args);
     std::vector<std::string> getEncodedString(SsdCmdInterface* cmd);
 
 private:
@@ -16,13 +16,13 @@ private:
     const int NUM_OF_ERASE_ARGS = 3;
     const int NUM_OF_FLUSH_ARGS = 1;
 
-    SsdCmdInterface* handleReadCommand(const std::vector<std::string>& args);
-    SsdCmdInterface* handleEraseCommand(const std::vector<std::string>& args);
-    SsdCmdInterface* handleWriteCommand(const std::vector<std::string>& args);
-    SsdCmdInterface* handleFlushCommand(const std::vector<std::string>& args);
-    SsdCmdInterface* getReadCommandWithInput(const std::vector<std::string>& args);
-    SsdCmdInterface* getEraseCommandWithInput(const std::vector<std::string>& args);
-    SsdCmdInterface* getWriteCommandWithInput(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> handleReadCommand(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> handleEraseCommand(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> handleWriteCommand(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> handleFlushCommand(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> getReadCommandWithInput(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> getEraseCommandWithInput(const std::vector<std::string>& args);
+    std::shared_ptr<SsdCmdInterface> getWriteCommandWithInput(const std::vector<std::string>& args);
     bool isHexString(const std::string& address);
     bool isLbaString(const std::string& address);
 
