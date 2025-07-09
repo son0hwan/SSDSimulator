@@ -6,25 +6,25 @@ constexpr shellCmdInterface* SHELL_EXIT_CMD = nullptr;
 class ShellInvalidCmd : public shellCmdInterface {
 public:
 	ShellInvalidCmd();
-	void run() override;
+	bool run() override;
 };
 
 class ShellHelpCmd : public shellCmdInterface {
 public:
 	ShellHelpCmd();
-	void run() override;
+	bool run() override;
 };
 
 class ShellErrorCmd : public shellCmdInterface {
 public:
 	ShellErrorCmd();
-	void run() override;
+	bool run() override;
 };
 
 class ShellReadCmd : public shellCmdInterface {
 public:
 	ShellReadCmd(long address);
-	void run() override;
+	bool run() override;
 
 	long getAddress();
 protected:
@@ -35,13 +35,13 @@ protected:
 class ShellFullReadCmd : public shellCmdInterface {
 public:
 	ShellFullReadCmd();
-	void run() override;
+	bool run() override;
 };
 
 class ShellWriteCmd : public shellCmdInterface {
 public:
 	ShellWriteCmd(long address, unsigned data);
-	void run() override;
+	bool run() override;
 
 	long getAddress();
 	long getData();
@@ -54,7 +54,7 @@ protected:
 class ShellFullWriteCmd : public shellCmdInterface {
 public:
 	ShellFullWriteCmd(unsigned data);
-	void run() override;
+	bool run() override;
 protected:
 	const unsigned data;
 };
@@ -63,21 +63,21 @@ protected:
 class ShellScript1Cmd : public shellCmdInterface {
 public:
 	ShellScript1Cmd();
-	void run() override;
+	bool run() override;
 };
 
 
 class ShellScript2Cmd : public shellCmdInterface {
 public:
 	ShellScript2Cmd();
-	void run() override;
+	bool run() override;
 };
 
 
 class ShellScript3Cmd : public shellCmdInterface {
 public:
 	ShellScript3Cmd();
-	void run() override;
+	bool run() override;
 private:
 	const int MAX_LOOP_COUNT = 200;
 };
@@ -85,7 +85,7 @@ private:
 class ShellEraseCmd : public shellCmdInterface {
 public:
 	ShellEraseCmd(long address, long size);
-	virtual void run() override;
+	virtual bool run() override;
 
 	long getAddress();
 	long getSize();
@@ -97,7 +97,7 @@ protected:
 class ShellEraseRangeCmd : public shellCmdInterface {
 public:
 	ShellEraseRangeCmd(long startAddress, long endAddress);
-	void run() override;
+	bool run() override;
 
 	long getStartAddress();
 	long getEndAddress();
@@ -109,11 +109,11 @@ protected:
 class ShellScript4Cmd : public shellCmdInterface {
 public:
 	ShellScript4Cmd();
-	void run() override;
+	bool run() override;
 };
 
 class ShellFlushCmd : public shellCmdInterface {
 public:
 	ShellFlushCmd();
-	void run() override;
+	bool run() override;
 };

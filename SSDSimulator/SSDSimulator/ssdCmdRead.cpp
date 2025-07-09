@@ -1,8 +1,8 @@
-#include "ssdSimulator.h"
 #include "ssdCmdRead.h"
+#include "bufferedCmdInfo.h"
 
 void SsdReadCmd::setAddress(uint32_t newAddress) {
-	requestedAddress = newAddress; 
+	requestedAddress = newAddress;
 }
 
 void SsdReadCmd::run() {
@@ -14,5 +14,12 @@ uint32_t SsdReadCmd::getAddress() const {
 }
 
 uint32_t SsdReadCmd::getReadData() const {
-	return readData; 
+	return readData;
+}
+BufferedCmdInfo* SsdReadCmd::getBufferedCmdInfo(void) {
+	return new BufferedCmdInfo(this);
+}
+
+void SsdCachedReadCmd::run(void) {
+	SsdSimulator::getInstance().getIoManager().updateOutputReadSuccess(readData);
 }

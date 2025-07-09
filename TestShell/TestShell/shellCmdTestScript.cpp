@@ -9,9 +9,13 @@
 
 using std::vector;
 
-ShellScript1Cmd::ShellScript1Cmd() {}
+ShellScript1Cmd::ShellScript1Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void ShellScript1Cmd::run() {
+bool ShellScript1Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	vector<unsigned int> values;
 	int unitCount = 5;
 	int iterationCount = NUM_OF_LBA / unitCount;
@@ -29,7 +33,7 @@ void ShellScript1Cmd::run() {
 
 			if (executor->writeToSSD(addr, value) == ERROR_STRING) {
 				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
+				return false;
 			}
 		}
 
@@ -41,17 +45,21 @@ void ShellScript1Cmd::run() {
 
 			if (expectedValString != actualValString) {
 				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return;
+				return false;
 			}
 		}
 	}
 	std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
-	return;
+	return true;
 }
 
-ShellScript2Cmd::ShellScript2Cmd() {}
+ShellScript2Cmd::ShellScript2Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void ShellScript2Cmd::run() {
+bool ShellScript2Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	vector<unsigned int> values;
 	for (int i = 0; i < 30; i++) {
 		unsigned int randomVal = static_cast<unsigned int>(rand());
@@ -59,7 +67,7 @@ void ShellScript2Cmd::run() {
 	}
 	if (values.size() != 30) {
 		std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
-		return;
+		return false;
 	}
 
 	for (int cnt = 0; cnt < 30; cnt++) {
@@ -76,7 +84,7 @@ void ShellScript2Cmd::run() {
 			std::string compStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 			if (valStr != compStr) {
 				std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
-				return;
+				return false;
 			}
 
 			valStr = compStr;
@@ -84,12 +92,16 @@ void ShellScript2Cmd::run() {
 	}
 
 	std::cout << "[2_PartialLBAWrite] Done" << std::endl;
-	return;
+	return true; 
 }
 
-ShellScript3Cmd::ShellScript3Cmd() {}
+ShellScript3Cmd::ShellScript3Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void ShellScript3Cmd::run() {
+bool ShellScript3Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	std::string result;
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
@@ -97,29 +109,33 @@ void ShellScript3Cmd::run() {
 
 		result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
 		if (result == ERROR_STRING)
-			return;
+			return false;
 
 		executor->readFromSSD(0);
 		std::string resStrOf0 = getFirstLineFromFile(OUTPUT_FILE_NAME);
 
 		result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
 		if (result == ERROR_STRING)
-			return;
+			return false;
 
 		executor->readFromSSD(99);
 		std::string resStrOf99 = getFirstLineFromFile(OUTPUT_FILE_NAME);
 
 		if (resStrOf0 != resStrOf99) {
 			std::cout << "[3_WriteReadAging] Fail" << std::endl;
-			return;
+			return false;
 		}
 	}
 
 	std::cout << "[3_WriteReadAging] Done" << std::endl;
+	return true;
 }
 
 ShellScript4Cmd::ShellScript4Cmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void ShellScript4Cmd::run() {
+bool ShellScript4Cmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+	return true;
 }

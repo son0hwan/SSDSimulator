@@ -12,9 +12,19 @@ public:
     void setAddress(uint32_t newAddress);
     uint32_t getAddress() const;
     uint32_t getReadData() const;
-    bool isAllowBuffering() override { return false; }
-
-private:
+    BufferedCmdInfo* getBufferedCmdInfo(void) override;
+protected:
     uint32_t requestedAddress{};
     uint32_t readData{};
+};
+
+
+class SsdCachedReadCmd : public SsdReadCmd {
+public:
+    SsdCachedReadCmd(uint32_t address, uint32_t cachedData)
+        : SsdReadCmd(address) {
+        readData = cachedData;
+    }
+
+    void run() override;
 };

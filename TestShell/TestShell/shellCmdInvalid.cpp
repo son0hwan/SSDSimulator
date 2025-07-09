@@ -5,7 +5,8 @@ ShellInvalidCmd::ShellInvalidCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void ShellInvalidCmd::run() {
+	bool ShellInvalidCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 	std::cout << "invalid command \n";
+	return false;
 }

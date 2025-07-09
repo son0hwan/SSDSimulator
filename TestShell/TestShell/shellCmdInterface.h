@@ -6,7 +6,7 @@
 
 class shellCmdInterface {
 public:
-	virtual void run() = 0;
+	virtual bool run() = 0;
 
 	void setExecutor(Executor* executor) {
 		this->executor = executor;

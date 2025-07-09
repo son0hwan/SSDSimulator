@@ -70,12 +70,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>ssd</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,6 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,7 +134,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bufferedCmdInfo.h" />
     <ClCompile Include="cmdBuffer.cpp" />
+    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssdCmdErase.cpp" />
     <ClCompile Include="ssdCmdError.cpp" />
@@ -135,6 +144,8 @@
     <ClCompile Include="ssdCmdParser.cpp" />
     <ClCompile Include="ssdCmdRead.cpp" />
     <ClCompile Include="ssdCmdWrite.cpp" />
+    <ClCompile Include="ssdSimulator.cpp" />
+    <ClCompile Include="test_ssdBuffer.cpp" />
     <ClCompile Include="test_cmdBuffer.cpp" />
     <ClCompile Include="test_ssdCmdErase.cpp" />
     <ClCompile Include="test_SsdCmdParser.cpp" />
@@ -142,11 +153,16 @@
     <ClCompile Include="test_ssdCmdWrite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bufferFile.h" />
     <ClInclude Include="cmdBuffer.h" />
+    <ClInclude Include="fileIO.h" />
     <ClInclude Include="IOManager.h" />
+    <ClInclude Include="nandFile.h" />
+    <ClInclude Include="outputFile.h" />
     <ClInclude Include="ssdCmdErase.h" />
     <ClInclude Include="ssdCmdError.h" />
     <ClInclude Include="ssdCmdFlush.h" />
+    <ClInclude Include="ssdCmdIncludes.h" />
     <ClInclude Include="ssdCmdParser.h" />
     <ClInclude Include="ssdCmdRead.h" />
     <ClInclude Include="ssdCmdWrite.h" />
@@ -154,11 +170,11 @@
     <ClInclude Include="ssdSimulator.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="ssd_nand.txt" />
     <Text Include="ssd_output.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

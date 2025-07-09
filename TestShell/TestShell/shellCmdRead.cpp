@@ -20,41 +20,47 @@ ShellReadCmd::ShellReadCmd(long address) : address{ address } {
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void ShellReadCmd::run() {
+bool ShellReadCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
 	executor->readFromSSD(address);
 
 	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 	if (hexStr._Equal("ERROR")) {
-		std::cout << "[Read] ERROR\n";
-		return;
+		std::cout << "[Read] ERROR";
+		return false;
 	}
 
 	unsigned int value = std::stoul(hexStr, nullptr, 16);
 	printReadInfo(address, value);
+	return true;
 }
 
 long ShellReadCmd::getAddress() { 
 	return address; 
 }
 
-ShellFullReadCmd::ShellFullReadCmd() {}
+ShellFullReadCmd::ShellFullReadCmd() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+}
 
-void ShellFullReadCmd::run() {
+bool ShellFullReadCmd::run() {
+	LOG(std::string(__FUNCTION__) + " has been called");
+
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
 		if (executor->readFromSSD(addr) == ERROR_STRING)
-			return;
+			return false;
 
 		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 		if (hexStr._Equal("ERROR")) {
 			std::cout << "[Read] ERROR";
-			return;
+			return false;
 		}
 
 		unsigned int value = std::stoul(hexStr, nullptr, 16);
 		printReadInfo(addr, value);
 	}
+	return true;
 }

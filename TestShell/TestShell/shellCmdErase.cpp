@@ -5,7 +5,7 @@ ShellEraseCmd::ShellEraseCmd(long address, long size) : address(address), size(s
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void ShellEraseCmd::run() {
+bool ShellEraseCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
 	std::string result;
@@ -18,11 +18,12 @@ void ShellEraseCmd::run() {
 		result = executor->eraseToSSD(start_lba, erase_size);
 		if (result == ERROR_STRING) {
 			std::cout << "[Erase] ERROR" << std::endl;
-			return;
+			return false;
 		}
 		start_lba += erase_size;
 	}
 	std::cout << "[Erase] Done" << std::endl;
+	return true;
 }
 
 long ShellEraseCmd::getAddress() { return address; }

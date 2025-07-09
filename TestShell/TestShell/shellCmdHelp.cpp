@@ -5,7 +5,7 @@ ShellHelpCmd::ShellHelpCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
-void ShellHelpCmd::run() {
+bool ShellHelpCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
 	std::cout << "\n [HELP]\n";
@@ -16,4 +16,5 @@ void ShellHelpCmd::run() {
 	std::cout << " -. erase [LBA] [SIZE] \n";
 	std::cout << " -. erase_range [START_LBA] [END_LBA] \n";
 	std::cout << " -. exit \n\n";
+	return true;
 }
