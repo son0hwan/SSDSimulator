@@ -59,34 +59,40 @@ vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {
 
 	int fileIdx = 1;
 	for (std::string line : fileNames) {
-		if (fileNames.size() >= 2 &&
-			line[0] == ('0' + fileIdx) && line[1] == '_') {
+		if (false == isValidFileName(line, fileIdx)) break;
+		if (line.substr(2) == "empty") break;
 
-			if (line.substr(2) == "empty") {
-				continue;
-			}
+		auto cmd = parser.getCommand(splitByUnderBar(line.substr(2)));
+		auto bufferedInfo = cmd->getBufferedCmdInfo();
+		if (nullptr == bufferedInfo) break;
 
-			auto cmdString = splitByUnderBar(line.substr(2));
-
-			auto cmd = parser.getCommand(cmdString);
-
-			auto bufferInfo = cmd->getBufferedCmdInfo();
-			if (nullptr == bufferInfo) {
-				ioManager.forceCreateFiveFreshBufferFiles();
-				return {};
-			}
-
-			result.push_back(bufferInfo);
-		}
-		else {
-			ioManager.forceCreateFiveFreshBufferFiles();
-			return {};
-		}
-
+		result.push_back(bufferedInfo);
 		fileIdx++;
 	}
 
+	if (fileIdx <= 5 && false == checkRemainIsEmpty(fileNames, fileIdx)) {
+		ioManager.forceCreateFiveFreshBufferFiles();
+		return {};
+	}
+
 	return result;
+}
+
+
+bool CommandBufferStorage::isValidFileName(std::string& line, int fileIdx)
+{
+	return line.size() >= 2 &&
+		line[0] == ('0' + fileIdx) && line[1] == '_';
+}
+
+bool CommandBufferStorage::checkRemainIsEmpty(vector<std::string> fileNames, int fileIdx) {
+	vector<std::string> subVector { fileNames.begin() + fileIdx - 1, fileNames.end() };
+	for (std::string line : subVector) {
+		if (false == isValidFileName(line, fileIdx)) return false;
+		if (line.substr(2) != "empty") return false;
+		fileIdx++;
+	}
+	return true;
 }
 
 std::vector<std::string> CommandBufferStorage::splitByUnderBar(const std::string& str) {
