@@ -29,7 +29,20 @@ TestShellCmdInterface* ShellCmdParser::getCommand(
     return new TestShellScript2Cmd{};
   } else if (isTestScript3(args)) {
     return new TestShellScript3Cmd{};
+  } else if (isEraseCmd(args)) {
+    long address = std::stol(args[1]);
+    long size = std::stol(args[2]);
+    return new TestShellEraseCmd{address, size};
+  } else if (isEraseRangeCmd(args)) {
+    long startAddress = std::stol(args[1]);
+    long endAddress = std::stol(args[2]);
+    return new TestShellEraseRangeCmd{startAddress, endAddress};
+  } else if (isFlushCmd(args)) {
+    return new TestShellFlushCmd{};
+  } else if (isTestScript4(args)) {
+    return new TestShellScript4Cmd{};
   }
+
 
   return new TestShellErrorCmd();
 }
@@ -87,6 +100,33 @@ bool ShellCmdParser::isTestScript2(const std::vector<std::string>& args) {
 bool ShellCmdParser::isTestScript3(const std::vector<std::string>& args) {
   if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
   return (args[0] == CMD_SCRIPT_3 || args[0] == CMD_SCRIPT_SHORT_3);
+}
+
+bool ShellCmdParser::isEraseCmd(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_ERASE_ARGS) return false;
+  if (args[0] != CMD_ERASE) return false;
+  if (false == isLbaString(args[1])) return false;
+  if (false == isLbaString(args[2])) return false;
+  return true;
+}
+
+bool ShellCmdParser::isEraseRangeCmd(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_ERASE_ARGS) return false;
+  if (args[0] != CMD_ERASE_RANGE) return false;
+  if (false == isLbaString(args[1])) return false;
+  if (false == isLbaString(args[2])) return false;
+  return true;
+}
+
+bool ShellCmdParser::isFlushCmd(const std::vector<std::string>& args) {
+    if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+    if (args[0] != CMD_FLUSH) return false;
+    return true;
+}
+
+bool ShellCmdParser::isTestScript4(const std::vector<std::string>& args) {
+  if (args.size() != NUM_OF_CMD_ONLY_ARGS) return false;
+  return (args[0] == CMD_SCRIPT_4 || args[0] == CMD_SCRIPT_SHORT_4);
 }
 
 bool ShellCmdParser::isHexString(const std::string& address) {

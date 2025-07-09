@@ -47,14 +47,22 @@ class TestShellErrorCmd : public TestShellCmdInterface {
 
 class TestShellEraseCmd : public TestShellCmdInterface {
  public:
-  TestShellEraseCmd() {}
-  void run() override {}
+  TestShellEraseCmd(long address, long size) : address(address), size(size) {}
+  virtual void run() override {}
+
+  long getAddress() { return address; }
+  long getSize() { return size; }
+ protected:
+  const long address;
+  const long size;
 };
 
-class TestShellEraseRangeCmd : public TestShellCmdInterface {
+class TestShellEraseRangeCmd : public TestShellEraseCmd {
  public:
-  TestShellEraseRangeCmd() {}
-  void run() override {}
+  TestShellEraseRangeCmd(long startAddress, long endAddress)
+      : TestShellEraseCmd(startAddress, (endAddress - startAddress + 1)) {}
+  long getStartAddress() { return getAddress(); }
+  long getEndAddress() { return getAddress() + getSize() - 1; }	
 };
 
 class TestShellScript4Cmd : public TestShellCmdInterface {
@@ -68,4 +76,3 @@ class TestShellFlushCmd : public TestShellCmdInterface {
   TestShellFlushCmd() {}
   void run() override {}
 };
-
