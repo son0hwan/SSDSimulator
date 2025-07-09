@@ -19,15 +19,13 @@ static void printReadInfo(long address, unsigned int value)
 TestShellReadCmd::TestShellReadCmd(long address) : address{ address } {}
 
 void TestShellReadCmd::run() {
-	executor->readFromSSD(address);
+	unsigned int value;
 
-	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-	if (hexStr._Equal("ERROR")) {
+	if (executor->readFromSSDWithResult(address, &value)) {
 		std::cout << "[Read] ERROR";
 		return;
 	}
 
-	unsigned int value = std::stoul(hexStr, nullptr, 16);
 	printReadInfo(address, value);
 }
 
@@ -41,16 +39,13 @@ void TestShellFullReadCmd::run() {
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-		if (executor->readFromSSD(addr) == ERROR_STRING)
-			return;
+		unsigned int value;
 
-		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-		if (hexStr._Equal("ERROR")) {
+		if (executor->readFromSSDWithResult(addr, &value)) {
 			std::cout << "[Read] ERROR";
 			return;
 		}
 
-		unsigned int value = std::stoul(hexStr, nullptr, 16);
 		printReadInfo(addr, value);
 	}
 }
