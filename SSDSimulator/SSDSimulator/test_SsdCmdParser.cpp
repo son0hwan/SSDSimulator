@@ -118,3 +118,32 @@ TEST_F(SsdCmdParserFixture, NonArg) {
     SsdCmdInterface* result = cmdParser.getCommand(args);
     EXPECT_TRUE(isCmdTypeOf<SsdErrorCmd>(result));
 }
+
+
+TEST_F(SsdCmdParserFixture, EncodeWriteCmd) {
+    std::vector<std::string> result;
+    std::vector<std::string> expected = {"W", "3", "0x12345678"};
+	SsdWriteCmd cmd{ 3, 0x12345678};
+        
+    result = cmdParser.getEncodedString(&cmd);
+    EXPECT_EQ(result, expected);
+}
+
+
+TEST_F(SsdCmdParserFixture, EncodeEraseCmd) {
+    std::vector<std::string> result;
+    std::vector<std::string> expected = { "E", "0", "10" };
+    SsdEraseCmd cmd{ 0, 10 };
+
+    result = cmdParser.getEncodedString(&cmd);
+    EXPECT_EQ(result, expected);
+}
+
+TEST_F(SsdCmdParserFixture, EncodeCmd) {
+    std::vector<std::string> result;
+    std::vector<std::string> expected = {};
+    SsdReadCmd cmd{ 0 };
+
+    result = cmdParser.getEncodedString(&cmd);
+    EXPECT_EQ(result, expected);
+}
