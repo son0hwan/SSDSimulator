@@ -141,6 +141,7 @@
     <ClCompile Include="ssdCmdParser.cpp" />
     <ClCompile Include="ssdCmdRead.cpp" />
     <ClCompile Include="ssdCmdWrite.cpp" />
+    <ClCompile Include="ssdSimulator.cpp" />
     <ClCompile Include="test_ssdBuffer.cpp" />
     <ClCompile Include="test_cmdBuffer.cpp" />
     <ClCompile Include="test_ssdCmdErase.cpp" />
