@@ -1,9 +1,10 @@
 #pragma once
 #include <deque>
+#include <vector>
 #include "ssdInterface.h"
 
-using std::deque;
-typedef deque<SsdCmdInterface*> CmdQ_type;
+using std::vector;
+typedef vector<BufferedCmdInfo*> CmdQ_type;
 
 class CommandBufferStroage {
 public:
@@ -20,8 +21,8 @@ public:
 	}
 
 	CommandBuffer(CommandBufferStroage& stroage);
-	CmdQ_type addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
-	CmdQ_type popAllBuffer();
+	vector<SsdCmdInterface*> addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
+	vector<SsdCmdInterface*> popAllBuffer();
 
 
 protected:

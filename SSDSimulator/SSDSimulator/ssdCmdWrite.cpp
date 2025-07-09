@@ -1,4 +1,5 @@
 #include "ssdCmdWrite.h"
+#include "bufferedCmdInfo.h"
 
 void SsdWriteCmd::run() {
     SsdSimulator::getInstance().write(this->requestedAddress, this->data);
@@ -17,4 +18,8 @@ uint32_t SsdWriteCmd::getAddress() const{
 }
 uint32_t SsdWriteCmd::getData() const {
     return data; 
+}
+
+BufferedCmdInfo* SsdWriteCmd::getBufferedCmdInfo(void) {
+    return new BufferedCmdInfo(this);
 }

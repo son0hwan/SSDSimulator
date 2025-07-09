@@ -1,36 +1,42 @@
 #include "cmdBuffer.h"
+#include "bufferedCmdInfo.h"
 
 CommandBuffer::CommandBuffer(CommandBufferStroage& stroage)
 	: storage(storage) {
 	cmdQ = storage.getBufferFromStorage();
 }
 
-CmdQ_type CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
-	CmdQ_type resultQ;
-	if (false == newCmd->isAllowBuffering()) {
-		//TBD : if buffer read and cached,  ssdBufferReadCmd(value);
-
-
+std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
+	std::vector<SsdCmdInterface*> resultQ;
+	BufferedCmdInfo* bufferedInfo = newCmd->getBufferedCmdInfo();
+	if (nullptr == bufferedInfo) {
 		resultQ.push_back(newCmd);
 		return resultQ;
+	}
+
+	if (false == bufferedInfo->isBufferingRequired) {
+		//
 	}
 
 	if (cmdQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
 		resultQ = popAllBuffer();
 	}
 
-	cmdQ.push_back(newCmd);
-
-
+	//
+	cmdQ.push_back(bufferedInfo);
 
 	//storage.setBufferToStorage(cmdQ);
 	return resultQ;
 }
 
-CmdQ_type CommandBuffer::popAllBuffer() {
-	CmdQ_type result = std::move(cmdQ);
-	cmdQ = CmdQ_type{};
-	return result;
+vector<SsdCmdInterface*> CommandBuffer::popAllBuffer() {
+	std::vector<SsdCmdInterface*> resultQ;
+	for (auto bufferedInfo : cmdQ) {
+		resultQ.push_back(bufferedInfo->getCmd());
+		delete(bufferedInfo);
+	}
+	cmdQ.clear();
+	return resultQ;
 }
 
 CmdQ_type CommandBufferStroage::getBufferFromStorage() { return CmdQ_type{}; }

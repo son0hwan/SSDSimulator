@@ -15,7 +15,7 @@ public:
     void setWriteData(uint32_t newWriteData);
     uint32_t getAddress() const;
     uint32_t getData() const;
-    bool isAllowBuffering() override { return true; }
+    BufferedCmdInfo* getBufferedCmdInfo(void);
 
 private:
     uint32_t requestedAddress;
