@@ -26,7 +26,7 @@ public:
 
 
 protected:
-	vector<BufferedCmdInfo*> cmdQ;
+	vector<BufferedCmdInfo*> bufferingQ;
 	CommandBufferStorage& storage;
 
 	static const int Q_SIZE_LIMIT_TO_FLUSH = 5;
