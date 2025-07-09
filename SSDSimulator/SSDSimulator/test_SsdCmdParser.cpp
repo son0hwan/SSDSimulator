@@ -1,12 +1,6 @@
 #include "gmock/gmock.h"
 #include "stdexcept"
-#include "ssdCmdRead.h"
-#include "ssdCmdWrite.h"
-#include "ssdCmdError.h"
-#include "ssdCmdFlush.h"
-#include "ssdInterface.h"
-#include "ssdCmdParser.h"
-#include "ssdCmdErase.h"
+#include "ssdCmdIncludes.h"
 
 using namespace testing;
 
