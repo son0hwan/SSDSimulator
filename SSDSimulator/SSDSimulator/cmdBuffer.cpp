@@ -1,9 +1,11 @@
 #include <iostream>
 #include <sstream>
+#include <unordered_set>
 #include "cmdBuffer.h"
 #include "bufferedCmdInfo.h"
 #include "ssdCmdParser.h"
 #include "IOManager.h"
+#include <list>
 
 CommandBuffer::CommandBuffer(CommandBufferStorage& newStorage)
 	: storage(newStorage) {
@@ -17,8 +19,14 @@ std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInter
 	if (!CheckBufferingCommand(bufferedInfo, outstandingQ, newCmd)) return outstandingQ;
 	
 	if (bufferingQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
-		outstandingQ = popAllBuffer();
+		auto tmp = popAllBuffer();  // 새 vector 생성
+		outstandingQ.clear();       // 기존 vector clear
+		outstandingQ.insert(outstandingQ.end(), tmp.begin(), tmp.end());
 	}
+
+	std::vector<SsdCmdInterface*> cleanedQ(outstandingQ.begin(), outstandingQ.end());
+	filterInvalidWrites(cleanedQ);
+	outstandingQ = cleanedQ;
 
 	bufferingQ.push_back(bufferedInfo);
 	// need change buffer file name
@@ -36,6 +44,77 @@ bool CommandBuffer::CheckBufferingCommand(BufferedCmdInfo* bufferedInfo, CmdQ_ty
 	return true;
 }
 
+void CommandBuffer::filterInvalidWrites(std::vector<SsdCmdInterface*>& outstandingQ) {
+	// 1. erase 중복 처리 (앞에 있는 erase가 뒤에 포함되면 앞 erase 삭제)
+	std::vector<SsdCmdInterface*> erasesToRemove;
+	for (auto itCmd = outstandingQ.begin(); itCmd != outstandingQ.end(); ++itCmd) {
+		if ((*itCmd)->getBufferedCmdInfo()->type != CT_ERASE) continue;
+
+		uint32_t startFrontEraseAddress = (*itCmd)->getBufferedCmdInfo()->address;
+		uint32_t endFrontEraseAddress = startFrontEraseAddress + (*itCmd)->getBufferedCmdInfo()->size - 1;
+
+		for (auto itNextCmd = std::next(itCmd); itNextCmd != outstandingQ.end(); ++itNextCmd) {
+			if ((*itNextCmd)->getBufferedCmdInfo()->type != CT_ERASE) continue;
+
+			auto* rearErase = dynamic_cast<SsdEraseCmd*>(*itNextCmd);
+			uint32_t startRearEraseAddress = rearErase->getStartAddress();
+			uint32_t endRearEraseAddress = startRearEraseAddress + rearErase->getSize() - 1;
+
+			if (startFrontEraseAddress >= startRearEraseAddress && endFrontEraseAddress <= endRearEraseAddress) {
+				erasesToRemove.push_back(*itCmd);
+				break; // 앞 erase는 하나만 삭제
+			}
+		}
+	}
+
+	for (auto* cmdToRemove : erasesToRemove) {
+		auto it = std::find(outstandingQ.begin(), outstandingQ.end(), cmdToRemove);
+		if (it != outstandingQ.end()) {
+			outstandingQ.erase(it);
+		}
+	}
+
+	// 2. erase 앞에 있는 write 삭제 (erase 범위에 포함된 write 삭제)
+	std::vector<SsdCmdInterface*> writesToRemove;
+	for (auto itCommand = outstandingQ.begin(); itCommand != outstandingQ.end(); ++itCommand) {
+		if ((*itCommand)->getBufferedCmdInfo()->type != CT_ERASE) continue;
+
+		uint32_t startEraseAddress = (*itCommand)->getBufferedCmdInfo()->address;
+		uint32_t endEraseAddress = startEraseAddress + (*itCommand)->getBufferedCmdInfo()->size - 1;
+
+		for (auto itNextCmd = outstandingQ.begin(); itNextCmd != itCommand; ++itNextCmd) {
+			if ((*itNextCmd)->getBufferedCmdInfo()->type == CT_WRITE) {
+				uint32_t writeAddress = (*itNextCmd)->getBufferedCmdInfo()->address;
+				if (writeAddress >= startEraseAddress && writeAddress <= endEraseAddress) {
+					writesToRemove.push_back(*itNextCmd);
+				}
+			}
+		}
+	}
+
+	for (auto* cmdToRemove : writesToRemove) {
+		auto it = std::find(outstandingQ.begin(), outstandingQ.end(), cmdToRemove);
+		if (it != outstandingQ.end()) {
+			outstandingQ.erase(it);
+		}
+	}
+
+	// 3. write 중복 주소 처리 (역순 index 순회, 앞쪽 write 삭제)
+	std::unordered_set<uint32_t> seenAddresses;
+	for (int i = static_cast<int>(outstandingQ.size()) - 1; i >= 0; --i) {
+		auto* cmd = outstandingQ[i];
+		if (cmd->getBufferedCmdInfo()->type == CT_WRITE) {
+			uint32_t addr = cmd->getBufferedCmdInfo()->address;
+			if (seenAddresses.count(addr)) {
+				outstandingQ.erase(outstandingQ.begin() + i);
+			}
+			else {
+				seenAddresses.insert(addr);
+			}
+		}
+	}
+}
+
 vector<SsdCmdInterface*> CommandBuffer::popAllBuffer() {
 	std::vector<SsdCmdInterface*> outstandingQ;
 	for (auto bufferedInfo : bufferingQ) {
@@ -44,6 +123,13 @@ vector<SsdCmdInterface*> CommandBuffer::popAllBuffer() {
 	}
 	bufferingQ.clear();
 	return outstandingQ;
+}
+
+void CommandBuffer::ClearBufferingQ() {
+	for (auto* cmd : bufferingQ) {
+		delete cmd;  // 각각의 포인터가 가리키는 실제 객체 삭제
+	}
+	bufferingQ.clear();
 }
 
 vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {

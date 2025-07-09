@@ -27,7 +27,9 @@ public:
 	CommandBuffer(CommandBufferStorage& stroage);
 	CmdQ_type  addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
 	CmdQ_type  popAllBuffer();
-
+	void filterInvalidWrites(std::vector<SsdCmdInterface*>& outstandingQ);
+	void removeFromOutstandingQ(CmdQ_type& erasesToRemove, CmdQ_type& outstandingQ);
+	void ClearBufferingQ();
 
 protected:
 	vector<BufferedCmdInfo*> bufferingQ;
