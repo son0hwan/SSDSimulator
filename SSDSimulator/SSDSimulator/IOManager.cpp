@@ -12,6 +12,10 @@ void IOManager::updateOutputReadSuccess(uint32_t readData) {
     output().updateOutputReadSuccess(readData);
 }
 
+void IOManager::updateOutputEraseSuccess() {
+    output().updateOutputWriteSuccess();
+}
+
 void IOManager::CheckAndCreateNandDataFile() {
     nand().CheckAndCreateNandDataFile();
 }
