@@ -27,7 +27,7 @@ public:
 		cmdBuffer.clearBuffer();
 	}
 
-	MockCommandBufferStroage mockStorage;
+	NiceMock<MockCommandBufferStroage> mockStorage;
 	MockCommandBuffer cmdBuffer{ mockStorage };
 };
 

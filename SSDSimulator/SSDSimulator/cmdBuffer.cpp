@@ -1,8 +1,8 @@
 #include "cmdBuffer.h"
 
-CommandBuffer::CommandBuffer(CommandBufferStroage& stroage)
-	: storage(storage) {
-	cmdQ = storage.getBufferFromStorage();
+CommandBuffer::CommandBuffer(CommandBufferStroage& newStorage)
+	: storage(newStorage) {
+	cmdQ = newStorage.getBufferFromStorage();
 }
 
 CmdQ_type CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
