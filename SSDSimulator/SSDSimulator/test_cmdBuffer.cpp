@@ -31,6 +31,17 @@ public:
 	MockCommandBuffer cmdBuffer{ mockStorage };
 };
 
+class RealCommandBufferFixture : public Test {
+public:
+	CommandBuffer& cmdBuffer = CommandBuffer::getInstance();
+	void SetUp() override {
+		cmdBuffer.ClearBufferingQ();
+		//CommandBuffer::getInstance().ClearBufferingQ();
+	}
+};
+
+
+
 TEST_F(CommandBufferFixture, addReadCmd) {
 	SsdReadCmd cmd{};
 	CmdQ_type expected{ &cmd };
@@ -129,4 +140,61 @@ TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
 	std::vector<std::string> actual = ioManager.getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
+}
+
+TEST_F(RealCommandBufferFixture, AllOverlapEraseWithEraseAddress) {
+	SsdWriteCmd cmd1{ 1, 0x12345678 };
+	SsdWriteCmd cmd2{ 3, 0x12345678 };
+	SsdEraseCmd cmd3{ 2, 3 };	// 2-4
+	SsdEraseCmd cmd4{ 1, 5 };	// 1-5
+	SsdWriteCmd cmd5{ 2, 0x12345678 };
+	SsdWriteCmd cmd6{ 4, 0x12345678 };
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+
+	CmdQ_type expected{ &cmd4, &cmd5 };
+	EXPECT_THAT(result, ContainerEq(expected));
+}
+
+TEST_F(RealCommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
+	SsdWriteCmd cmd1{ 1, 2 };	// 1-2
+	SsdEraseCmd cmd2{ 3, 4 };	// 3-6
+	SsdEraseCmd cmd3{ 1, 4 };	// 1-5
+	SsdEraseCmd cmd4{ 3, 3 };	// 3-5
+	SsdWriteCmd cmd5{ 4, 0x12345678 };
+	SsdWriteCmd cmd6{ 4, 0x12345678 };
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+
+	CmdQ_type expected{ &cmd2, &cmd3, &cmd4, &cmd5 };
+	EXPECT_THAT(result, ContainerEq(expected));
+}
+
+TEST_F(RealCommandBufferFixture, WrtieOverlapErase) {
+	SsdWriteCmd cmd1{ 3, 0x12345678 };
+	SsdWriteCmd cmd2{ 4, 0x12345678 };
+	SsdWriteCmd cmd3{ 3, 0x12345678 };
+	SsdWriteCmd cmd4{ 5, 0x12345678 };
+	SsdWriteCmd cmd5{ 3, 0x12345678 };
+	SsdWriteCmd cmd6{ 6, 0x12345678 };
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+
+	CmdQ_type expected{ &cmd2, &cmd4, &cmd5 };
+	EXPECT_THAT(result, ContainerEq(expected));
 }
