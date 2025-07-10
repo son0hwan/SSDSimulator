@@ -37,12 +37,15 @@ protected:
 	static const int Q_SIZE_LIMIT_TO_FLUSH = 5;
 
 private:
-	std::vector<SsdCmdInterface*> GetNoBufferingCmd(BufferedCmdInfo* bufferedInfo, SsdCmdInterface*& newCmd);
+	std::vector<SsdCmdInterface*> GetBufferedReadCmd(BufferedCmdInfo* readCmdInfo);
+
 	void CheckLbaOverlapBothErases(CmdQ_type& outstandingQ, CmdQ_type& erasesToRemove);
 	void CheckLbaOverlapWriteAndErase(CmdQ_type& outstandingQ, CmdQ_type& writesToRemove);
 	void CheckLbaOverlapBothWrites(CmdQ_type& outstandingQ);
 	void CompareWithOtherErases(CmdQ_type::iterator& itCmd, CmdQ_type& outstandingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, CmdQ_type& erasesToRemove);
 	void CompareWithWrites(CmdQ_type& outstandingQ, CmdQ_type::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, CmdQ_type& writesToRemove);
 	void removeFromOutstandingQ(CmdQ_type& outstandingQ, CmdQ_type& erasesToRemove);
+
+	BufferedCmdInfo* CheckLbaOverlap(vector<BufferedCmdInfo*>& outstandingQ, long address);
 };
 

@@ -1,10 +1,8 @@
 #include "cmdBuffer.h"
 #include "gmock/gmock.h"
-#include "ssdCmdErase.h"
-#include "ssdCmdError.h"
-#include "ssdCmdRead.h"
-#include "ssdCmdWrite.h"
+#include "ssdCmdIncludes.h"
 #include "stdexcept"
+#include <memory>
 
 using namespace testing;
 
@@ -25,6 +23,19 @@ class CommandBufferFixture : public Test {
 public:
 	void SetUp() override {
 		cmdBuffer.clearBuffer();
+	}
+
+	bool isCachedReadCmd(SsdCmdInterface* cmd, uint32_t expectedAddress, uint32_t expectedData) {
+		auto convertedCmd = dynamic_cast<SsdCachedReadCmd*>(cmd);
+		if (nullptr == convertedCmd) return false;
+		try {
+			EXPECT_EQ(expectedAddress, convertedCmd->getAddress());
+			EXPECT_EQ(expectedData, convertedCmd->getReadData());
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
 	}
 
 	NiceMock<MockCommandBufferStroage> mockStorage;
@@ -87,6 +98,43 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	CmdQ_type expected{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
 	EXPECT_THAT(result, ContainerEq(expected));
 }
+
+
+TEST_F(CommandBufferFixture, flushCmd) {
+	SsdWriteCmd cmd1{ 0, 0x12345678 };
+	SsdWriteCmd cmd2{ 1, 0x12345678 };
+	SsdWriteCmd cmd3{ 2, 0x12345678 };
+	SsdFlushCmd cmd4{};
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+
+	CmdQ_type expected{ &cmd1, &cmd2, &cmd3 };
+	EXPECT_THAT(result, ContainerEq(expected));
+}
+
+
+TEST_F(CommandBufferFixture, cachedReadWithWrite) {
+	SsdWriteCmd cmd1{ 0, 0x12345678 };
+	SsdReadCmd	cmd2{0};
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	auto result1 = cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+
+	EXPECT_EQ(result1.size(), 1);
+	EXPECT_TRUE(isCachedReadCmd(result1[0], 0, 0x12345678));
+
+	SsdEraseCmd cmd3{ 0, 5 };
+	SsdReadCmd	cmd4{ 0 };
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	auto result2 = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+
+	EXPECT_EQ(result2.size(), 1);
+	EXPECT_TRUE(isCachedReadCmd(result2[0], 0, 0));
+}
+
 
 TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
