@@ -16,8 +16,12 @@ void ConsoleInputStrategy::print(const std::string& cmdName, int status) {
     std::string statusStr;
     if (status == SUCCESS)
         statusStr = "Done";
-    else
+    else if (status == ERROR)
         statusStr = "Error";
+    else if (status == SSDAccessFail)
+        statusStr = "FAIL to execute ssd.exe";
+    else
+        return;
 
     std::cout << "[" << cmdName << "] " << statusStr << std::endl << std::endl;
 }

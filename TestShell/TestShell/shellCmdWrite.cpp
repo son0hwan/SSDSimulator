@@ -11,20 +11,19 @@ ShellWriteCmd::ShellWriteCmd(long address, unsigned data)
 
 bool ShellWriteCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	std::string hexStr;
+	if (result = executor->writeToSSDWithResult(address, data))
+		goto ret;
 
-	if (executor->writeToSSDWithResult(address, data)) {
-		printError();
-		return false;
-	}
-
-	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+	hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
 	if (hexStr._Equal(ERROR_STRING)) {
-		printError();
-		return false;
+		result = ERROR;
+		goto ret;
 	}
 
-	printSuccess();
-	return true;
+ret:
+	printResult();
+	return isCmdSuccess();
 }
 
 long ShellWriteCmd::getAddress() { 
@@ -45,12 +44,11 @@ bool ShellFullWriteCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-		if (executor->writeToSSDWithResult(addr, data)) {
-			printError();
-			return false;
+		if (result = executor->writeToSSDWithResult(addr, data)) {
+			break;
 		}
 	}
 
-	printSuccess();
-	return true;
+	printResult();
+	return isCmdSuccess();
 }

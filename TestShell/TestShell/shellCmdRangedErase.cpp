@@ -8,24 +8,20 @@ ShellEraseRangeCmd::ShellEraseRangeCmd(long startAddress, long endAddress)
 }
 
 bool ShellEraseRangeCmd::run() {
-	std::string result;
-
 	int start_lba = startAddress;
 	int exit_lba = endAddress + 1;
 	int size = exit_lba - startAddress;
 
 	while (start_lba != exit_lba) {
 		int erase_size = size > ERASE_UNIT ? ERASE_UNIT : size;
-		result = executor->eraseToSSD(start_lba, erase_size);
-		if (result == ERROR_STRING) {
-			printError();
-			return false;
-		}
+		if (result = executor->eraseToSSDWithResult(start_lba, erase_size))
+			break;
+
 		start_lba += erase_size;
 		size -= erase_size;
 	}
-	printSuccess();
-	return true;
+	printResult();
+	return isCmdSuccess();
 }
 
 long ShellEraseRangeCmd::getStartAddress() { return startAddress; }

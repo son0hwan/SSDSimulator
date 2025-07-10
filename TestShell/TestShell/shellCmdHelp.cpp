@@ -17,5 +17,5 @@ bool ShellHelpCmd::run() {
 	std::cout << " -. erase [LBA] [SIZE] \n";
 	std::cout << " -. erase_range [START_LBA] [END_LBA] \n";
 	std::cout << " -. exit \n\n";
-	return true;
+	return isCmdSuccess();
 }

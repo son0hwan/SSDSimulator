@@ -50,22 +50,15 @@ bool ShellScript1Cmd::run() {
 		unsigned int writeValue = rand();
 		vector<unsigned int> readValues;
 
-		if (writeFiveTimesFromIdx(writeValue, idx * unitCount)) {
-			printError();
-			return false;
-		}
-		if (readFiveTimesFromIdx(readValues, idx * unitCount)) {
-			printError();
-			return false;
-		}
-		if (checkValueIsSame(writeValue, readValues)) {
-			printError();
-			return false;
-		}
-		printSuccess();
-		return true;
+		if (result = writeFiveTimesFromIdx(writeValue, idx * unitCount))
+			break;
+		if (result = readFiveTimesFromIdx(readValues, idx * unitCount))
+			break;
+		if (result = checkValueIsSame(writeValue, readValues))
+			break;
 	}
-	return true;
+	printResult();
+	return isCmdSuccess();
 }
 
 ShellScript2Cmd::ShellScript2Cmd() {
@@ -81,8 +74,8 @@ bool ShellScript2Cmd::run() {
 		values.emplace_back(rand());
 	}
 	if (values.size() != 30) {
-		printError();
-		return false;
+		result = ERROR;
+		goto ret;
 	}
 
 	for (int cnt = 0; cnt < 30; cnt++) {
@@ -93,26 +86,24 @@ bool ShellScript2Cmd::run() {
 		executor->writeToSSDWithResult(2, values.at(cnt));
 
 		unsigned int value;
-		if (executor->readFromSSDWithResult(0, &value)) {
-			printError();
-			return false;
+		if (result = executor->readFromSSDWithResult(0, &value)) {
+			goto ret;
 		}
 		for (int addr = 1; addr <= 4; addr++) {
 			unsigned int comp;
-			if (executor->readFromSSDWithResult(addr, &comp)) {
-				printError();
-				return false;
+			if (result = executor->readFromSSDWithResult(addr, &comp)) {
+				goto ret;
 			}
 			if (value != comp) {
-				printError();
-				return false;
+				result = ERROR;
+				goto ret;
 			}
 			value = comp;
 		}
 	}
-
-	printSuccess();
-	return true; 
+ret:
+	printResult();
+	return isCmdSuccess(); 
 }
 
 ShellScript3Cmd::ShellScript3Cmd() {
@@ -126,10 +117,10 @@ bool ShellScript3Cmd::run() {
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		std::string EXPECTED_STR = genRandomString(MAX_VAL_LEN);
 
-		if (executor->writeToSSDWithResult(0, stoul(EXPECTED_STR, nullptr, 16)))
-			return false;
-		if (executor->writeToSSDWithResult(99, stoul(EXPECTED_STR, nullptr, 16)))
-			return false;
+		if (result = executor->writeToSSDWithResult(0, stoul(EXPECTED_STR, nullptr, 16)))
+			goto ret;
+		if (result = executor->writeToSSDWithResult(99, stoul(EXPECTED_STR, nullptr, 16)))
+			goto ret;
 
 		unsigned int resOf0, resOf99;
 
@@ -137,12 +128,13 @@ bool ShellScript3Cmd::run() {
 		executor->readFromSSDWithResult(0, &resOf99);
 
 		if (resOf0 != resOf99) {
-			printError();
-			return false;
+			result = ERROR;
+			goto ret;
 		}
 	}
-	printSuccess();
-	return true;
+ret:
+	printResult();
+	return isCmdSuccess();
 }
 
 ShellScript4Cmd::ShellScript4Cmd() {
@@ -153,25 +145,27 @@ ShellScript4Cmd::ShellScript4Cmd() {
 bool ShellScript4Cmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	executor->eraseToSSD(0, 3);
+
+	if (result = executor->eraseToSSDWithResult(0, 3))
+		goto ret;
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		for (int address = 2; address <= 98; address += 2) {
 			std::string FIRST_RANDOM_STR = genRandomString(MAX_VAL_LEN);
 			std::string SECOND_RANDOM_STR = genRandomString(MAX_VAL_LEN);
 
-			if (executor->writeToSSDWithResult(address, stoul(FIRST_RANDOM_STR, nullptr, 16)))
-				return false;
+			if (result = executor->writeToSSDWithResult(address, stoul(FIRST_RANDOM_STR, nullptr, 16)))
+				goto ret;
 
-			if (executor->writeToSSDWithResult(address, stoul(SECOND_RANDOM_STR, nullptr, 16)))
-				return false;
+			if (result = executor->writeToSSDWithResult(address, stoul(SECOND_RANDOM_STR, nullptr, 16)))
+				goto ret;
 
 			int erase_unit = ((address == 98) ? 2 : 3);
-			executor->eraseToSSD(address, erase_unit);
+			if (result = executor->eraseToSSDWithResult(address, erase_unit))
+				goto ret;
 		}
 	}
-
-	printSuccess();
-
-	return true;
+ret:
+	printResult();
+	return isCmdSuccess();
 }
