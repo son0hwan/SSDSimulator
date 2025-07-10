@@ -24,6 +24,7 @@ class SSDExecutor : public Executor {
             std::cout << "write fail : return code = " << result << std::endl;
             return FAIL;
         }
+
         return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
 

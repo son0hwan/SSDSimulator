@@ -6,14 +6,25 @@
 
 #include "shellCmd.h"
 #include "common.h"
+#include "shellCmdRead.h"
 
-static void printReadInfo(long address, unsigned int value)
+void printfReadInfoCore(long address, unsigned int value, string prefix)
 {
-	std::cout << "[Read] LBA "
+	std::cout << prefix
 		<< std::setw(2) << std::setfill('0') << std::dec << address
 		<< " : 0x"
 		<< std::setw(8) << std::setfill('0') << std::hex << std::uppercase << value
 		<< std::endl;
+}
+
+static void printReadInfo(long address, unsigned int value)
+{
+	printfReadInfoCore(address, value, "[Read] LBA ");
+}
+
+static void printReadInfoWithoutHeader(long address, unsigned int value)
+{
+	printfReadInfoCore(address, value, "LBA ");
 }
 
 ShellReadCmd::ShellReadCmd(long address) : address{ address } {
@@ -26,11 +37,14 @@ bool ShellReadCmd::run() {
 	unsigned int value;
 
 	if (executor->readFromSSDWithResult(address, &value)) {
-		std::cout << "[Read] ERROR";
+		std::cout << "[Read] ERROR" << std::endl << std::endl;
 		return false;
 	}
 
 	printReadInfo(address, value);
+
+	std::cout << std::endl;
+
 	return true;
 }
 
@@ -51,11 +65,14 @@ bool ShellFullReadCmd::run() {
 		unsigned int value;
 
 		if (executor->readFromSSDWithResult(addr, &value)) {
-			std::cout << "[Read] ERROR";
+			std::cout << "[Full Read] ERROR" << std::endl << std::endl;
 			return false;
 		}
 
-		printReadInfo(addr, value);
+		printReadInfoWithoutHeader(addr, value);
 	}
+
+	std::cout << std::endl;
+
 	return true;
 }

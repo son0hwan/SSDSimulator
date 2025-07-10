@@ -17,12 +17,12 @@ bool ShellEraseCmd::run() {
 		int erase_size = size > ERASE_UNIT ? ERASE_UNIT : size;
 		result = executor->eraseToSSD(start_lba, erase_size);
 		if (result == ERROR_STRING) {
-			std::cout << "[Erase] ERROR" << std::endl;
+			std::cout << "[Erase] ERROR" << std::endl << std::endl;
 			return false;
 		}
 		start_lba += erase_size;
 	}
-	std::cout << "[Erase] Done" << std::endl;
+	std::cout << "[Erase] Done" << std::endl << std::endl;
 	return true;
 }
 
