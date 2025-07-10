@@ -39,7 +39,7 @@ public:
 	SsdCmdInterface* getCmd() { return cmd; }
 
 	uint32_t getValueFromAddress(long targetAddress) {
-		if (targetAddress < address || address + size <= targetAddress) return 0;
+		if (targetAddress < address || address + size <= targetAddress) throw std::out_of_range("error accessing targetAddress");
 		return value;
 	}
 
