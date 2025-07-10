@@ -30,7 +30,8 @@ public:
 			LOG(cmd);
 
 			std::vector<std::string> token = splitBySpace(cmd);
-			shellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+			std::shared_ptr<shellCmdInterface> sharedCmd = shellCmdParser.getCommand(token);
+			shellCmdInterface* exeCmd = sharedCmd.get();
 			
 			if (exeCmd == nullptr) break;
 			
@@ -55,7 +56,8 @@ public:
 	void fake_command(std::string cmd) {
 		ShellCmdParser shellCmdParser;
 		std::vector<std::string> token = splitBySpace(cmd);
-		shellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
+		std::shared_ptr<shellCmdInterface> sharedCmd = shellCmdParser.getCommand(token);
+		shellCmdInterface* exeCmd = sharedCmd.get();
 
 		if (exeCmd == nullptr) return;
 

@@ -1,59 +1,87 @@
 #include "shellCmdParser.h"
 #include "shellCmd.h"
 
-shellCmdInterface* ShellCmdParser::getCommand(
-	const std::vector<std::string>& args) {
-	if (args.empty()) return new ShellErrorCmd{};
 
-	if (isReadCmd(args)) {
-		long address = std::stol(args[1]);
-		return new ShellReadCmd{ address };
-	}
-	else if (isWriteCmd(args)) {
-		long address = std::stol(args[1]);
-		unsigned value = std::stoul(args[2], nullptr, 16);
-		return new ShellWriteCmd{ address, value };
-	}
-	else if (isHelpCmd(args)) {
-		return new ShellHelpCmd{};
-	}
-	else if (isFullWriteCmd(args)) {
-		unsigned value = std::stoul(args[1], nullptr, 16);
-		return new ShellFullWriteCmd{ value };
-	}
-	else if (isFullReadCmd(args)) {
-		return new ShellFullReadCmd{};
-	}
-	else if (isExitCmd(args)) {
-		return SHELL_EXIT_CMD;
-	}
-	else if (isTestScript1(args)) {
-		return new ShellScript1Cmd{};
-	}
-	else if (isTestScript2(args)) {
-		return new ShellScript2Cmd{};
-	}
-	else if (isTestScript3(args)) {
-		return new ShellScript3Cmd{};
-	}
-	else if (isEraseCmd(args)) {
-		long address = std::stol(args[1]);
-		long size = std::stol(args[2]);
-		return new ShellEraseCmd{ address, size };
-	}
-	else if (isEraseRangeCmd(args)) {
-		long startAddress = std::stol(args[1]);
-		long endAddress = std::stol(args[2]);
-		return new ShellEraseRangeCmd{ startAddress, endAddress };
-	}
-	else if (isFlushCmd(args)) {
-		return new ShellFlushCmd{};
-	}
-	else if (isTestScript4(args)) {
-		return new ShellScript4Cmd{};
-	}
+std::shared_ptr<shellCmdInterface> ShellCmdParser::getCommand(const std::vector<std::string>& args) {
+	if (args.empty())             return makeErrorCommand();
+	if (isReadCmd(args))          return handleReadCommand(args);
+	if (isWriteCmd(args))         return handleWriteCommand(args);
+	if (isHelpCmd(args))          return handleHelpCommand();
+	if (isFullWriteCmd(args))     return handleFullWriteCommand(args);
+	if (isFullReadCmd(args))      return handleFullReadCommand();
+	if (isTestScript1(args))      return handleScript1Command();
+	if (isTestScript2(args))      return handleScript2Command();
+	if (isTestScript3(args))      return handleScript3Command();
+	if (isTestScript4(args))      return handleScript4Command();
+	if (isEraseCmd(args))         return handleEraseCommand(args);
+	if (isEraseRangeCmd(args))    return handleEraseRangeCommand(args);
+	if (isFlushCmd(args))         return handleFlushCommand();
+	if (isExitCmd(args))          return handleExitCommand();
+	return makeErrorCommand();
+}
 
-	return new ShellErrorCmd();
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleReadCommand(const std::vector<std::string>& args) {
+	long address = std::stol(args[1]);
+	return std::make_shared<ShellReadCmd>(address);
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleWriteCommand(const std::vector<std::string>& args) {
+	long address = std::stol(args[1]);
+	unsigned value = std::stoul(args[2], nullptr, 16);
+	return std::make_shared<ShellWriteCmd>(address, value);
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleHelpCommand() {
+	return std::make_shared<ShellHelpCmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleFullWriteCommand(const std::vector<std::string>& args) {
+	unsigned value = std::stoul(args[1], nullptr, 16);
+	return std::make_shared<ShellFullWriteCmd>(value);
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleFullReadCommand() {
+	return std::make_shared<ShellFullReadCmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleScript1Command() {
+	return std::make_shared<ShellScript1Cmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleScript2Command() {
+	return std::make_shared<ShellScript2Cmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleScript3Command() {
+	return std::make_shared<ShellScript3Cmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleScript4Command() {
+	return std::make_shared<ShellScript4Cmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleEraseCommand(const std::vector<std::string>& args) {
+	long address = std::stol(args[1]);
+	long size = std::stol(args[2]);
+	return std::make_shared<ShellEraseCmd>(address, size);
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleEraseRangeCommand(const std::vector<std::string>& args) {
+	long startAddress = std::stol(args[1]);
+	long endAddress = std::stol(args[2]);
+	return std::make_shared<ShellEraseRangeCmd>(startAddress, endAddress);
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleFlushCommand() {
+	return std::make_shared<ShellFlushCmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::makeErrorCommand() {
+	return std::make_shared<ShellErrorCmd>();
+}
+
+std::shared_ptr<shellCmdInterface> ShellCmdParser::handleExitCommand() {
+	return nullptr;
 }
 
 bool ShellCmdParser::isReadCmd(const std::vector<std::string>& args) {
