@@ -64,8 +64,6 @@ void Logger::addLog(const string& prettyName, const string& msg) {
 	rotateLogFileIfNeeded();
 
 	writeLogToFile(entry);
-
-	// printSingleLog(entry);
 }
 
 void Logger::rotateLogFileIfNeeded()

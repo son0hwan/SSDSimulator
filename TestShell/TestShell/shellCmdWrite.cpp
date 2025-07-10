@@ -11,10 +11,7 @@ ShellWriteCmd::ShellWriteCmd(long address, unsigned data)
 bool ShellWriteCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	std::string result;
-
-	result = executor->writeToSSD(address, data);
-	if (result == ERROR_STRING) {
+	if (executor->writeToSSDWithResult(address, data)) {
 		std::cout << "[Write] Error" << std::endl << std::endl;
 		return false;
 	}
@@ -45,19 +42,9 @@ ShellFullWriteCmd::ShellFullWriteCmd(unsigned data)
 bool ShellFullWriteCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	std::string result;
-
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-		result = executor->writeToSSD(addr, data);
-		
-		if (result == ERROR_STRING) {
-			std::cout << "[Full Write] Error" << std::endl<< std::endl;
-			return false;
-		}
-
-		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-		if (hexStr._Equal("ERROR")) {
-			std::cout << "[Full Write] ERROR" << std::endl << std::endl;
+		if (executor->writeToSSDWithResult(addr, data)) {
+			std::cout << "[FullWrite] Error" << std::endl << std::endl;
 			return false;
 		}
 	}

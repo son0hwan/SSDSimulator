@@ -19,7 +19,7 @@ TEST_F(ShellFixture, ReadJustOnce) {
 TEST_F(ShellFixture, FullRead) {
 	for_each_addr(addr) {
 		EXPECT_CALL(mockSSD, readFromSSD(addr))
-			.WillOnce(testing::Return(SUCCESS_STRING));
+			.WillOnce(testing::Return(TEST_SAMPLE_DATA));
 	}
 
 	testShell.fake_command("fullread");

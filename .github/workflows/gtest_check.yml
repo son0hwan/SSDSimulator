@@ -1,0 +1,84 @@
+name: Build and Gtest Check (Simulator + Shell)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-run:
+    name: Build & Execute SSDSimulator and TestShell
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages (SSDSimulator)
+      run: nuget restore SSDSimulator/SSDSimulator.sln
+
+    - name: Restore NuGet packages (TestShell)
+      run: nuget restore TestShell/TestShell.sln
+
+    # ¢º Debug ºôµå
+    - name: Build SSDSimulator (Debug)
+      run: msbuild SSDSimulator/SSDSimulator.sln /p:Configuration=Debug /p:Platform=x64
+
+    - name: Build TestShell (Debug)
+      run: msbuild TestShell/TestShell.sln /p:Configuration=Debug /p:Platform=x64
+
+    - name: Run SSDSimulator (Debug)
+      run: |
+        cd SSDSimulator/x64/Debug
+        cmd /c ".\SSDSimulator.exe > ssd-debug-output.txt"
+      continue-on-error: true
+
+    - name: Run TestShell (Debug)
+      run: |
+        cd TestShell/x64/Debug
+        cmd /c "echo exit > input.txt"
+        cmd /c "TestShell.exe < input.txt > shell-debug-output.txt"
+      continue-on-error: true
+
+    # ¢º Release ºôµå
+    - name: Build SSDSimulator (Release)
+      run: msbuild SSDSimulator/SSDSimulator.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Build TestShell (Release)
+      run: msbuild TestShell/TestShell.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Run SSDSimulator (Release)
+      run: |
+        cd SSDSimulator/x64/Release
+        cmd /c ".\SSDSimulator.exe > ssd-release-output.txt"
+      continue-on-error: true
+
+    - name: Run TestShell (Release)
+      run: |
+        cd TestShell/x64/Release
+        cmd /c "echo exit > input.txt"
+        cmd /c "TestShell.exe < input.txt > shell-release-output.txt"
+      continue-on-error: true
+
+    # ¢º °á°ú ¾÷·Îµå
+    - name: Upload Debug Outputs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-outputs
+        path: |
+          SSDSimulator/x64/Debug/ssd-debug-output.txt
+          TestShell/x64/Debug/shell-debug-output.txt
+
+    - name: Upload Release Outputs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-outputs
+        path: |
+          SSDSimulator/x64/Release/ssd-release-output.txt
+          TestShell/x64/Release/shell-release-output.txt

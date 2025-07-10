@@ -17,9 +17,11 @@ namespace {
 	const std::string PASS = "PASS_ON_EXE";
 	const std::string FAIL = "FAIL_ON_EXE";
 	const std::string OUTPUT_FILE_NAME = "ssd_output.txt";
+	const std::string TEST_SAMPLE_DATA = "0x12345678";
 
 	const char* SUCCESS_STRING = "";
 	const char* ERROR_STRING = "ERROR";
+
 }
 
 inline std::string genRandomString(int length) {

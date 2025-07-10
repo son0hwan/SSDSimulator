@@ -34,15 +34,13 @@ ShellReadCmd::ShellReadCmd(long address) : address{ address } {
 bool ShellReadCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	executor->readFromSSD(address);
+	unsigned int value;
 
-	std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-	if (hexStr._Equal("ERROR")) {
+	if (executor->readFromSSDWithResult(address, &value)) {
 		std::cout << "[Read] ERROR" << std::endl << std::endl;
 		return false;
 	}
 
-	unsigned int value = std::stoul(hexStr, nullptr, 16);
 	printReadInfo(address, value);
 
 	std::cout << std::endl;
@@ -64,16 +62,13 @@ bool ShellFullReadCmd::run() {
 	std::cout << "[Full Read] \n";
 		
 	for (int addr = 0; addr < NUM_OF_LBA; addr++) {
-		if (executor->readFromSSD(addr) == ERROR_STRING)
-			return false;
+		unsigned int value;
 
-		std::string hexStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-		if (hexStr._Equal("ERROR")) {
+		if (executor->readFromSSDWithResult(addr, &value)) {
 			std::cout << "[Full Read] ERROR" << std::endl << std::endl;
 			return false;
 		}
 
-		unsigned int value = std::stoul(hexStr, nullptr, 16);
 		printReadInfoWithoutHeader(addr, value);
 	}
 
