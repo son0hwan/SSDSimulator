@@ -27,7 +27,7 @@ public:
 	CommandBuffer(CommandBufferStorage& stroage);
 	CmdQ_type  addBufferAndGetCmdToRun(SsdCmdInterface* newCmd);
 	CmdQ_type  popAllBufferToOutstandingQ();
-	void filterInvalidWrites(std::vector<SsdCmdInterface*>& outstandingQ);
+	void filterInvalidWrites(vector<BufferedCmdInfo*>& outstandingQ);
 	void ClearBufferingQ();
 
 protected:
@@ -39,12 +39,12 @@ protected:
 private:
 	std::vector<SsdCmdInterface*> GetBufferedReadCmd(BufferedCmdInfo* readCmdInfo);
 
-	void CheckLbaOverlapBothErases(CmdQ_type& outstandingQ, CmdQ_type& erasesToRemove);
-	void CheckLbaOverlapWriteAndErase(CmdQ_type& outstandingQ, CmdQ_type& writesToRemove);
-	void CheckLbaOverlapBothWrites(CmdQ_type& outstandingQ);
-	void CompareWithOtherErases(CmdQ_type::iterator& itCmd, CmdQ_type& outstandingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, CmdQ_type& erasesToRemove);
-	void CompareWithWrites(CmdQ_type& outstandingQ, CmdQ_type::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, CmdQ_type& writesToRemove);
-	void removeFromOutstandingQ(CmdQ_type& outstandingQ, CmdQ_type& erasesToRemove);
+	void CheckLbaOverlapBothErases(vector<BufferedCmdInfo*>& outstandingQ, vector<BufferedCmdInfo*>& erasesToRemove);
+	void CheckLbaOverlapWriteAndErase(vector<BufferedCmdInfo*>& outstandingQ, vector<BufferedCmdInfo*>& writesToRemove);
+	void CheckLbaOverlapBothWrites(vector<BufferedCmdInfo*>& outstandingQ);
+	void CompareWithOtherErases(vector<BufferedCmdInfo*>::iterator& itCmd, vector<BufferedCmdInfo*>& outstandingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, vector<BufferedCmdInfo*>& erasesToRemove);
+	void CompareWithWrites(vector<BufferedCmdInfo*>& outstandingQ, vector<BufferedCmdInfo*>::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, vector<BufferedCmdInfo*>& writesToRemove);
+	void removeFromOutstandingQ(vector<BufferedCmdInfo*>& outstandingQ, vector<BufferedCmdInfo*>& erasesToRemove);
 
 	BufferedCmdInfo* CheckLbaOverlap(vector<BufferedCmdInfo*>& outstandingQ, long address);
 };
