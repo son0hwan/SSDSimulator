@@ -15,14 +15,14 @@ public:
 		type = CT_READ;
 	}
 
-	BufferedCmdInfo(SsdWriteCmd* writeCmd) : cmd(writeCmd) {
+	BufferedCmdInfo(std::shared_ptr<SsdWriteCmd> writeCmd) : cmd(writeCmd) {
 		address = writeCmd->getAddress();
 		type = CT_WRITE;
 		isBufferingRequired = true;
 		value = writeCmd->getData();
 	}
 
-	BufferedCmdInfo(SsdEraseCmd* eraseCmd) : cmd(eraseCmd) {
+	BufferedCmdInfo(std::shared_ptr<SsdEraseCmd> eraseCmd) : cmd(eraseCmd) {
 		address = eraseCmd->getStartAddress();
 		size = eraseCmd->getSize();
 		type = CT_ERASE;
@@ -30,13 +30,13 @@ public:
 		value = 0;
 	}
 
-	BufferedCmdInfo(SsdFlushCmd* flushCmd) : cmd(flushCmd) {
+	BufferedCmdInfo(std::shared_ptr<SsdFlushCmd> flushCmd) : cmd(flushCmd) {
 		address = 0;
 		type = CT_FLUSH;
 		isBufferingRequired = false;
 	}
 
-	SsdCmdInterface* getCmd() { return cmd; }
+	SsdCmdInterface* getCmd() { return cmd.get(); }
 
 	uint32_t getValueFromAddress(long targetAddress) {
 		if (targetAddress < address || address + size <= targetAddress) throw std::out_of_range("error accessing targetAddress");
@@ -50,5 +50,5 @@ public:
 	bool isBufferingRequired = false;
 
 	commandType type;
-	SsdCmdInterface* cmd;
+	std::shared_ptr<SsdCmdInterface> cmd;
 };
