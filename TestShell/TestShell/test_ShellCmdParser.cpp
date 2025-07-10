@@ -69,11 +69,11 @@ TEST_F(ShellCmdParserFixture, WriteWithInValidAddress3) {
   EXPECT_TRUE(isCmdTypeOf<ShellErrorCmd>(command));
 }
 
-//
-//TEST_F(ShellCmdParserFixture, ExitCommand) {
-//  auto command = cmdParser.getCommand({"exit"});
-//  EXPECT_EQ(SHELL_EXIT_CMD, command);
-//}
+
+TEST_F(ShellCmdParserFixture, ExitCommand) {
+  auto command = cmdParser.getCommand({"exit"});
+  EXPECT_EQ(std::shared_ptr<shellCmdInterface>(), command);
+}
 
 TEST_F(ShellCmdParserFixture, HelpCommand) {
   auto command = cmdParser.getCommand({"help"});

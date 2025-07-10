@@ -61,5 +61,5 @@ jobs:
       with:
         name: executables
         path: |
-          SSDSimulator/x64/Release/SSDSimulator.exe
+          SSDSimulator/x64/Release/ssd.exe
           TestShell/x64/Release/TestShell.exe
