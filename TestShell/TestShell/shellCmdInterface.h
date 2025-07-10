@@ -9,6 +9,12 @@ class shellCmdInterface {
 public:
 	virtual bool run() = 0;
 
+	void runCmd(Executor* executor, CommandInputStrategy* inputStrategy) {
+		setExecutor(executor);
+		setInputStrategy(inputStrategy);
+		prePrint();
+		run();
+	}
 	void setExecutor(Executor* executor) {
 		this->executor = executor;
 	}

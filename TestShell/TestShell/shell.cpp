@@ -28,10 +28,7 @@ public:
 			
 			if (exeCmd == nullptr) break;
 
-			exeCmd->setExecutor(executor);
-			exeCmd->setInputStrategy(inputStrategy);
-			exeCmd->prePrint();
-			exeCmd->run();
+			exeCmd->runCmd(executor, inputStrategy);
 		}
 	}
 
