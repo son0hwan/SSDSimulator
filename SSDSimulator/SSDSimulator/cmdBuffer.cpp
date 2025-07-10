@@ -154,7 +154,7 @@ BufferedCmdInfo* CommandBuffer::CheckLbaOverlap(vector<BufferedCmdInfo*>& outsta
 		}
 		else if ((*itCommand)->type == CT_WRITE) {
 			uint32_t writeAddress = (*itCommand)->address;
-			if (writeAddress == (*itCommand)->address) {
+			if (writeAddress == address) {
 				result = *itCommand;
 			}
 		}
