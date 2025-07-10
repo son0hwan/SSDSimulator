@@ -3,6 +3,8 @@
 #include "shellCmdParser.h"
 #include "shellCmdInterface.h"
 #include "common.h"
+#include "commandInputStrategy.h"
+#include "consoleInputStrategy.h"
 
 #define MOCK_TEST
 
@@ -13,29 +15,27 @@
 
 class TestShell {
 public:
-	TestShell(Executor* executor) : executor { executor } {}
+	TestShell(Executor* executor) : executor{ executor }, inputStrategy{ new ConsoleInputStrategy{} } {}
+	TestShell(Executor* executor, CommandInputStrategy* strategy) : executor{ executor }, inputStrategy{ strategy } {}
 
 	void run() {
 		Logger::getInstance().initLogFile();
 
-		while (true) {
-			std::string cmd;
+		while (inputStrategy->hasNextCommand()) {
 			ShellCmdParser shellCmdParser;
-
-			std::cout << "Shell> ";
-			std::getline(std::cin, cmd);
-
+			std::string cmd = inputStrategy->getNextCommand();
 			if (cmd.empty()) continue;
 
 			LOG(cmd);
 
 			std::vector<std::string> token = splitBySpace(cmd);
 			shellCmdInterface* exeCmd = shellCmdParser.getCommand(token);
-			
+
 			if (exeCmd == nullptr) break;
-			
+
 			exeCmd->setExecutor(executor);
 			exeCmd->run();
+			delete exeCmd;
 		}
 	}
 
@@ -75,4 +75,5 @@ public:
 #endif
 private:
 	Executor* executor;
+	CommandInputStrategy* inputStrategy;
 };
