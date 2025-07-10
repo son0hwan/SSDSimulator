@@ -10,7 +10,7 @@ TEST_F(ShellFixture, FlushOnce) {
 		.Times(1)
 		.WillRepeatedly(Return(SUCCESS_STRING));
 
-	testShell.fake_command("flush");
+	command("flush");
 
 	EXPECT_EQ("[Flush] Done\n\n", getPrintedString());
 }

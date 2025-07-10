@@ -178,6 +178,7 @@
     <ClInclude Include="shellFixture.cpp" />
     <ClInclude Include="shell.cpp" />
     <ClInclude Include="shellCmd.h" />
+    <ClInclude Include="testInputStrategy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

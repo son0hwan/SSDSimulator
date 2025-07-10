@@ -2,6 +2,7 @@
 #include "gmock/gmock.h"
 #include "mockExecutor.cpp"
 #include "shell.cpp"
+#include "testInputStrategy.h"
 
 using namespace testing;
 class ShellFixture : public Test {
@@ -20,9 +21,21 @@ public:
 		return mockSSD.rand();
 	}
 
+	void command(std::string cmd) {
+		EXPECT_CALL(testInputStrategy, hasNextCommand)
+			.WillOnce(Return(true))
+			.WillOnce(Return(false));
+		EXPECT_CALL(testInputStrategy, getNextCommand)
+			.WillOnce(Return(cmd));
+
+		testShell.run();
+	}
+
 	MockSSD mockSSD;
-	TestShell testShell{ &mockSSD };
+	TestInputStrategy testInputStrategy;
+	TestShell testShell{ &mockSSD, &testInputStrategy };
 	MockRandomGenerator mockRandomGenerator;
+
 	const std::string testDataStr = "0x12345678";
 	const unsigned int testData = 0x12345678;
 private:
