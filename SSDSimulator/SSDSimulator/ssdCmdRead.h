@@ -1,7 +1,7 @@
 #pragma once
 #include "ssdInterface.h"
 
-class SsdReadCmd : public SsdCmdInterface {
+class SsdReadCmd : public SsdCmdInterface, public std::enable_shared_from_this<SsdReadCmd> {
 public:
     SsdReadCmd()
         : requestedAddress(0), readData(0) {}

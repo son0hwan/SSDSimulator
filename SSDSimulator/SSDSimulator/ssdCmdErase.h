@@ -2,7 +2,7 @@
 #include "ssdInterface.h"
 #include "ssdSimulator.h"
 
-class SsdEraseCmd : public SsdCmdInterface {
+class SsdEraseCmd : public SsdCmdInterface, public std::enable_shared_from_this<SsdEraseCmd> {
 public:
     SsdEraseCmd()
         : startAddress(0), eraseSize(0) {}

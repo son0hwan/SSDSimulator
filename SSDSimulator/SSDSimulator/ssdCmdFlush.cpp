@@ -6,7 +6,7 @@ void SsdFlushCmd::run() {
 }
 
 BufferedCmdInfo* SsdFlushCmd::getBufferedCmdInfo(void) {
-	return new BufferedCmdInfo(this);
+	return new BufferedCmdInfo(shared_from_this());
 }
 
 
