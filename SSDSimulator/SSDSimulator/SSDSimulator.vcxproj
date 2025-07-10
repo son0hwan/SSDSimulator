@@ -136,7 +136,7 @@
   <ItemGroup>
     <ClCompile Include="bufferedCmdInfo.h" />
     <ClCompile Include="cmdBuffer.cpp" />
-    <ClCompile Include="IOManager.cpp" />
+    <ClCompile Include="FileIoManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ssdCmdErase.cpp" />
     <ClCompile Include="ssdCmdError.cpp" />
@@ -168,6 +168,7 @@
     <ClInclude Include="ssdCmdWrite.h" />
     <ClInclude Include="ssdInterface.h" />
     <ClInclude Include="ssdSimulator.h" />
+    <ClInclude Include="test_ssdCmdFixture.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ssd_nand.txt" />
