@@ -3,6 +3,7 @@
 
 ShellErrorCmd::ShellErrorCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Error";
 }
 
 bool ShellErrorCmd::run() {

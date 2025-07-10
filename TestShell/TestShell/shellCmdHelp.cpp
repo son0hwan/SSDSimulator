@@ -3,6 +3,7 @@
 
 ShellHelpCmd::ShellHelpCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Help";
 }
 
 bool ShellHelpCmd::run() {

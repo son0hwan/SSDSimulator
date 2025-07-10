@@ -131,7 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="consolInputStrategy.cpp" />
     <ClCompile Include="executor.h" />
+    <ClCompile Include="fileInputStrategy.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shellCmdErase.cpp" />
@@ -165,7 +167,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="commandInputStrategy.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="consoleInputStrategy.h" />
+    <ClInclude Include="fileInputStrategy.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="shellCmdParser.h" />
     <ClInclude Include="shellCmdRead.h" />
