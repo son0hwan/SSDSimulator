@@ -1,9 +1,8 @@
+#include "bufferedCmdInfo.h"
 #include "cmdBuffer.h"
 #include "gmock/gmock.h"
 #include "ssdCmdIncludes.h"
 #include "stdexcept"
-#include <memory>
-
 using namespace testing;
 
 class MockCommandBufferStroage : public CommandBufferStorage {
@@ -17,6 +16,15 @@ public:
 	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
 	void clearBuffer() { bufferingQ.clear(); }
+
+	vector<SsdCmdInterface*> getAllBufferedCmd() {
+		std::vector<SsdCmdInterface*> outstandingQ;
+		for (auto bufferedInfo : bufferingQ) {
+			outstandingQ.push_back(bufferedInfo->getCmd());
+		}
+		return outstandingQ;
+	}
+
 };
 
 class CommandBufferFixture : public Test {
@@ -55,29 +63,27 @@ public:
 
 TEST_F(CommandBufferFixture, addReadCmd) {
 	SsdReadCmd cmd{};
-	CmdQ_type expected{ &cmd };
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
 
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{&cmd }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ });
 }
 
 TEST_F(CommandBufferFixture, addWriteCmd) {
 	SsdWriteCmd cmd{ 0, 0x12345678 };
-	CmdQ_type expected{};
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{}));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
 }
 
 TEST_F(CommandBufferFixture, addEraseCmd) {
 	SsdEraseCmd cmd{ 0, 1 };
-	CmdQ_type expected{};
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type {}));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
 }
 
 TEST_F(CommandBufferFixture, add5WriteCmd) {
@@ -95,8 +101,8 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
-	CmdQ_type expected{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ &cmd6 }));
 }
 
 
@@ -111,8 +117,8 @@ TEST_F(CommandBufferFixture, flushCmd) {
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
 
-	CmdQ_type expected{ &cmd1, &cmd2, &cmd3 };
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3 }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ }));
 }
 
 
