@@ -25,6 +25,19 @@ public:
 		cmdBuffer.clearBuffer();
 	}
 
+	bool isCachedReadCmd(SsdCmdInterface* cmd, uint32_t expectedAddress, uint32_t expectedData) {
+		auto convertedCmd = dynamic_cast<SsdCachedReadCmd*>(cmd);
+		if (nullptr == convertedCmd) return false;
+		try {
+			EXPECT_EQ(expectedAddress, convertedCmd->getAddress());
+			EXPECT_EQ(expectedData, convertedCmd->getReadData());
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
 	NiceMock<MockCommandBufferStroage> mockStorage;
 	MockCommandBuffer cmdBuffer{ mockStorage };
 };
@@ -111,33 +124,15 @@ TEST_F(CommandBufferFixture, cachedReadWithWrite) {
 	auto result1 = cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
 
 	EXPECT_EQ(result1.size(), 1);
-
-	auto convertedCmd = dynamic_cast<SsdCachedReadCmd*>(result1[0]);
-	EXPECT_TRUE(convertedCmd != nullptr);
-	try {
-		EXPECT_EQ(0, convertedCmd->getAddress());
-		EXPECT_EQ(0x12345678, convertedCmd->getReadData());
-	}
-	catch (std::exception e) {
-		FAIL();
-	}
+	EXPECT_TRUE(isCachedReadCmd(result1[0], 0, 0x12345678));
 
 	SsdEraseCmd cmd3{ 0, 5 };
 	SsdReadCmd	cmd4{ 0 };
-
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
 	auto result2 = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
 
-	auto convertedCmd2 = dynamic_cast<SsdCachedReadCmd*>(result2[0]);
-	EXPECT_TRUE(convertedCmd2 != nullptr);
-	try {
-		EXPECT_EQ(0, convertedCmd2->getAddress());
-		EXPECT_EQ(0, convertedCmd2->getReadData());
-	}
-	catch (std::exception e) {
-		FAIL();
-	}
-
+	EXPECT_EQ(result2.size(), 1);
+	EXPECT_TRUE(isCachedReadCmd(result2[0], 0, 0));
 }
 
 
