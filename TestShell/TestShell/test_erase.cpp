@@ -22,7 +22,7 @@ TEST_F(ShellFixture, EraseOutOfRange) {
 
 	testShell.fake_command("erase 95 10");
 
-	EXPECT_EQ("[Erase] ERROR\n\n", getPrintedString());
+	EXPECT_EQ("[Erase] Error\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, RangedErase) {
@@ -51,5 +51,5 @@ TEST_F(ShellFixture, RangedEraseOutOfRange) {
 
 	testShell.fake_command("erase_range 75 105");
 
-	EXPECT_EQ("[RangedErase] ERROR\n\n", getPrintedString());
+	EXPECT_EQ("[RangedErase] Error\n\n", getPrintedString());
 }
