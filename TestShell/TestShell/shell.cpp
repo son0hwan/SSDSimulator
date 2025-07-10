@@ -35,6 +35,7 @@ public:
 
 			exeCmd->setExecutor(executor);
 			exeCmd->setInputStrategy(inputStrategy);
+			exeCmd->prePrint();
 			exeCmd->run();
 			delete exeCmd;
 		}

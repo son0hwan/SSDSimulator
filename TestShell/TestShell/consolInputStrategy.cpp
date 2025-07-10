@@ -12,6 +12,16 @@ std::string ConsoleInputStrategy::getNextCommand() {
     return cmd;
 }
 
-void ConsoleInputStrategy::print(const std::string& cmdName, const std::string& status) {
-    std::cout << "[" << cmdName << "] " << status << std::endl << std::endl;
+void ConsoleInputStrategy::print(const std::string& cmdName, int status) {
+    std::string statusStr;
+    if (status == SUCCESS)
+        statusStr = "Done";
+    else
+        statusStr = "Error";
+
+    std::cout << "[" << cmdName << "] " << statusStr << std::endl << std::endl;
+}
+
+void ConsoleInputStrategy::prePrint(const std::string& cmdName) {
+    return;
 }

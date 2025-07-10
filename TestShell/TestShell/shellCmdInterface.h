@@ -24,8 +24,9 @@ public:
 		return executor->rand();
 	}
 	
-	void printSuccess() { inputStrategy->print(cmdName, "Done"); }
-	void printError() { inputStrategy->print(cmdName, "Error"); }
+	void printSuccess() { inputStrategy->print(cmdName, SUCCESS); }
+	void printError() { inputStrategy->print(cmdName, ERROR); }
+	void prePrint() { inputStrategy->prePrint(cmdName); }
 	
 protected:
 	Executor* executor = nullptr;
