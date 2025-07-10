@@ -166,7 +166,6 @@ vector<SsdCmdInterface*> CommandBuffer::popAllBufferToOutstandingQ() {
 	std::vector<SsdCmdInterface*> outstandingQ;
 	for (auto bufferedInfo : bufferingQ) {
 		outstandingQ.push_back(bufferedInfo->getCmd());
-		delete(bufferedInfo);
 	}
 	bufferingQ.clear();
 	return outstandingQ;
