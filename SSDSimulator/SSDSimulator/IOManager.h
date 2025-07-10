@@ -11,13 +11,6 @@ public:
     BufferFile& buffer() { return bufferFile; }
     NandFile& nand() { return nandFile; }
 
-    void CheckAndCreateNandDataFile();
-    void ProgramAllDatasToNand(const std::vector<LbaEntry>& lbaTable);
-    void ReadAllDatasToInternalLbaTable(std::vector<LbaEntry>& lbaTable);
-    bool SplitStringToAddressAndData(std::string& line, LbaEntry* splitDatas);
-    void CreateNewTempNandFileAndInitForTest();
-    void deleteFileIfExists();
-
 private:
     OutputFile outputFile;
     BufferFile bufferFile;

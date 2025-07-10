@@ -44,6 +44,11 @@ public:
         return SuccessConvertToUINT(splitDatas, addrStr, dataStr);
     }
 
+    void initNandFileForTest() {
+        deleteFileIfExists();
+        CreateNewTempNandFileAndInitForTest();
+    }
+
     void CreateNewTempNandFileAndInitForTest() {
         std::ifstream file(NAND_DATA_FILE);
         if (!file) {
