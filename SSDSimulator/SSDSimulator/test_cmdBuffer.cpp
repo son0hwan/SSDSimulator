@@ -1,11 +1,8 @@
+#include "bufferedCmdInfo.h"
 #include "cmdBuffer.h"
 #include "gmock/gmock.h"
-#include "ssdCmdErase.h"
-#include "ssdCmdError.h"
-#include "ssdCmdRead.h"
-#include "ssdCmdWrite.h"
+#include "ssdCmdIncludes.h"
 #include "stdexcept"
-
 using namespace testing;
 
 class MockCommandBufferStroage : public CommandBufferStorage {
@@ -19,12 +16,34 @@ public:
 	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
 	void clearBuffer() { bufferingQ.clear(); }
+
+	vector<SsdCmdInterface*> getAllBufferedCmd() {
+		std::vector<SsdCmdInterface*> outstandingQ;
+		for (auto bufferedInfo : bufferingQ) {
+			outstandingQ.push_back(bufferedInfo->getCmd());
+		}
+		return outstandingQ;
+	}
+
 };
 
 class CommandBufferFixture : public Test {
 public:
 	void SetUp() override {
 		cmdBuffer.clearBuffer();
+	}
+
+	bool isCachedReadCmd(SsdCmdInterface* cmd, uint32_t expectedAddress, uint32_t expectedData) {
+		auto convertedCmd = dynamic_cast<SsdCachedReadCmd*>(cmd);
+		if (nullptr == convertedCmd) return false;
+		try {
+			EXPECT_EQ(expectedAddress, convertedCmd->getAddress());
+			EXPECT_EQ(expectedData, convertedCmd->getReadData());
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
 	}
 
 	NiceMock<MockCommandBufferStroage> mockStorage;
@@ -44,29 +63,27 @@ public:
 
 TEST_F(CommandBufferFixture, addReadCmd) {
 	SsdReadCmd cmd{};
-	CmdQ_type expected{ &cmd };
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
 
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{&cmd }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ });
 }
 
 TEST_F(CommandBufferFixture, addWriteCmd) {
 	SsdWriteCmd cmd{ 0, 0x12345678 };
-	CmdQ_type expected{};
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{}));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
 }
 
 TEST_F(CommandBufferFixture, addEraseCmd) {
 	SsdEraseCmd cmd{ 0, 1 };
-	CmdQ_type expected{};
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type {}));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
 }
 
 TEST_F(CommandBufferFixture, add5WriteCmd) {
@@ -84,9 +101,46 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
-	CmdQ_type expected{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
-	EXPECT_THAT(result, ContainerEq(expected));
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ &cmd6 }));
 }
+
+
+TEST_F(CommandBufferFixture, flushCmd) {
+	SsdWriteCmd cmd1{ 0, 0x12345678 };
+	SsdWriteCmd cmd2{ 1, 0x12345678 };
+	SsdWriteCmd cmd3{ 2, 0x12345678 };
+	SsdFlushCmd cmd4{};
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+
+	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3 }));
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ }));
+}
+
+
+TEST_F(CommandBufferFixture, cachedReadWithWrite) {
+	SsdWriteCmd cmd1{ 0, 0x12345678 };
+	SsdReadCmd	cmd2{0};
+
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
+	auto result1 = cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+
+	EXPECT_EQ(result1.size(), 1);
+	EXPECT_TRUE(isCachedReadCmd(result1[0], 0, 0x12345678));
+
+	SsdEraseCmd cmd3{ 0, 5 };
+	SsdReadCmd	cmd4{ 0 };
+	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
+	auto result2 = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+
+	EXPECT_EQ(result2.size(), 1);
+	EXPECT_TRUE(isCachedReadCmd(result2[0], 0, 0));
+}
+
 
 TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
@@ -108,7 +162,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }
@@ -124,7 +178,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdatePartiallyFullCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }
@@ -137,7 +191,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }

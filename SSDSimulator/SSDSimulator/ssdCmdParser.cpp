@@ -62,7 +62,7 @@ std::shared_ptr<SsdCmdInterface> SsdCmdParser::getEraseCommandWithInput(const st
 
 bool SsdCmdParser::isHexString(const std::string& address) {
 	try {
-		long hexValue = std::stol(address, nullptr, 16);
+		long hexValue = std::stoul(address, nullptr, 16);
 		return (address.length() > 2 && (address[0] == '0' && address[1] == 'x'));
 	}
 	catch (...) {

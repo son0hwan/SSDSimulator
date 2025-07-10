@@ -5,20 +5,24 @@ class OutputFile {
 public:
     OutputFile() = default;
 
-    void updateOutputError() {
+    void updateError() {
         auto outputFile = openFile(OUTPUT_FILE);
         outputFile << OUTPUT_ERROR;
     }
 
-    void updateOutputWriteSuccess() {
+    void updateWriteSuccess() {
         auto outputFile = openFile(OUTPUT_FILE);
         outputFile << OUTPUT_WRITE_SUCCESS;
     }
 
-    void updateOutputReadSuccess(uint32_t readData) {
+    void updateReadSuccess(uint32_t readData) {
         auto outputFile = openFile(OUTPUT_FILE);
         outputFile << "0x" << std::uppercase << std::hex << std::setw(8)
             << std::setfill('0') << readData << std::endl;
+    }
+
+    void updateEraseSuccess() {
+        this->updateWriteSuccess();
     }
 
 private:

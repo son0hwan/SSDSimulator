@@ -21,5 +21,5 @@ BufferedCmdInfo* SsdReadCmd::getBufferedCmdInfo(void) {
 }
 
 void SsdCachedReadCmd::run(void) {
-	SsdSimulator::getInstance().getIoManager().updateOutputReadSuccess(readData);
+	SsdSimulator::getInstance().getIoManager().output().updateReadSuccess(readData);
 }

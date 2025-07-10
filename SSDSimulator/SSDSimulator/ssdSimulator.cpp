@@ -7,7 +7,7 @@ IOManager& SsdSimulator::getIoManager() {
 }
 
 void SsdSimulator::init() {
-	ioManager.CheckAndCreateNandDataFile();
+	ioManager.nand().CheckAndCreateNandDataFile();
 }
 
 uint32_t SsdSimulator::read(uint32_t address) {
@@ -15,7 +15,7 @@ uint32_t SsdSimulator::read(uint32_t address) {
 
 	LoadAllDatasFromNand();
 	uint32_t readData = ReadSpecificAddressData(address);
-	ioManager.updateOutputReadSuccess(readData);
+	ioManager.output().updateReadSuccess(readData);
 
 	return readData;
 }
@@ -25,8 +25,8 @@ void SsdSimulator::write(uint32_t address, uint32_t value) {
 
 	LoadAllDatasFromNand();
 	WriteDataToSpecificAddress(address, value);
-	ioManager.ProgramAllDatasToNand(lbaTable);
-	ioManager.updateOutputWriteSuccess();
+	ioManager.nand().ProgramAllDatasToNand(lbaTable);
+	ioManager.output().updateWriteSuccess();
 }
 
 void SsdSimulator::erase(uint32_t startAddress, uint32_t eraseSize) {
@@ -38,8 +38,8 @@ void SsdSimulator::erase(uint32_t startAddress, uint32_t eraseSize) {
 	for (uint32_t lba = startAddress; lba <= endAddress; lba++) {
 		WriteDataToSpecificAddress(lba, ZERO);
 	}
-	ioManager.ProgramAllDatasToNand(lbaTable);
-	ioManager.updateOutputEraseSuccess();
+	ioManager.nand().ProgramAllDatasToNand(lbaTable);
+	ioManager.output().updateEraseSuccess();
 }
 
 uint32_t SsdSimulator::getMaxSector() {
@@ -48,7 +48,7 @@ uint32_t SsdSimulator::getMaxSector() {
 
 bool SsdSimulator::CheckAddressRange(uint32_t address) {
 	if (address > DEFAULT_MAX_LBA_OF_DEVICE) {
-		ioManager.updateOutputError();
+		ioManager.output().updateError();
 		return false;
 	}
 	return true;
@@ -57,7 +57,7 @@ bool SsdSimulator::CheckAddressRange(uint32_t address) {
 bool SsdSimulator::CheckEraseSize(uint32_t eraseSize) {
 	if (eraseSize < MIN_NUM_OF_LBA_TO_ERASE ||
 		eraseSize > MAX_NUM_OF_LBA_TO_ERASE) {
-		ioManager.updateOutputError();
+		ioManager.output().updateError(); 
 		return false;
 	}
 	return true;
@@ -69,8 +69,8 @@ void SsdSimulator::ClearInternalLbaTable() {
 
 void SsdSimulator::LoadAllDatasFromNand() {
 	ClearInternalLbaTable();
-	ioManager.CheckAndCreateNandDataFile();
-	ioManager.ReadAllDatasToInternalBuffer(lbaTable);
+	ioManager.nand().CheckAndCreateNandDataFile();
+	ioManager.nand().ReadAllDatasToInternalLbaTable(lbaTable);
 }
 
 void SsdSimulator::WriteDataToSpecificAddress(uint32_t address, uint32_t data) {
