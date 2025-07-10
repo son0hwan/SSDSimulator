@@ -71,13 +71,11 @@ TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
-	ioManager.deleteFileIfExists();
-	ioManager.CreateNewTempNandFileAndInitForTest();
+	ioManager.nand().initNandFileForTest();
 	verifyWriteAndRead(VALID_ADDRESS, WRITE_DATA);
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrityFullCapacity) {
-	ioManager.deleteFileIfExists();
-	ioManager.CreateNewTempNandFileAndInitForTest();
+	ioManager.nand().initNandFileForTest();
 	verifyWriteAndReadAll(VALID_ADDRESS, WRITE_DATA);
 }

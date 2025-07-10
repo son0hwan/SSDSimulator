@@ -182,10 +182,10 @@ vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {
 	SsdCmdParser parser;
 	IOManager ioManager{ 0 };
 	bool isErrored;
-	vector<std::string> fileNames = ioManager.getBufferFileList();
+	vector<std::string> fileNames = ioManager.buffer().getBufferFileList();
 
 	if (fileNames.size() != 5) {
-		ioManager.forceCreateFiveFreshBufferFiles();
+		ioManager.buffer().forceCreateFiveFreshBufferFiles();
 		return {};
 	}
 
@@ -203,7 +203,7 @@ vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {
 	}
 
 	if (fileIdx <= 5 && false == checkRemainIsEmpty(fileNames, fileIdx)) {
-		ioManager.forceCreateFiveFreshBufferFiles();
+		ioManager.buffer().forceCreateFiveFreshBufferFiles();
 		return {};
 	}
 

@@ -58,8 +58,7 @@ TEST_F(ReadTestFixture, ReadExecutedWithError) {
 }
 
 TEST_F(ReadTestFixture, ReadValidData) {
-	ioManager.deleteFileIfExists();
-	ioManager.CreateNewTempNandFileAndInitForTest();
+	ioManager.nand().initNandFileForTest();
 
 	EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
 	EXPECT_EQ(readCmd.getReadData(), EXPECTED_DATA);
@@ -68,7 +67,7 @@ TEST_F(ReadTestFixture, ReadValidData) {
 }
 
 TEST_F(ReadTestFixture, ReadNoInputAutoCreateFileAndInitializeToZero) {
-	ioManager.deleteFileIfExists();
+	ioManager.nand().deleteFileIfExists();
 	EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
 	EXPECT_EQ(readCmd.getReadData(), INIT_READ_DATA);
 	CheckOutputFileValid(OUTPUT_INIT_READ);

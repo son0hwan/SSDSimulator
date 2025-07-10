@@ -21,7 +21,7 @@ public:
         FillChangeDatasToAllAddresses(nandDataFile, lbaTable);
     }
 
-    void ReadAllDatasToInternalBuffer(std::vector<LbaEntry>& lbaTable) {
+    void ReadAllDatasToInternalLbaTable(std::vector<LbaEntry>& lbaTable) {
         std::ifstream file(NAND_DATA_FILE);
         std::string line;
         while (std::getline(file, line)) {
@@ -42,6 +42,11 @@ public:
         dataStr = line.substr(delimiterPos + 1);
 
         return SuccessConvertToUINT(splitDatas, addrStr, dataStr);
+    }
+
+    void initNandFileForTest() {
+        deleteFileIfExists();
+        CreateNewTempNandFileAndInitForTest();
     }
 
     void CreateNewTempNandFileAndInitForTest() {

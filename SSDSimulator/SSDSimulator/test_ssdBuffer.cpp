@@ -9,9 +9,9 @@ using namespace testing;
 
 TEST(BufferIOTest, FiveBuffersCreated) {
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	bool created = ioManager.forceCreateFiveFreshBufferFiles();
+	bool created = ioManager.buffer().forceCreateFiveFreshBufferFiles();
 	EXPECT_EQ(true, created);
-	std::vector<std::string> createdBuffer = ioManager.getBufferFileList();
+	std::vector<std::string> createdBuffer = ioManager.buffer().getBufferFileList();
 	std::vector<std::string> expectedBuffer = { "1_empty", "2_empty", "3_empty", "4_empty", "5_empty" };
 	EXPECT_EQ(createdBuffer, expectedBuffer);
 }
@@ -19,9 +19,9 @@ TEST(BufferIOTest, FiveBuffersCreated) {
 TEST(BufferIOTest, RenameBuffer) {
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	std::vector<std::string> expectedBuffer = { "1_empty", "2_notempty", "3_empty", "4_notempty", "5_notempty" };
-	bool created = ioManager.updateBufferFiles(expectedBuffer);
+	bool created = ioManager.buffer().updateBufferFiles(expectedBuffer);
 	EXPECT_EQ(true, created);
-	std::vector<std::string> createdBuffer = ioManager.getBufferFileList();
+	std::vector<std::string> createdBuffer = ioManager.buffer().getBufferFileList();
 	EXPECT_EQ(createdBuffer, expectedBuffer);
 }
 
@@ -29,7 +29,7 @@ class CommonBufferStorageFixture : public Test {
 public:
 
 	void setExistingFileNames(std::vector<std::string> filenames) {
-		ioManager.updateBufferFiles(filenames);
+		ioManager.buffer().updateBufferFiles(filenames);
 	}
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
