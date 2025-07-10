@@ -150,6 +150,7 @@
     <ClCompile Include="shellCmdWrite.cpp" />
     <ClCompile Include="test_complex.cpp" />
     <ClCompile Include="test_erase.cpp" />
+    <ClCompile Include="test_flush.cpp" />
     <ClCompile Include="test_ShellCmdParser.cpp" />
     <ClCompile Include="test_read.cpp">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> %(AdditionalOptions)</AdditionalOptions>
