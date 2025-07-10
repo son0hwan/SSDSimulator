@@ -12,10 +12,10 @@ class SSDExecutor : public Executor {
             std::cout << "read fail : return code = " << result << std::endl;
             return FAIL;
         }
-        return PASS;
+        return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
 
-    std::string writeToSSD(int address, int value) override {
+    std::string writeToSSD(int address, unsigned int value) override {
         char hexStr[11];
         std::snprintf(hexStr, sizeof(hexStr), "0x%X", value);
         std::string command = "ssd.exe W " + std::to_string(address) + " " + hexStr;
@@ -24,7 +24,7 @@ class SSDExecutor : public Executor {
             std::cout << "write fail : return code = " << result << std::endl;
             return FAIL;
         }
-        return PASS;
+        return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
 
     std::string eraseToSSD(int address, int size) override {

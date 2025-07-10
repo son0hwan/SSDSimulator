@@ -9,9 +9,9 @@ TEST_F(ShellFixture, FullWriteAndReadCompare) {
 	EXPECT_CALL(mockSSD, writeToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
-		.WillRepeatedly(Return(PASS));
+		.WillRepeatedly(Return(TEST_SAMPLE_DATA));
 	EXPECT_CALL(mockRandomGenerator, next)
-		.WillRepeatedly(Return(1));
+		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
 	testShell.fake_command("1_FullWriteAndReadCompare");
 
@@ -22,9 +22,9 @@ TEST_F(ShellFixture, PartialLBAWrite) {
 	EXPECT_CALL(mockSSD, writeToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
-		.WillRepeatedly(Return(PASS));
+		.WillRepeatedly(Return(TEST_SAMPLE_DATA));
 	EXPECT_CALL(mockRandomGenerator, next)
-		.WillRepeatedly(Return(1));
+		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
 	testShell.fake_command("2_PartialLBAWrite");
 
@@ -35,9 +35,9 @@ TEST_F(ShellFixture, WriteReadAging) {
 	EXPECT_CALL(mockSSD, writeToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, readFromSSD(_))
-		.WillRepeatedly(Return(PASS));
+		.WillRepeatedly(Return(TEST_SAMPLE_DATA));
 	EXPECT_CALL(mockRandomGenerator, next)
-		.WillRepeatedly(Return(1));
+		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
 	testShell.fake_command("3_WriteReadAging");
 

@@ -13,43 +13,58 @@ ShellScript1Cmd::ShellScript1Cmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 }
 
+int ShellScript1Cmd::writeFiveTimesFromIdx(unsigned int value, int startIdx) {
+	for (int i = 0; i < unitCount; i++) {
+		int addr = startIdx + unitCount;
+		if (executor->writeToSSDWithResult(addr, value))
+			return ERROR;
+	}
+	return SUCCESS;
+}
+
+int ShellScript1Cmd::readFiveTimesFromIdx(vector<unsigned int>& values, int startIdx) {
+	for (int i = 0; i < unitCount; i++) {
+		int addr = startIdx + unitCount;
+		unsigned int value;
+		if (executor->readFromSSDWithResult(addr, &value))
+			return ERROR;
+
+		values.emplace_back(value);
+	}
+	return SUCCESS;
+}
+
+int ShellScript1Cmd::checkValueIsSame(unsigned int writeValue, const vector<unsigned int>& readValues) {
+	for (int i = 0; i < unitCount; i++) {
+		if (writeValue != readValues.at(i))
+			return ERROR;
+	}
+	return SUCCESS;
+}
+
 bool ShellScript1Cmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	vector<unsigned int> values;
-	int unitCount = 5;
-	int iterationCount = NUM_OF_LBA / unitCount;
-
 	for (int idx = 0; idx < iterationCount; idx++) {
-		unsigned int randomVal = static_cast<unsigned int>(rand());
-		values.emplace_back(randomVal);
-	}
+		unsigned int writeValue = rand();
+		vector<unsigned int> readValues;
 
-	for (int idx = 0; idx < values.size(); idx++) {
-		int startIdx = idx * 5;
-		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
-			int addr = startIdx + unitIdx;
-			unsigned int value = values.at(idx);
-
-			if (executor->writeToSSD(addr, value) == ERROR_STRING) {
-				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return false;
-			}
+		if (writeFiveTimesFromIdx(writeValue, idx * unitCount)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return false;
 		}
+		if (readFiveTimesFromIdx(readValues, idx * unitCount)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return false;
 
-		for (int unitIdx = 0; unitIdx < 5; unitIdx++) {
-			int addr = startIdx + unitIdx;
-			unsigned int value = values.at(idx);
-			std::string expectedValString = "PASS_ON_EXE";
-			std::string actualValString = executor->readFromSSD(addr);
-
-			if (expectedValString != actualValString) {
-				std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
-				return false;
-			}
 		}
+		if (checkValueIsSame(writeValue, readValues)) {
+			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl;
+			return false;
+		}
+		std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
+		return true;
 	}
-	std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl;
 	return true;
 }
 
@@ -62,8 +77,7 @@ bool ShellScript2Cmd::run() {
 
 	vector<unsigned int> values;
 	for (int i = 0; i < 30; i++) {
-		unsigned int randomVal = static_cast<unsigned int>(rand());
-		values.emplace_back(randomVal);
+		values.emplace_back(rand());
 	}
 	if (values.size() != 30) {
 		std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
@@ -71,23 +85,28 @@ bool ShellScript2Cmd::run() {
 	}
 
 	for (int cnt = 0; cnt < 30; cnt++) {
-		executor->writeToSSD(4, values.at(cnt));
-		executor->writeToSSD(0, values.at(cnt));
-		executor->writeToSSD(3, values.at(cnt));
-		executor->writeToSSD(1, values.at(cnt));
-		executor->writeToSSD(2, values.at(cnt));
+		executor->writeToSSDWithResult(4, values.at(cnt));
+		executor->writeToSSDWithResult(0, values.at(cnt));
+		executor->writeToSSDWithResult(3, values.at(cnt));
+		executor->writeToSSDWithResult(1, values.at(cnt));
+		executor->writeToSSDWithResult(2, values.at(cnt));
 
-		executor->readFromSSD(0);
-		std::string valStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
+		unsigned int value;
+		if (executor->readFromSSDWithResult(0, &value)) {
+			std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
+			return false;
+		}
 		for (int addr = 1; addr <= 4; addr++) {
-			executor->readFromSSD(addr);
-			std::string compStr = getFirstLineFromFile(OUTPUT_FILE_NAME);
-			if (valStr != compStr) {
+			unsigned int comp;
+			if (executor->readFromSSDWithResult(addr, &comp)) {
 				std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
 				return false;
 			}
-
-			valStr = compStr;
+			if (value != comp) {
+				std::cout << "[2_PartialLBAWrite] Fail" << std::endl;
+				return false;
+			}
+			value = comp;
 		}
 	}
 
@@ -107,21 +126,17 @@ bool ShellScript3Cmd::run() {
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		std::string EXPECTED_STR = genRandomString(MAX_VAL_LEN);
 
-		result = executor->writeToSSD(0, stoul(EXPECTED_STR, nullptr, 16));
-		if (result == ERROR_STRING)
+		if (executor->writeToSSDWithResult(0, stoul(EXPECTED_STR, nullptr, 16)))
+			return false;
+		if (executor->writeToSSDWithResult(99, stoul(EXPECTED_STR, nullptr, 16)))
 			return false;
 
-		executor->readFromSSD(0);
-		std::string resStrOf0 = getFirstLineFromFile(OUTPUT_FILE_NAME);
+		unsigned int resOf0, resOf99;
 
-		result = executor->writeToSSD(99, stoul(EXPECTED_STR, nullptr, 16));
-		if (result == ERROR_STRING)
-			return false;
+		executor->readFromSSDWithResult(0, &resOf0);
+		executor->readFromSSDWithResult(0, &resOf99);
 
-		executor->readFromSSD(99);
-		std::string resStrOf99 = getFirstLineFromFile(OUTPUT_FILE_NAME);
-
-		if (resStrOf0 != resStrOf99) {
+		if (resOf0 != resOf99) {
 			std::cout << "[3_WriteReadAging] Fail" << std::endl;
 			return false;
 		}

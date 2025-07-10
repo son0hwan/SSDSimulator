@@ -23,6 +23,8 @@ public:
 	MockSSD mockSSD;
 	TestShell testShell{ &mockSSD };
 	MockRandomGenerator mockRandomGenerator;
+	const std::string testDataStr = "0x12345678";
+	const unsigned int testData = 0x12345678;
 private:
 	std::ostringstream localStream;
 	std::streambuf* backup = nullptr;
