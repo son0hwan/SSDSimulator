@@ -16,6 +16,9 @@ private:
     const int NUM_OF_ERASE_ARGS = 3;
     const int NUM_OF_FLUSH_ARGS = 1;
 
+    const int MAX_PARSED_LBA = 99;
+    const int MAX_PARSED_SIZE = 10;
+
     std::shared_ptr<SsdCmdInterface> handleReadCommand(const std::vector<std::string>& args);
     std::shared_ptr<SsdCmdInterface> handleEraseCommand(const std::vector<std::string>& args);
     std::shared_ptr<SsdCmdInterface> handleWriteCommand(const std::vector<std::string>& args);
