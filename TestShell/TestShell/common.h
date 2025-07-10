@@ -10,6 +10,7 @@
 namespace {
 	const int SUCCESS = 0;
 	const int ERROR = 1;
+	const int SSDAccessFail = 2;
 	const int NUM_OF_LBA = 100;
 	const int MAX_VAL_LEN = 8;
 	const int MAX_HEX_LENGTH = 16;

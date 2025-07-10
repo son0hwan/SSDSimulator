@@ -9,26 +9,18 @@ ShellEraseCmd::ShellEraseCmd(long address, long size) : address(address), size(s
 bool ShellEraseCmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	std::string result;
-
 	int start_lba = address;
 	int exit_lba = address + size;
 
 	while (start_lba != exit_lba) {
 		int erase_size = size > ERASE_UNIT ? ERASE_UNIT : size;
-		result = executor->eraseToSSD(start_lba, erase_size);
-		if (result == ERROR_STRING) {
-			printError();
-			return false;
-		}
-		else if (result == FAIL) {
-			std::cout << "[Erase] FAIL to execute ssd.exe" << std::endl << std::endl;
-			return false;
-		}
+		if (result = executor->eraseToSSDWithResult(start_lba, erase_size))
+			break;
+		
 		start_lba += erase_size;
 	}
-	printSuccess();
-	return true;
+	printResult();
+	return isCmdSuccess();
 }
 
 long ShellEraseCmd::getAddress() { return address; }

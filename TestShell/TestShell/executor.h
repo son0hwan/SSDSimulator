@@ -30,6 +30,26 @@ public:
 
 		return SUCCESS;
 	}
+
+	int eraseToSSDWithResult(int address, int size) {
+		std::string val = eraseToSSD(address, size);
+		if (val == FAIL)
+			return SSDAccessFail;
+		else if (val == ERROR_STRING)
+			return ERROR;
+
+		return SUCCESS;
+	}
+
+	int flushToSSDWithResult() {
+		std::string val = flushToSSD();
+		if (val == FAIL)
+			return SSDAccessFail;
+		else if (val == ERROR_STRING)
+			return ERROR;
+
+		return SUCCESS;
+	}
 	
 	void setRandomGenerator(IRandomGenerator* randomGenerator) {
 		this->randomGenerator = randomGenerator;
