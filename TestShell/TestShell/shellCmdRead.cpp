@@ -6,23 +6,25 @@
 
 #include "shellCmd.h"
 #include "common.h"
+#include "shellCmdRead.h"
 
-static void printReadInfo(long address, unsigned int value)
+void printfReadInfoCore(long address, unsigned int value, string prefix)
 {
-	std::cout << "[Read] LBA "
+	std::cout << prefix
 		<< std::setw(2) << std::setfill('0') << std::dec << address
 		<< " : 0x"
 		<< std::setw(8) << std::setfill('0') << std::hex << std::uppercase << value
 		<< std::endl;
 }
 
+static void printReadInfo(long address, unsigned int value)
+{
+	printfReadInfoCore(address, value, "[READ] LBA ");
+}
+
 static void printReadInfoWithoutHeader(long address, unsigned int value)
 {
-	std::cout << "LBA "
-		<< std::setw(2) << std::setfill('0') << std::dec << address
-		<< " : 0x"
-		<< std::setw(8) << std::setfill('0') << std::hex << std::uppercase << value
-		<< std::endl;
+	printfReadInfoCore(address, value, "LBA ");
 }
 
 ShellReadCmd::ShellReadCmd(long address) : address{ address } {
@@ -42,6 +44,9 @@ bool ShellReadCmd::run() {
 
 	unsigned int value = std::stoul(hexStr, nullptr, 16);
 	printReadInfo(address, value);
+
+	std::cout << std::endl;
+
 	return true;
 }
 
@@ -71,5 +76,8 @@ bool ShellFullReadCmd::run() {
 		unsigned int value = std::stoul(hexStr, nullptr, 16);
 		printReadInfoWithoutHeader(addr, value);
 	}
+
+	std::cout << std::endl;
+
 	return true;
 }
