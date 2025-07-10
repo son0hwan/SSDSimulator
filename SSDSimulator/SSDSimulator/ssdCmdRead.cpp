@@ -17,7 +17,7 @@ uint32_t SsdReadCmd::getReadData() const {
 	return readData;
 }
 BufferedCmdInfo* SsdReadCmd::getBufferedCmdInfo(void) {
-	return new BufferedCmdInfo(this);
+	return new BufferedCmdInfo(shared_from_this());
 }
 
 void SsdCachedReadCmd::run(void) {

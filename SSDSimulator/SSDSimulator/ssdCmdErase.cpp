@@ -21,5 +21,5 @@ uint32_t SsdEraseCmd::getSize() const {
 }
 
 BufferedCmdInfo* SsdEraseCmd::getBufferedCmdInfo(void) {
-    return new BufferedCmdInfo(this);
+    return new BufferedCmdInfo(shared_from_this());
 }
