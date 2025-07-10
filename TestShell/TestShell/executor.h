@@ -13,6 +13,7 @@ public:
 	virtual std::string readFromSSD(int address) = 0;
 	virtual std::string writeToSSD(int address, unsigned int value) = 0;
 	virtual std::string eraseToSSD(int address, int size) = 0;
+	virtual std::string flushToSSD() = 0;
 
 	int readFromSSDWithResult(int address, unsigned int* value) {
 		std::string valStr = readFromSSD(address);

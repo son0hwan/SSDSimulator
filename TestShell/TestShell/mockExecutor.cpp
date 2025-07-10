@@ -11,4 +11,5 @@ public:
 	MOCK_METHOD(std::string, readFromSSD, (int), (override));
 	MOCK_METHOD(std::string, writeToSSD, (int, unsigned int), (override));
 	MOCK_METHOD(std::string, eraseToSSD, (int, int), (override));
+	MOCK_METHOD(std::string, flushToSSD, (), (override));
 };
