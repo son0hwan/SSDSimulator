@@ -11,3 +11,7 @@ std::string ConsoleInputStrategy::getNextCommand() {
     std::getline(std::cin, cmd);
     return cmd;
 }
+
+void ConsoleInputStrategy::print(const std::string& cmdName, const std::string& status) {
+    std::cout << "[" << cmdName << "] " << status << std::endl << std::endl;
+}

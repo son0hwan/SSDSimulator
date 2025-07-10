@@ -3,6 +3,7 @@
 #include <iostream>
 #include "executor.h"
 #include "common.h"
+#include "commandInputStrategy.h"
 
 class shellCmdInterface {
 public:
@@ -10,6 +11,9 @@ public:
 
 	void setExecutor(Executor* executor) {
 		this->executor = executor;
+	}
+	void setInputStrategy(CommandInputStrategy* strategy) {
+		inputStrategy = strategy;
 	}
 
 	bool isError(const std::string& result) {
@@ -20,12 +24,11 @@ public:
 		return executor->rand();
 	}
 	
-	void printSuccess() { print("Done"); }
-	void printError() { print("Error"); }
-	virtual void print(const std::string& status) {
-		std::cout << "[" << cmdName << "] " << status << std::endl << std::endl;
-	}
+	void printSuccess() { inputStrategy->print(cmdName, "Done"); }
+	void printError() { inputStrategy->print(cmdName, "Error"); }
+	
 protected:
 	Executor* executor = nullptr;
 	std::string cmdName ="unknown";
+	CommandInputStrategy* inputStrategy;
 };

@@ -34,6 +34,7 @@ public:
 			if (exeCmd == nullptr) break;
 
 			exeCmd->setExecutor(executor);
+			exeCmd->setInputStrategy(inputStrategy);
 			exeCmd->run();
 			delete exeCmd;
 		}
@@ -60,6 +61,7 @@ public:
 		if (exeCmd == nullptr) return;
 
 		exeCmd->setExecutor(executor);
+		exeCmd->setInputStrategy(inputStrategy);
 		exeCmd->run();
 	}
 #endif
