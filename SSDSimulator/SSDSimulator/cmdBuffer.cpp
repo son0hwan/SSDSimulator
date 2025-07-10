@@ -36,7 +36,7 @@ std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInter
 
 	storage.setBufferToStorage(bufferingQ);
 
-	if (bufferingQ.size() >= 0) {
+	if (bufferingQ.size() > 0) {
 		outstandingQ.push_back(new SsdCachedWriteCmd());
 	}
 
