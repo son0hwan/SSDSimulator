@@ -15,8 +15,8 @@ ShellScript1Cmd::ShellScript1Cmd() {
 }
 
 int ShellScript1Cmd::writeFiveTimesFromIdx(unsigned int value, int startIdx) {
-	for (int i = 0; i < unitCount; i++) {
-		int addr = startIdx + unitCount;
+	for (int unitIdx = 0; unitIdx < unitCount; unitIdx++) {
+		int addr = startIdx + unitIdx;
 		if (executor->writeToSSDWithResult(addr, value))
 			return ERROR;
 	}
@@ -24,8 +24,8 @@ int ShellScript1Cmd::writeFiveTimesFromIdx(unsigned int value, int startIdx) {
 }
 
 int ShellScript1Cmd::readFiveTimesFromIdx(vector<unsigned int>& values, int startIdx) {
-	for (int i = 0; i < unitCount; i++) {
-		int addr = startIdx + unitCount;
+	for (int unitIdx = 0; unitIdx < unitCount; unitIdx++) {
+		int addr = startIdx + unitIdx;
 		unsigned int value;
 		if (executor->readFromSSDWithResult(addr, &value))
 			return ERROR;
@@ -36,8 +36,8 @@ int ShellScript1Cmd::readFiveTimesFromIdx(vector<unsigned int>& values, int star
 }
 
 int ShellScript1Cmd::checkValueIsSame(unsigned int writeValue, const vector<unsigned int>& readValues) {
-	for (int i = 0; i < unitCount; i++) {
-		if (writeValue != readValues.at(i))
+	for (int unitIdx = 0; unitIdx < unitCount; unitIdx++) {
+		if (writeValue != readValues.at(unitIdx))
 			return ERROR;
 	}
 	return SUCCESS;
