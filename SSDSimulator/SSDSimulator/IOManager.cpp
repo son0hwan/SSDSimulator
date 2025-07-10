@@ -23,18 +23,3 @@ void IOManager::CreateNewTempNandFileAndInitForTest() {
 void IOManager::deleteFileIfExists() {
     nand().deleteFileIfExists();
 }
-
-bool IOManager::forceCreateFiveFreshBufferFiles() {
-    return buffer().forceCreateFiveFreshBufferFiles();
-}
-
-bool IOManager::updateBufferFiles(const std::vector<std::string> buffers) {
-    return buffer().updateBufferFiles(buffers);
-}
-
-std::vector<std::string> IOManager::getBufferFileList() {
-    return buffer().getBufferFileList();
-}
-
-
-

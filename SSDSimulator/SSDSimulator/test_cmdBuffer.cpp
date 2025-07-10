@@ -156,7 +156,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }
@@ -172,7 +172,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdatePartiallyFullCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }
@@ -185,7 +185,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
 	bufferStorage.setBufferToStorage(v);
 
 	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.getBufferFileList();
+	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
 	EXPECT_EQ(expected, actual);
 }
