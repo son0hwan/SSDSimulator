@@ -38,8 +38,8 @@ public:
 
 	SsdCmdInterface* getCmd() { return cmd; }
 
-	uint32_t getValueFromAddress(long targeAddress) {
-		if (targeAddress < address || address + size <= targeAddress) return 0;
+	uint32_t getValueFromAddress(long targetAddress) {
+		if (targetAddress < address || address + size <= targetAddress) return 0;
 		return value;
 	}
 
