@@ -23,3 +23,7 @@ uint32_t SsdWriteCmd::getData() const {
 BufferedCmdInfo* SsdWriteCmd::getBufferedCmdInfo(void) {
     return new BufferedCmdInfo(this);
 }
+
+void SsdCachedWriteCmd::run() {
+    SsdSimulator::getInstance().getIoManager().output().updateWriteSuccess();
+}
