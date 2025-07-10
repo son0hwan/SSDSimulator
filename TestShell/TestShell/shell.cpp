@@ -6,13 +6,6 @@
 #include "commandInputStrategy.h"
 #include "consoleInputStrategy.h"
 
-#define MOCK_TEST
-
-#ifdef MOCK_TEST
-#include <iostream>
-#include <fstream>
-#endif
-
 class TestShell {
 public:
 	TestShell(Executor* executor) : executor{ executor }, inputStrategy{ new ConsoleInputStrategy{} } {}
@@ -53,21 +46,6 @@ public:
 
 		return tokens;
 	}
-
-#ifdef MOCK_TEST
-	void fake_command(std::string cmd) {
-		ShellCmdParser shellCmdParser;
-		std::vector<std::string> token = splitBySpace(cmd);
-		std::shared_ptr<shellCmdInterface> sharedCmd = shellCmdParser.getCommand(token);
-		shellCmdInterface* exeCmd = sharedCmd.get();
-
-		if (exeCmd == nullptr) return;
-
-		exeCmd->setExecutor(executor);
-		exeCmd->setInputStrategy(inputStrategy);
-		exeCmd->run();
-	}
-#endif
 private:
 	Executor* executor;
 	CommandInputStrategy* inputStrategy;

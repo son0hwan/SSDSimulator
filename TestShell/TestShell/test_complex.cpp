@@ -13,7 +13,7 @@ TEST_F(ShellFixture, FullWriteAndReadCompare) {
 	EXPECT_CALL(mockRandomGenerator, next)
 		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
-	testShell.fake_command("1_FullWriteAndReadCompare");
+	command("1_FullWriteAndReadCompare");
 
 	EXPECT_EQ("[1_FullWriteAndReadCompare] Done\n\n", getPrintedString());
 }
@@ -26,7 +26,7 @@ TEST_F(ShellFixture, PartialLBAWrite) {
 	EXPECT_CALL(mockRandomGenerator, next)
 		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
-	testShell.fake_command("2_PartialLBAWrite");
+	command("2_PartialLBAWrite");
 
 	EXPECT_EQ("[2_PartialLBAWrite] Done\n\n", getPrintedString());
 }
@@ -39,7 +39,7 @@ TEST_F(ShellFixture, WriteReadAging) {
 	EXPECT_CALL(mockRandomGenerator, next)
 		.WillRepeatedly(Return(std::stoul(TEST_SAMPLE_DATA, nullptr, 16)));
 
-	testShell.fake_command("3_WriteReadAging");
+	command("3_WriteReadAging");
 
 	EXPECT_EQ("[3_WriteReadAging] Done\n\n", getPrintedString());
 }
