@@ -1,0 +1,65 @@
+[25.07.10 12:16] Logger.renameFile(const class std::basic_string<char,struct std: Renamed latest.txt¡ælog/until_250710_12h_16m_10s.log
+[25.07.10 12:16] ShellFullReadCmd.ShellFullReadCmd(void)( )                  : ShellFullReadCmd::ShellFullReadCmd has been called
+[25.07.10 12:16] ShellFullReadCmd.run(void)( )                               : ShellFullReadCmd::run has been called
+[25.07.10 12:16] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:16] ShellWriteCmd.run(void)( )                                  : ShellWriteCmd::run has been called
+[25.07.10 12:16] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:16] ShellWriteCmd.run(void)( )                                  : ShellWriteCmd::run has been called
+[25.07.10 12:16] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
+[25.07.10 12:16] ShellFullWriteCmd.run(void)( )                              : ShellFullWriteCmd::run has been called
+[25.07.10 12:16] ShellReadCmd.ShellReadCmd(long)( )                          : ShellReadCmd::ShellReadCmd has been called
+[25.07.10 12:16] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:16] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:16] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:16] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:16] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:16] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:16] ShellHelpCmd.ShellHelpCmd(void)( )                          : ShellHelpCmd::ShellHelpCmd has been called
+[25.07.10 12:16] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
+[25.07.10 12:16] ShellFullReadCmd.ShellFullReadCmd(void)( )                  : ShellFullReadCmd::ShellFullReadCmd has been called
+[25.07.10 12:16] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.10 12:16] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.10 12:16] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
+[25.07.10 12:16] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
+[25.07.10 12:16] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
+[25.07.10 12:16] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
+[25.07.10 12:16] ShellEraseCmd.ShellEraseCmd(long,long)( )                   : ShellEraseCmd::ShellEraseCmd has been called
+[25.07.10 12:16] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
+[25.07.10 12:16] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
+[25.07.10 12:16] ShellFlushCmd.ShellFlushCmd(void)( )                        : ShellFlushCmd::ShellFlushCmd has been called
+[25.07.10 12:30] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.10 12:30] ShellScript1Cmd.run(void)( )                                : ShellScript1Cmd::run has been called
+[25.07.10 12:30] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
+[25.07.10 12:30] ShellScript2Cmd.run(void)( )                                : ShellScript2Cmd::run has been called
+[25.07.10 12:30] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
+[25.07.10 12:30] ShellScript3Cmd.run(void)( )                                : ShellScript3Cmd::run has been called
+[25.07.10 12:30] ShellReadCmd.ShellReadCmd(long)( )                          : ShellReadCmd::ShellReadCmd has been called
+[25.07.10 12:30] ShellReadCmd.run(void)( )                                   : ShellReadCmd::run has been called
+[25.07.10 12:30] ShellFullReadCmd.ShellFullReadCmd(void)( )                  : ShellFullReadCmd::ShellFullReadCmd has been called
+[25.07.10 12:30] ShellFullReadCmd.run(void)( )                               : ShellFullReadCmd::run has been called
+[25.07.10 12:30] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:30] ShellWriteCmd.run(void)( )                                  : ShellWriteCmd::run has been called
+[25.07.10 12:30] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:30] ShellWriteCmd.run(void)( )                                  : ShellWriteCmd::run has been called
+[25.07.10 12:30] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
+[25.07.10 12:30] ShellFullWriteCmd.run(void)( )                              : ShellFullWriteCmd::run has been called
+[25.07.10 12:30] ShellReadCmd.ShellReadCmd(long)( )                          : ShellReadCmd::ShellReadCmd has been called
+[25.07.10 12:30] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:30] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:30] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
+[25.07.10 12:30] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:30] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:30] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
+[25.07.10 12:30] ShellHelpCmd.ShellHelpCmd(void)( )                          : ShellHelpCmd::ShellHelpCmd has been called
+[25.07.10 12:30] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
+[25.07.10 12:30] ShellFullReadCmd.ShellFullReadCmd(void)( )                  : ShellFullReadCmd::ShellFullReadCmd has been called
+[25.07.10 12:30] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.10 12:30] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.10 12:30] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
+[25.07.10 12:30] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
+[25.07.10 12:30] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
+[25.07.10 12:30] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
+[25.07.10 12:30] ShellEraseCmd.ShellEraseCmd(long,long)( )                   : ShellEraseCmd::ShellEraseCmd has been called
+[25.07.10 12:30] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
+[25.07.10 12:30] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
+[25.07.10 12:30] ShellFlushCmd.ShellFlushCmd(void)( )                        : ShellFlushCmd::ShellFlushCmd has been called
