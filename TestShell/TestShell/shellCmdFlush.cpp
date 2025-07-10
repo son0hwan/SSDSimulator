@@ -3,6 +3,7 @@
 
 ShellFlushCmd::ShellFlushCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Flush";
 }
 
 bool ShellFlushCmd::run() {

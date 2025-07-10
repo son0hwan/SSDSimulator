@@ -11,6 +11,7 @@ using std::vector;
 
 ShellScript1Cmd::ShellScript1Cmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "1_FullWriteAndReadCompare";
 }
 
 int ShellScript1Cmd::writeFiveTimesFromIdx(unsigned int value, int startIdx) {
@@ -50,19 +51,18 @@ bool ShellScript1Cmd::run() {
 		vector<unsigned int> readValues;
 
 		if (writeFiveTimesFromIdx(writeValue, idx * unitCount)) {
-			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl << std::endl;
+			printError();
 			return false;
 		}
 		if (readFiveTimesFromIdx(readValues, idx * unitCount)) {
-			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl << std::endl;
+			printError();
 			return false;
-
 		}
 		if (checkValueIsSame(writeValue, readValues)) {
-			std::cout << "[1_FullWriteAndReadCompare] Fail" << std::endl << std::endl;
+			printError();
 			return false;
 		}
-		std::cout << "[1_FullWriteAndReadCompare] Done" << std::endl << std::endl;
+		printSuccess();
 		return true;
 	}
 	return true;
@@ -70,6 +70,7 @@ bool ShellScript1Cmd::run() {
 
 ShellScript2Cmd::ShellScript2Cmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "2_PartialLBAWrite";
 }
 
 bool ShellScript2Cmd::run() {
@@ -80,7 +81,7 @@ bool ShellScript2Cmd::run() {
 		values.emplace_back(rand());
 	}
 	if (values.size() != 30) {
-		std::cout << "[2_PartialLBAWrite] Fail" << std::endl << std::endl;
+		printError();
 		return false;
 	}
 
@@ -93,29 +94,30 @@ bool ShellScript2Cmd::run() {
 
 		unsigned int value;
 		if (executor->readFromSSDWithResult(0, &value)) {
-			std::cout << "[2_PartialLBAWrite] Fail" << std::endl << std::endl;
+			printError();
 			return false;
 		}
 		for (int addr = 1; addr <= 4; addr++) {
 			unsigned int comp;
 			if (executor->readFromSSDWithResult(addr, &comp)) {
-				std::cout << "[2_PartialLBAWrite] Fail" << std::endl << std::endl;
+				printError();
 				return false;
 			}
 			if (value != comp) {
-				std::cout << "[2_PartialLBAWrite] Fail" << std::endl << std::endl;
+				printError();
 				return false;
 			}
 			value = comp;
 		}
 	}
 
-	std::cout << "[2_PartialLBAWrite] Done" << std::endl << std::endl;
+	printSuccess();
 	return true; 
 }
 
 ShellScript3Cmd::ShellScript3Cmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "3_WriteReadAging";
 }
 
 bool ShellScript3Cmd::run() {
@@ -137,12 +139,11 @@ bool ShellScript3Cmd::run() {
 		executor->readFromSSDWithResult(0, &resOf99);
 
 		if (resOf0 != resOf99) {
-			std::cout << "[3_WriteReadAging] Fail" << std::endl << std::endl;
+			printError();
 			return false;
 		}
 	}
-
-	std::cout << "[3_WriteReadAging] Done" << std::endl << std::endl;
+	printSuccess();
 	return true;
 }
 
