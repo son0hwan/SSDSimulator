@@ -1,28 +1,23 @@
 #include "gmock/gmock.h"
 #include "ssdCmdWrite.h"
 #include "ssdCmdRead.h"
+#include "test_ssdCmdFixture.h"
 
 using namespace testing;
 
-class WriteTestFixture : public testing::Test {
+class WriteTestFixture : public SsdCmdTestFixture {
 public:
 	SsdWriteCmd* writeCmd = new SsdWriteCmd();
-	SsdReadCmd* readCmd = new SsdReadCmd();
 
 	void write(uint32_t address, uint32_t data) {
 		writeCmd->setAddress(address);
 		writeCmd->setWriteData(data);
 		writeCmd->run();
 	}
-
-	void read(uint32_t address) {
-		readCmd->setAddress(address);
-		readCmd->run();
-	}
 	
 	void verifyWriteAndRead(uint32_t address, uint32_t data) {
 		EXPECT_NO_THROW(write(VALID_ADDRESS, WRITE_DATA));
-		EXPECT_NO_THROW(read(VALID_ADDRESS));
+		EXPECT_NO_THROW(runReadTest(VALID_ADDRESS));
 		EXPECT_EQ(getReadData(), WRITE_DATA);
 		CheckOutputFileValid(OUTPUT_VALID_READ);
 	}
@@ -34,30 +29,6 @@ public:
 		}
 	}
 
-	uint32_t getReadData() {
-		return readCmd->getReadData();
-	}
-
-	void CheckOutputFileValid(const std::string& expectResult)
-	{
-		std::ifstream outFile(OUTPUT_FILENAME);
-		ASSERT_TRUE(outFile.is_open()) << "ssd_output.txt file open failed";
-
-		std::string fileContent;
-		std::getline(outFile, fileContent);
-		EXPECT_EQ(fileContent, expectResult);
-	}
-
-protected:
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-
-	static const uint32_t VALID_ADDRESS = 19;
-	static const uint32_t INVALID_ADDRESS = 100;
-	static const uint32_t WRITE_DATA = 0x705ff43a;
-	const std::string OUTPUT_VALID_READ = "0x705FF43A";
-	const std::string OUTPUT_ERROR = "ERROR";
-	const std::string OUTPUT_FILENAME = "ssd_output.txt";
-	const std::string OUTPUT_WRITE_SUCCESS = "";
 };
 
 TEST_F(WriteTestFixture, WriteExecutedWithoutError) {
@@ -71,11 +42,11 @@ TEST_F(WriteTestFixture, WriteExecutedWithErrorInvalidAddress) {
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrity) {
-	ioManager.nand().initNandFileForTest();
+	setNandFileTestVal();
 	verifyWriteAndRead(VALID_ADDRESS, WRITE_DATA);
 }
 
 TEST_F(WriteTestFixture, WriteDataIntegrityFullCapacity) {
-	ioManager.nand().initNandFileForTest();
+	setNandFileTestVal();
 	verifyWriteAndReadAll(VALID_ADDRESS, WRITE_DATA);
 }
