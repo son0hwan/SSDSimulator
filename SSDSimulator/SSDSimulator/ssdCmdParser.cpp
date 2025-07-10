@@ -61,7 +61,7 @@ std::shared_ptr<SsdCmdInterface> SsdCmdParser::getEraseCommandWithInput(const st
 	uint32_t size = std::stoul(args[2], nullptr, 10);
 
 	if (MAX_PARSED_LBA < address) return std::make_shared<SsdErrorCmd>();
-	if (MAX_PARSED_SIZE < size) return std::make_shared<SsdErrorCmd>();
+	if (0 == size || MAX_PARSED_SIZE < size) return std::make_shared<SsdErrorCmd>();
 	if (MAX_PARSED_LBA < address + size) return std::make_shared<SsdErrorCmd>();
 
 	return std::make_shared<SsdEraseCmd>(address, size);
