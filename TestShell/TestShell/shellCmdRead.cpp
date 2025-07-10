@@ -29,6 +29,7 @@ static void printReadInfoWithoutHeader(long address, unsigned int value)
 
 ShellReadCmd::ShellReadCmd(long address) : address{ address } {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Read";
 }
 
 bool ShellReadCmd::run() {
@@ -37,7 +38,7 @@ bool ShellReadCmd::run() {
 	unsigned int value;
 
 	if (executor->readFromSSDWithResult(address, &value)) {
-		std::cout << "[Read] ERROR" << std::endl << std::endl;
+		printError();
 		return false;
 	}
 
@@ -54,6 +55,7 @@ long ShellReadCmd::getAddress() {
 
 ShellFullReadCmd::ShellFullReadCmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Full Read";
 }
 
 bool ShellFullReadCmd::run() {
@@ -65,7 +67,7 @@ bool ShellFullReadCmd::run() {
 		unsigned int value;
 
 		if (executor->readFromSSDWithResult(addr, &value)) {
-			std::cout << "[Full Read] ERROR" << std::endl << std::endl;
+			printError();
 			return false;
 		}
 

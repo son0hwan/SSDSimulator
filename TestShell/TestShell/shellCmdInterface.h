@@ -19,6 +19,13 @@ public:
 	unsigned int rand() {
 		return executor->rand();
 	}
+	
+	void printSuccess() { print("Done"); }
+	void printError() { print("Error"); }
+	virtual void print(const std::string& status) {
+		std::cout << "[" << cmdName << "] " << status << std::endl << std::endl;
+	}
 protected:
 	Executor* executor = nullptr;
+	std::string cmdName ="unknown";
 };

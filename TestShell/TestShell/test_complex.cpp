@@ -15,7 +15,7 @@ TEST_F(ShellFixture, FullWriteAndReadCompare) {
 
 	testShell.fake_command("1_FullWriteAndReadCompare");
 
-	EXPECT_EQ("[1_FullWriteAndReadCompare] Done\n", getPrintedString());
+	EXPECT_EQ("[1_FullWriteAndReadCompare] Done\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, PartialLBAWrite) {
@@ -28,7 +28,7 @@ TEST_F(ShellFixture, PartialLBAWrite) {
 
 	testShell.fake_command("2_PartialLBAWrite");
 
-	EXPECT_EQ("[2_PartialLBAWrite] Done\n", getPrintedString());
+	EXPECT_EQ("[2_PartialLBAWrite] Done\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, WriteReadAging) {
@@ -41,5 +41,5 @@ TEST_F(ShellFixture, WriteReadAging) {
 
 	testShell.fake_command("3_WriteReadAging");
 
-	EXPECT_EQ("[3_WriteReadAging] Done\n", getPrintedString());
+	EXPECT_EQ("[3_WriteReadAging] Done\n\n", getPrintedString());
 }

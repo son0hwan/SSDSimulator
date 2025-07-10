@@ -3,6 +3,7 @@
 
 ShellEraseCmd::ShellEraseCmd(long address, long size) : address(address), size(size) {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "Erase";
 }
 
 bool ShellEraseCmd::run() {
@@ -17,12 +18,12 @@ bool ShellEraseCmd::run() {
 		int erase_size = size > ERASE_UNIT ? ERASE_UNIT : size;
 		result = executor->eraseToSSD(start_lba, erase_size);
 		if (result == ERROR_STRING) {
-			std::cout << "[Erase] ERROR" << std::endl << std::endl;
+			printError();
 			return false;
 		}
 		start_lba += erase_size;
 	}
-	std::cout << "[Erase] Done" << std::endl << std::endl;
+	printSuccess();
 	return true;
 }
 
