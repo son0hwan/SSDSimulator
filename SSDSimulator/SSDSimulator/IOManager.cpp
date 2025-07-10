@@ -1,21 +1,5 @@
 #include "IOManager.h"
 
-void IOManager::updateOutputError() {
-    output().updateOutputError();
-}
-
-void IOManager::updateOutputWriteSuccess() {
-    output().updateOutputWriteSuccess();
-}
-
-void IOManager::updateOutputReadSuccess(uint32_t readData) {
-    output().updateOutputReadSuccess(readData);
-}
-
-void IOManager::updateOutputEraseSuccess() {
-    output().updateOutputWriteSuccess();
-}
-
 void IOManager::CheckAndCreateNandDataFile() {
     nand().CheckAndCreateNandDataFile();
 }
@@ -24,8 +8,8 @@ void IOManager::ProgramAllDatasToNand(const std::vector<LbaEntry>& lbaTable) {
     nand().ProgramAllDatasToNand(lbaTable);
 }
 
-void IOManager::ReadAllDatasToInternalBuffer(std::vector<LbaEntry>& lbaTable) {
-    nand().ReadAllDatasToInternalBuffer(lbaTable);
+void IOManager::ReadAllDatasToInternalLbaTable(std::vector<LbaEntry>& lbaTable) {
+    nand().ReadAllDatasToInternalLbaTable(lbaTable);
 }
 
 bool IOManager::SplitStringToAddressAndData(std::string& line, LbaEntry* splitDatas) {
