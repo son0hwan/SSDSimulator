@@ -1,0 +1,65 @@
+name: CI Build & Test (Simulator + Shell using Matrix)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.config }})
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        config: [Debug, Release]  # ← Debug / Release 두 가지 빌드 구성을 병렬 실행
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages
+      run: |
+        nuget restore SSDSimulator/SSDSimulator.sln
+        nuget restore TestShell/TestShell.sln
+
+    - name: Build SSDSimulator (${{ matrix.config }})
+      run: msbuild SSDSimulator/SSDSimulator.sln /p:Configuration=${{ matrix.config }} /p:Platform=x64
+
+    - name: Build TestShell (${{ matrix.config }})
+      run: msbuild TestShell/TestShell.sln /p:Configuration=${{ matrix.config }} /p:Platform=x64
+
+    - name: Run SSDSimulator (${{ matrix.config }})
+      run: |
+        cd SSDSimulator/x64/${{ matrix.config }}
+        cmd /c ".\SSDSimulator.exe > ssd-output-${{ matrix.config }}.txt"
+      continue-on-error: true
+
+    - name: Run TestShell (${{ matrix.config }})
+      run: |
+        cd TestShell/x64/${{ matrix.config }}
+        echo exit > input.txt
+        cmd /c "TestShell.exe < input.txt > shell-output-${{ matrix.config }}.txt"
+      continue-on-error: true
+
+    - name: Upload Outputs (${{ matrix.config }})
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: output-${{ matrix.config }}
+        path: |
+          SSDSimulator/x64/${{ matrix.config }}/ssd-output-${{ matrix.config }}.txt
+          TestShell/x64/${{ matrix.config }}/shell-output-${{ matrix.config }}.txt
+
+    - name: Upload Executables (${{ matrix.config }})
+      if: ${{ matrix.config == 'Release' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: executables
+        path: |
+          SSDSimulator/x64/Release/SSDSimulator.exe
+          TestShell/x64/Release/TestShell.exe
