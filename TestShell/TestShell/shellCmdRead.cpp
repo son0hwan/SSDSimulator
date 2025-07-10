@@ -19,7 +19,7 @@ void printfReadInfoCore(long address, unsigned int value, string prefix)
 
 static void printReadInfo(long address, unsigned int value)
 {
-	printfReadInfoCore(address, value, "[READ] LBA ");
+	printfReadInfoCore(address, value, "[Read] LBA ");
 }
 
 static void printReadInfoWithoutHeader(long address, unsigned int value)

@@ -16,12 +16,13 @@ bool ShellEraseRangeCmd::run() {
 		int erase_size = size > ERASE_UNIT ? ERASE_UNIT : size;
 		result = executor->eraseToSSD(start_lba, erase_size);
 		if (result == ERROR_STRING) {
-			std::cout << "[RangedErase] ERROR" << std::endl;
+			std::cout << "[RangedErase] ERROR" << std::endl << std::endl;
 			return false;
 		}
 		start_lba += erase_size;
+		size -= erase_size;
 	}
-	std::cout << "[RangedErase] Done" << std::endl;
+	std::cout << "[RangedErase] Done" << std::endl << std::endl;
 	return true;
 }
 
