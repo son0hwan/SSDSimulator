@@ -13,7 +13,7 @@ TEST_F(ShellFixture, WriteJustOnce) {
 
 	testShell.fake_command("write 1 " + testDataStr);
 	
-	EXPECT_EQ("[Write] Done\n", getPrintedString());
+	EXPECT_EQ("[Write] Done\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, WriteFailureWithWrongAddress) {
@@ -23,7 +23,7 @@ TEST_F(ShellFixture, WriteFailureWithWrongAddress) {
 
 	testShell.fake_command("write 100 " + testDataStr);
 
-	EXPECT_EQ("[Write] Error\n", getPrintedString());
+	EXPECT_EQ("[Write] Error\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, FullWrite) {
@@ -35,5 +35,5 @@ TEST_F(ShellFixture, FullWrite) {
 
 	testShell.fake_command("fullwrite " + testDataStr);
 
-	EXPECT_EQ("[FullWrite] Done\n", getPrintedString());
+	EXPECT_EQ("[Full Write] Done\n\n", getPrintedString());
 }

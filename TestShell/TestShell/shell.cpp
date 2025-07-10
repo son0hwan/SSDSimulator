@@ -62,16 +62,6 @@ public:
 		exeCmd->setExecutor(executor);
 		exeCmd->run();
 	}
-
-	void writeToOutputFile(std::string contents) {
-		std::ofstream file(OUTPUT_FILE_NAME);
-		if (!file.is_open()) {
-			std::cerr << "fail to open file";
-			return;
-		}
-		file << contents;  
-		file.close();     
-	}
 #endif
 private:
 	Executor* executor;

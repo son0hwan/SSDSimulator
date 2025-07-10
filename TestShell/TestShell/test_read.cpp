@@ -10,10 +10,9 @@ TEST_F(ShellFixture, ReadJustOnce) {
 	EXPECT_CALL(mockSSD, readFromSSD)
 		.WillOnce(testing::Return(EXPECTED_STR));
 
-	testShell.writeToOutputFile(EXPECTED_STR);
 	testShell.fake_command("read 50");
 
-	EXPECT_EQ("[Read] LBA 50 : " + EXPECTED_STR + "\n", getPrintedString());
+	EXPECT_EQ("[Read] LBA 50 : " + EXPECTED_STR + "\n\n", getPrintedString());
 }
 
 TEST_F(ShellFixture, FullRead) {
