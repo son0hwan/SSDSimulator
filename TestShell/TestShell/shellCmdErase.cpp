@@ -21,6 +21,10 @@ bool ShellEraseCmd::run() {
 			printError();
 			return false;
 		}
+		else if (result == FAIL) {
+			std::cout << "[Erase] FAIL to execute ssd.exe" << std::endl << std::endl;
+			return false;
+		}
 		start_lba += erase_size;
 	}
 	printSuccess();

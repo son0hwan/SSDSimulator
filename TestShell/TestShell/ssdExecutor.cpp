@@ -39,4 +39,16 @@ class SSDExecutor : public Executor {
 
         return getFirstLineFromFile(OUTPUT_FILE_NAME);
     }
+
+    std::string flushToSSD() override {
+        std::string command = "ssd.exe F";
+
+        int result = std::system(command.c_str());
+        if (result != 0) {
+            std::cout << "flush fail : return code = " << result << std::endl;
+            return FAIL;
+        }
+
+        return getFirstLineFromFile(OUTPUT_FILE_NAME);
+    }
 };

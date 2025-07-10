@@ -43,3 +43,14 @@ TEST_F(ShellFixture, WriteReadAging) {
 
 	EXPECT_EQ("[3_WriteReadAging] Done\n\n", getPrintedString());
 }
+
+TEST_F(ShellFixture, EraseAndWriteAging) {
+	EXPECT_CALL(mockSSD, eraseToSSD(_, _))
+		.WillRepeatedly(Return(SUCCESS_STRING));
+	EXPECT_CALL(mockSSD, writeToSSD(_, _))
+		.WillRepeatedly(Return(SUCCESS_STRING));
+
+	command("4_EraseAndWriteAging");
+
+	EXPECT_EQ("[4_EraseAndWriteAging] Done\n\n", getPrintedString());
+}
