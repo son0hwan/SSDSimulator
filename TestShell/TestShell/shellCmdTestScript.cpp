@@ -123,8 +123,6 @@ ShellScript3Cmd::ShellScript3Cmd() {
 bool ShellScript3Cmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
 
-	std::string result;
-
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		std::string EXPECTED_STR = genRandomString(MAX_VAL_LEN);
 
@@ -149,9 +147,31 @@ bool ShellScript3Cmd::run() {
 
 ShellScript4Cmd::ShellScript4Cmd() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+	cmdName = "4_EraseAndWriteAging";
 }
 
 bool ShellScript4Cmd::run() {
 	LOG(std::string(__FUNCTION__) + " has been called");
+
+	executor->eraseToSSD(0, 3);
+
+	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
+		for (int address = 2; address <= 98; address += 2) {
+			std::string FIRST_RANDOM_STR = genRandomString(MAX_VAL_LEN);
+			std::string SECOND_RANDOM_STR = genRandomString(MAX_VAL_LEN);
+
+			if (executor->writeToSSDWithResult(address, stoul(FIRST_RANDOM_STR, nullptr, 16)))
+				return false;
+
+			if (executor->writeToSSDWithResult(address, stoul(SECOND_RANDOM_STR, nullptr, 16)))
+				return false;
+
+			int erase_unit = ((address == 98) ? 2 : 3);
+			executor->eraseToSSD(address, erase_unit);
+		}
+	}
+
+	printSuccess();
+
 	return true;
 }

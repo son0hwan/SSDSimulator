@@ -117,6 +117,8 @@ class ShellScript4Cmd : public shellCmdInterface {
 public:
 	ShellScript4Cmd();
 	bool run() override;
+private:
+	const int MAX_LOOP_COUNT = 30;
 };
 
 class ShellFlushCmd : public shellCmdInterface {
