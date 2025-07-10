@@ -150,7 +150,7 @@
     <ClCompile Include="shellCmdInterface.h" />
     <ClCompile Include="shellCmdRead.cpp" />
     <ClCompile Include="shellCmdWrite.cpp" />
-    <ClCompile Include="test_complex.cpp" />
+    <ClCompile Include="test_testscript.cpp" />
     <ClCompile Include="test_erase.cpp" />
     <ClCompile Include="test_flush.cpp" />
     <ClCompile Include="test_ShellCmdParser.cpp" />
