@@ -17,11 +17,12 @@ public:
 
 	void setNandFileTestVal() {
 		std::vector<LbaEntry> expectedData{};
-		uint32_t initAddress = 0x705FF427;
+		uint32_t initAddress = MAGIC_TEST_DATA;
 		for (uint32_t lba = 0; lba <= maxLbaofDevice; ++lba) {
 			expectedData.push_back({ lba, initAddress++ });
 		}
 		ioManager.nand().ProgramAllDatasToNand(expectedData);
+
 	}
 
 
@@ -49,6 +50,7 @@ public:
 	static const uint32_t VALID_ADDRESS = 19;
 	static const uint32_t INVALID_ADDRESS = 100;
 	static const uint32_t WRITE_DATA = 0x705ff43a;
+	static const uint32_t MAGIC_TEST_DATA = 0x705FF427;
 	static constexpr const char* OUTPUT_INIT_READ = "0x00000000";
 	static constexpr const char* OUTPUT_VALID_READ = "0x705FF43A";
 	static constexpr const char* OUTPUT_ERROR = "ERROR";
