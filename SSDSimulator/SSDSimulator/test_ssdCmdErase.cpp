@@ -75,7 +75,6 @@ TEST_F(EraseTestFixture, EraseExecutedWithErrorInvalidSize) {
 }
 
 TEST_F(EraseTestFixture, EraseDataIntegrity) {
-	ioManager.deleteFileIfExists();
-	ioManager.CreateNewTempNandFileAndInitForTest();
+	ioManager.nand().initNandFileForTest();
 	verifyEraseAndRead(VALID_ADDRESS, ERASE_SIZE);
 }

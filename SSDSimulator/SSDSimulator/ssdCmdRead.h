@@ -21,10 +21,15 @@ protected:
 
 class SsdCachedReadCmd : public SsdReadCmd {
 public:
-    SsdCachedReadCmd(uint32_t address, uint32_t cachedData)
-        : SsdReadCmd(address) {
+    SsdCachedReadCmd(uint32_t address, uint32_t cachedData, SsdCmdInterface* original = nullptr)
+        : originalCmd(original), SsdReadCmd(address) {
         readData = cachedData;
     }
 
+    ~SsdCachedReadCmd() {
+        if (nullptr != originalCmd) delete(originalCmd);
+    }
+
     void run() override;
+    SsdCmdInterface* originalCmd;
 };

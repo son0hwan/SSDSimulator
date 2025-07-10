@@ -14,27 +14,36 @@ CommandBuffer::CommandBuffer(CommandBufferStorage& newStorage)
 
 std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInterface* newCmd) {
 	BufferedCmdInfo* bufferedInfo = newCmd->getBufferedCmdInfo();
+	if (nullptr == bufferedInfo) return { newCmd };
 
-	std::vector<SsdCmdInterface*> outstandingQ = GetNoBufferingCmd(bufferedInfo, newCmd);
-	if (outstandingQ.empty() == false) return outstandingQ;
+	std::vector<SsdCmdInterface*> outstandingQ;
 
-	if (bufferingQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
+	if (bufferedInfo->type == CT_READ) return GetBufferedReadCmd(bufferedInfo);
+
+	if (bufferedInfo->type == CT_FLUSH) {
 		outstandingQ = popAllBufferToOutstandingQ();
-		filterInvalidWrites(outstandingQ);
 	}
 
-	bufferingQ.push_back(bufferedInfo);
+	else if (bufferingQ.size() >= Q_SIZE_LIMIT_TO_FLUSH) {
+		outstandingQ = popAllBufferToOutstandingQ();
+		filterInvalidWrites(outstandingQ);
+		bufferingQ.push_back(bufferedInfo);
+	}
+	else {
+		bufferingQ.push_back(bufferedInfo);
+	}
+
 	storage.setBufferToStorage(bufferingQ);
 	return outstandingQ;
 }
 
-std::vector<SsdCmdInterface*> CommandBuffer::GetNoBufferingCmd(BufferedCmdInfo* bufferedInfo, SsdCmdInterface*& newCmd)
+std::vector<SsdCmdInterface*> CommandBuffer::GetBufferedReadCmd(BufferedCmdInfo* readCmdInfo)
 {
-	std::vector<SsdCmdInterface*> outstandingQ;
-	if (nullptr == bufferedInfo || false == bufferedInfo->isBufferingRequired) {
-		outstandingQ.push_back(newCmd);
-	}
-	return outstandingQ;
+	BufferedCmdInfo* overlappedCmd = CheckLbaOverlap(bufferingQ, readCmdInfo->address);
+	if (nullptr == overlappedCmd) return { readCmdInfo->getCmd() };
+
+	uint32_t cachedValue = overlappedCmd->getValueFromAddress(readCmdInfo->address);
+	return { new SsdCachedReadCmd{readCmdInfo->address, cachedValue, readCmdInfo->getCmd()} };
 }
 
 void CommandBuffer::filterInvalidWrites(std::vector<SsdCmdInterface*>& outstandingQ) {
@@ -87,6 +96,29 @@ void CommandBuffer::CheckLbaOverlapWriteAndErase(CmdQ_type& outstandingQ, CmdQ_t
 		CompareWithWrites(outstandingQ, itCommand, startEraseAddress, endEraseAddress, writesToRemove);
 	}
 }
+
+BufferedCmdInfo* CommandBuffer::CheckLbaOverlap(vector<BufferedCmdInfo*>& outstandingQ, long address) {
+	BufferedCmdInfo* result = nullptr;
+	for (auto itCommand = outstandingQ.begin(); itCommand != outstandingQ.end(); ++itCommand) {
+
+
+		if ((*itCommand)->type == CT_ERASE) {
+			uint32_t startFrontEraseAddress = (*itCommand)->address;
+			uint32_t endFrontEraseAddress = startFrontEraseAddress + (*itCommand)->size - 1;
+			if (startFrontEraseAddress <= address && address <= endFrontEraseAddress) {
+				result = *itCommand;
+			}
+		}
+		else if ((*itCommand)->type == CT_WRITE) {
+			uint32_t writeAddress = (*itCommand)->address;
+			if (writeAddress == (*itCommand)->address) {
+				result = *itCommand;
+			}
+		}
+	}
+	return result;
+}
+
 void CommandBuffer::CompareWithWrites(CmdQ_type& outstandingQ, CmdQ_type::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, CmdQ_type& writesToRemove)
 {
 	for (auto itNextCmd = outstandingQ.begin(); itNextCmd != itCommand; ++itNextCmd) {
@@ -150,10 +182,10 @@ vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {
 	SsdCmdParser parser;
 	IOManager ioManager{ 0 };
 	bool isErrored;
-	vector<std::string> fileNames = ioManager.getBufferFileList();
+	vector<std::string> fileNames = ioManager.buffer().getBufferFileList();
 
 	if (fileNames.size() != 5) {
-		ioManager.forceCreateFiveFreshBufferFiles();
+		ioManager.buffer().forceCreateFiveFreshBufferFiles();
 		return {};
 	}
 
@@ -171,7 +203,7 @@ vector<BufferedCmdInfo*> CommandBufferStorage::getBufferFromStorage() {
 	}
 
 	if (fileIdx <= 5 && false == checkRemainIsEmpty(fileNames, fileIdx)) {
-		ioManager.forceCreateFiveFreshBufferFiles();
+		ioManager.buffer().forceCreateFiveFreshBufferFiles();
 		return {};
 	}
 
@@ -186,7 +218,7 @@ bool CommandBufferStorage::isValidFileName(std::string& line, int fileIdx)
 }
 
 bool CommandBufferStorage::checkRemainIsEmpty(vector<std::string> fileNames, int fileIdx) {
-	vector<std::string> subVector { fileNames.begin() + fileIdx - 1, fileNames.end() };
+	vector<std::string> subVector{ fileNames.begin() + fileIdx - 1, fileNames.end() };
 	for (std::string line : subVector) {
 		if (false == isValidFileName(line, fileIdx)) return false;
 		if (line.substr(2) != "empty") return false;
@@ -234,7 +266,7 @@ void CommandBufferStorage::setBufferToStorage(vector<BufferedCmdInfo*> cmdQ) {
 		buffer.push_back(fileName);
 	}
 
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector()};
+	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
 	ioManager.buffer().updateBufferFiles(buffer);
 
 }
