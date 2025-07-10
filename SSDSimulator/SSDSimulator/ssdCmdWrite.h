@@ -2,7 +2,7 @@
 #include "ssdInterface.h"
 #include "ssdSimulator.h"
 
-class SsdWriteCmd : public SsdCmdInterface {
+class SsdWriteCmd : public SsdCmdInterface, public std::enable_shared_from_this <SsdWriteCmd>{
 public:
 	SsdWriteCmd()
 		: requestedAddress(0), data(0) {}

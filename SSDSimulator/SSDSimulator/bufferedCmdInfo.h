@@ -9,7 +9,7 @@ enum commandType {
 
 class BufferedCmdInfo {
 public:
-	BufferedCmdInfo(SsdReadCmd* readCmd) : cmd(readCmd) {
+	BufferedCmdInfo(std::shared_ptr<SsdReadCmd> readCmd) : cmd(readCmd) {
 		address = readCmd->getAddress();
 		isBufferingRequired = false;
 		type = CT_READ;
