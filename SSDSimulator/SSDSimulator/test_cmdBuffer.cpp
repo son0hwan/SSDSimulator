@@ -11,13 +11,13 @@ public:
 	MOCK_METHOD(void, setBufferToStorage, (vector<BufferedCmdInfo*>), (override));
 };
 
-class MockCommandBuffer : public CommandBuffer {
+class TestCommandBuffer : public CommandBuffer {
 public:
-	MockCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
+	TestCommandBuffer(CommandBufferStorage& storage) : CommandBuffer(storage) {}
 
 	void clearBuffer() { bufferingQ.clear(); }
 
-	vector<SsdCmdInterface*> getAllBufferedCmd() {
+	CmdQ_type getAllBufferedCmd() {
 		std::vector<SsdCmdInterface*> outstandingQ;
 		for (auto bufferedInfo : bufferingQ) {
 			outstandingQ.push_back(bufferedInfo->getCmd());
@@ -46,42 +46,46 @@ public:
 		}
 	}
 
-	NiceMock<MockCommandBufferStroage> mockStorage;
-	MockCommandBuffer cmdBuffer{ mockStorage };
-};
-
-class RealCommandBufferFixture : public Test {
-public:
-	CommandBuffer& cmdBuffer = CommandBuffer::getInstance();
-	void SetUp() override {
-		cmdBuffer.ClearBufferingQ();
-		//CommandBuffer::getInstance().ClearBufferingQ();
+	void CHECK_OUTSTANING_Q(CmdQ_type actual, CmdQ_type expected) {
+		EXPECT_THAT(actual, ContainerEq(expected));
 	}
+
+	void CHECK_OUTSTANING_Q_WRITE(CmdQ_type actual, CmdQ_type expected) {
+		EXPECT_TRUE(isLastCmdCachedWrite(actual));
+		EXPECT_THAT(getWithoutLastCmd(actual), ContainerEq(expected));
+	}
+
+	bool isLastCmdCachedWrite(CmdQ_type resultVector) {
+		return nullptr != dynamic_cast<SsdCachedWriteCmd*>(resultVector[resultVector.size() - 1]);
+	}
+
+	CmdQ_type getWithoutLastCmd(CmdQ_type resultVector) {
+		return { resultVector.begin(), resultVector.end() - 1 };
+	}
+
+	NiceMock<MockCommandBufferStroage> mockStorage;
+	TestCommandBuffer cmdBuffer{ mockStorage };
 };
 
 TEST_F(CommandBufferFixture, addReadCmd) {
 	SsdReadCmd cmd{};
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-
-	EXPECT_THAT(result, ContainerEq(CmdQ_type{&cmd }));
-	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ });
+	CHECK_OUTSTANING_Q(result, CmdQ_type{&cmd});
 }
 
 TEST_F(CommandBufferFixture, addWriteCmd) {
 	SsdWriteCmd cmd{ 0, 0x12345678 };
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-	EXPECT_THAT(result, ContainerEq(CmdQ_type{}));
-	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
+	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
 }
 
 TEST_F(CommandBufferFixture, addEraseCmd) {
 	SsdEraseCmd cmd{ 0, 1 };
 
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-	EXPECT_THAT(result, ContainerEq(CmdQ_type {}));
-	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), CmdQ_type{ &cmd });
+	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
 }
 
 TEST_F(CommandBufferFixture, add5WriteCmd) {
@@ -99,7 +103,7 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
-	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 }));
+	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 });
 	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ &cmd6 }));
 }
 
@@ -115,7 +119,8 @@ TEST_F(CommandBufferFixture, flushCmd) {
 	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
 
-	EXPECT_THAT(result, ContainerEq(CmdQ_type{ &cmd1, &cmd2, &cmd3 }));
+
+	CHECK_OUTSTANING_Q(result, CmdQ_type{ &cmd1, &cmd2, &cmd3 });
 	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ }));
 }
 
@@ -194,7 +199,7 @@ TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
 	EXPECT_EQ(expected, actual);
 }
 
-TEST_F(RealCommandBufferFixture, AllOverlapEraseWithEraseAddress) {
+TEST_F(CommandBufferFixture, AllOverlapEraseWithEraseAddress) {
 	SsdWriteCmd cmd1{ 1, 0x12345678 };
 	SsdWriteCmd cmd2{ 3, 0x12345678 };
 	SsdEraseCmd cmd3{ 2, 3 };	// 2-4
@@ -210,7 +215,8 @@ TEST_F(RealCommandBufferFixture, AllOverlapEraseWithEraseAddress) {
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
 	CmdQ_type expectedOutstandingQ{};
-	EXPECT_THAT(result, ContainerEq(expectedOutstandingQ));
+
+	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
 
 	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
 	CmdQ_type expectedBufferingQ{ &cmd4, &cmd5, &cmd6 };
@@ -218,7 +224,7 @@ TEST_F(RealCommandBufferFixture, AllOverlapEraseWithEraseAddress) {
 	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
-TEST_F(RealCommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
+TEST_F(CommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
 	SsdWriteCmd cmd1{ 1, 2 };	// 1-2
 	SsdEraseCmd cmd2{ 3, 4 };	// 3-6
 	SsdEraseCmd cmd3{ 1, 4 };	// 1-5
@@ -234,7 +240,7 @@ TEST_F(RealCommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
 	CmdQ_type expectedOutstandingQ{};
-	EXPECT_THAT(result, ContainerEq(expectedOutstandingQ));
+	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
 
 	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
 	CmdQ_type expectedBufferingQ{ &cmd2, &cmd3, &cmd4, &cmd6 };
@@ -242,7 +248,7 @@ TEST_F(RealCommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
 	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
-TEST_F(RealCommandBufferFixture, WriteOverlapErase) {
+TEST_F(CommandBufferFixture, WriteOverlapErase) {
 	SsdWriteCmd cmd1{ 3, 0x12345678 };
 	SsdWriteCmd cmd2{ 4, 0x12345678 };
 	SsdWriteCmd cmd3{ 3, 0x12345678 };
@@ -258,7 +264,7 @@ TEST_F(RealCommandBufferFixture, WriteOverlapErase) {
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
 	CmdQ_type expectedOutstandingQ{};
-	EXPECT_THAT(result, ContainerEq(expectedOutstandingQ));
+	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
 
 	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
 	CmdQ_type expectedBufferingQ{ &cmd2, &cmd4, &cmd5, &cmd6 };
@@ -266,7 +272,7 @@ TEST_F(RealCommandBufferFixture, WriteOverlapErase) {
 	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
-TEST_F(RealCommandBufferFixture, WriteLaterOverlapErase) {
+TEST_F(CommandBufferFixture, WriteLaterOverlapErase) {
 	SsdWriteCmd cmd1{ 1, 0x12345678 };
 	SsdWriteCmd cmd2{ 2, 0x12345678 };
 	SsdWriteCmd cmd3{ 3, 0x12345678 };
@@ -282,7 +288,7 @@ TEST_F(RealCommandBufferFixture, WriteLaterOverlapErase) {
 	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
 
 	CmdQ_type expectedOutstandingQ{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
-	EXPECT_THAT(result, ContainerEq(expectedOutstandingQ));
+	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
 
 	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
 	CmdQ_type expectedBufferingQ{ &cmd6 };
