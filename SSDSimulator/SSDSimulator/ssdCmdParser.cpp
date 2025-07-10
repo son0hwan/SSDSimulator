@@ -37,6 +37,8 @@ bool SsdCmdParser::isLbaString(const std::string& address) {
 
 std::shared_ptr<SsdCmdInterface> SsdCmdParser::getReadCommandWithInput(const std::vector<std::string>& args) {
 	uint32_t address = std::stol(args[1], nullptr, 10);
+	if (MAX_PARSED_LBA < address) return std::make_shared<SsdErrorCmd>();
+
 	return std::make_shared<SsdReadCmd>(address);
 }
 
@@ -57,6 +59,11 @@ std::shared_ptr<SsdCmdInterface> SsdCmdParser::handleEraseCommand(const std::vec
 std::shared_ptr<SsdCmdInterface> SsdCmdParser::getEraseCommandWithInput(const std::vector<std::string>& args) {
 	uint32_t address = std::stoul(args[1], nullptr, 10);
 	uint32_t size = std::stoul(args[2], nullptr, 10);
+
+	if (MAX_PARSED_LBA < address) return std::make_shared<SsdErrorCmd>();
+	if (MAX_PARSED_SIZE < size) return std::make_shared<SsdErrorCmd>();
+	if (MAX_PARSED_LBA < address + size) return std::make_shared<SsdErrorCmd>();
+
 	return std::make_shared<SsdEraseCmd>(address, size);
 }
 
@@ -73,6 +80,7 @@ bool SsdCmdParser::isHexString(const std::string& address) {
 std::shared_ptr<SsdCmdInterface> SsdCmdParser::getWriteCommandWithInput(const std::vector<std::string>& args) {
 	uint32_t address = std::stoul(args[1], nullptr, 10);
 	uint32_t value = std::stoul(args[2], nullptr, 16);
+	if (MAX_PARSED_LBA < address) return std::make_shared<SsdErrorCmd>();
 	return std::make_shared<SsdWriteCmd>(address, value);
 }
 
