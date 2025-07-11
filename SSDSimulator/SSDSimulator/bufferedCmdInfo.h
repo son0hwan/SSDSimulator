@@ -11,14 +11,12 @@ class BufferedCmdInfo {
 public:
 	BufferedCmdInfo(std::shared_ptr<SsdReadCmd> readCmd) : cmd(readCmd) {
 		address = readCmd->getAddress();
-		isBufferingRequired = false;
 		type = CT_READ;
 	}
 
 	BufferedCmdInfo(std::shared_ptr<SsdWriteCmd> writeCmd) : cmd(writeCmd) {
 		address = writeCmd->getAddress();
 		type = CT_WRITE;
-		isBufferingRequired = true;
 		value = writeCmd->getData();
 	}
 
@@ -26,14 +24,12 @@ public:
 		address = eraseCmd->getStartAddress();
 		size = eraseCmd->getSize();
 		type = CT_ERASE;
-		isBufferingRequired = true;
 		value = 0;
 	}
 
 	BufferedCmdInfo(std::shared_ptr<SsdFlushCmd> flushCmd) : cmd(flushCmd) {
 		address = 0;
 		type = CT_FLUSH;
-		isBufferingRequired = false;
 	}
 
 	SsdCmdInterface* getCmd() { return cmd.get(); }
@@ -43,12 +39,15 @@ public:
 		return value;
 	}
 
+	uint32_t getStartAddress() { return address; }
+	uint32_t getEndAddress() { return address + size - 1; }
+
 	//make field as needed
 	uint32_t address = 0;
 	uint32_t size = 1;
 	uint32_t value = 0;
-	bool isBufferingRequired = false;
 
 	commandType type;
 	std::shared_ptr<SsdCmdInterface> cmd;
+private:
 };

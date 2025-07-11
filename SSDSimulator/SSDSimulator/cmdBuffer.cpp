@@ -45,87 +45,32 @@ std::vector<SsdCmdInterface*> CommandBuffer::addBufferAndGetCmdToRun(SsdCmdInter
 
 std::vector<SsdCmdInterface*> CommandBuffer::GetBufferedReadCmd(BufferedCmdInfo* readCmdInfo)
 {
-	BufferedCmdInfo* overlappedCmd = CheckLbaOverlap(bufferingQ, readCmdInfo->address);
+	BufferedCmdInfo* overlappedCmd = CheckLbaOverlap(bufferingQ, readCmdInfo->getStartAddress());
 	if (nullptr == overlappedCmd) return { readCmdInfo->getCmd() };
 
-	uint32_t cachedValue = overlappedCmd->getValueFromAddress(readCmdInfo->address);
-	return { new SsdCachedReadCmd{readCmdInfo->address, cachedValue, readCmdInfo->getCmd()} };
+	uint32_t cachedValue = overlappedCmd->getValueFromAddress(readCmdInfo->getStartAddress());
+	return { new SsdCachedReadCmd{readCmdInfo->getStartAddress(), cachedValue, readCmdInfo->getCmd()} };
 }
 
 void CommandBuffer::filterInvalidWrites(vector<BufferedCmdInfo*>& bufferingQ) {
 	vector<BufferedCmdInfo*> erasesToRemove;
-	CheckLbaOverlapBothErases(bufferingQ, erasesToRemove);
+	CheckLbaOverlap(bufferingQ, erasesToRemove);
 	removeFromOutstandingQ(bufferingQ, erasesToRemove);
 
-	vector<BufferedCmdInfo*> writesToRemove;
-	CheckLbaOverlapWriteAndErase(bufferingQ, writesToRemove);
-	removeFromOutstandingQ(bufferingQ, writesToRemove);
-
-	CheckLbaOverlapBothWrites(bufferingQ);
 }
 
-void CommandBuffer::CheckLbaOverlapBothErases(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove)
+void CommandBuffer::CheckLbaOverlap(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove)
 {
 	for (auto itCmd = bufferingQ.begin(); itCmd != bufferingQ.end(); ++itCmd) {
-		if ((*itCmd)->type != CT_ERASE) continue;
-
-		uint32_t startFrontEraseAddress = (*itCmd)->address;
-		uint32_t endFrontEraseAddress = startFrontEraseAddress + (*itCmd)->size - 1;
-
-		CompareWithOtherErases(itCmd, bufferingQ, startFrontEraseAddress, endFrontEraseAddress, erasesToRemove);
+		CompareWithOther(itCmd, bufferingQ, (*itCmd)->getStartAddress(), (*itCmd)->getEndAddress(), erasesToRemove);
 	}
 }
-void CommandBuffer::CompareWithOtherErases(vector<BufferedCmdInfo*>::iterator& itCmd, vector<BufferedCmdInfo*>& bufferingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, vector<BufferedCmdInfo*>& erasesToRemove)
+void CommandBuffer::CompareWithOther(vector<BufferedCmdInfo*>::iterator& itCmd, vector<BufferedCmdInfo*>& bufferingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, vector<BufferedCmdInfo*>& erasesToRemove)
 {
 	for (auto itNextCmd = std::next(itCmd); itNextCmd != bufferingQ.end(); ++itNextCmd) {
-		if ((*itNextCmd)->type != CT_ERASE) continue;
-
-		uint32_t startRearEraseAddress = (*itNextCmd)->address;
-		uint32_t endRearEraseAddress = startRearEraseAddress + (*itNextCmd)->size - 1;
-
-		if (startFrontEraseAddress >= startRearEraseAddress && endFrontEraseAddress <= endRearEraseAddress) {
+		if (startFrontEraseAddress >= (*itNextCmd)->getStartAddress() && endFrontEraseAddress <= (*itNextCmd)->getEndAddress()) {
 			erasesToRemove.push_back(*itCmd);
 			break;
-		}
-	}
-}
-
-void CommandBuffer::CheckLbaOverlapWriteAndErase(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& writesToRemove)
-{
-	for (auto itCommand = bufferingQ.begin(); itCommand != bufferingQ.end(); ++itCommand) {
-		if ((*itCommand)->type != CT_ERASE) continue;
-
-		uint32_t startEraseAddress = (*itCommand)->address;
-		uint32_t endEraseAddress = startEraseAddress + (*itCommand)->size - 1;
-
-		CompareWithWrites(bufferingQ, itCommand, startEraseAddress, endEraseAddress, writesToRemove);
-	}
-}
-void CommandBuffer::CompareWithWrites(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, vector<BufferedCmdInfo*>& writesToRemove)
-{
-	for (auto itNextCmd = bufferingQ.begin(); itNextCmd != itCommand; ++itNextCmd) {
-		if ((*itNextCmd)->type == CT_WRITE) {
-			uint32_t writeAddress = (*itNextCmd)->address;
-			if (writeAddress >= startEraseAddress && writeAddress <= endEraseAddress) {
-				writesToRemove.push_back(*itNextCmd);
-			}
-		}
-	}
-}
-
-void CommandBuffer::CheckLbaOverlapBothWrites(vector<BufferedCmdInfo*>& bufferingQ)
-{
-	std::unordered_set<uint32_t> seenAddresses;
-	for (int i = static_cast<int>(bufferingQ.size()) - 1; i >= 0; --i) {
-		auto* cmd = bufferingQ[i];
-		if (cmd->type == CT_WRITE) {
-			uint32_t addr = cmd->address;
-			if (seenAddresses.count(addr)) {
-				bufferingQ.erase(bufferingQ.begin() + i);
-			}
-			else {
-				seenAddresses.insert(addr);
-			}
 		}
 	}
 }
@@ -143,20 +88,8 @@ void CommandBuffer::removeFromOutstandingQ(vector<BufferedCmdInfo*>& bufferingQ,
 BufferedCmdInfo* CommandBuffer::CheckLbaOverlap(vector<BufferedCmdInfo*>& bufferingQ, long address) {
 	BufferedCmdInfo* result = nullptr;
 	for (auto itCommand = bufferingQ.begin(); itCommand != bufferingQ.end(); ++itCommand) {
-
-
-		if ((*itCommand)->type == CT_ERASE) {
-			uint32_t startFrontEraseAddress = (*itCommand)->address;
-			uint32_t endFrontEraseAddress = startFrontEraseAddress + (*itCommand)->size - 1;
-			if (startFrontEraseAddress <= address && address <= endFrontEraseAddress) {
-				result = *itCommand;
-			}
-		}
-		else if ((*itCommand)->type == CT_WRITE) {
-			uint32_t writeAddress = (*itCommand)->address;
-			if (writeAddress == address) {
-				result = *itCommand;
-			}
+		if ((*itCommand)->getStartAddress() <= address && address <= (*itCommand)->getEndAddress()) {
+			result = *itCommand;
 		}
 	}
 	return result;
