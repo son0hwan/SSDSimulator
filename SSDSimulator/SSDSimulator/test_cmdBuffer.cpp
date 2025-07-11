@@ -68,77 +68,74 @@ public:
 };
 
 TEST_F(CommandBufferFixture, addReadCmd) {
-	SsdReadCmd cmd{};
+	auto cmd = std::make_shared<SsdReadCmd>();
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
-	CHECK_OUTSTANING_Q(result, CmdQ_type{&cmd});
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd.get());
+	CHECK_OUTSTANING_Q(result, CmdQ_type{ cmd.get() });
 }
 
 TEST_F(CommandBufferFixture, addWriteCmd) {
-	SsdWriteCmd cmd{ 0, 0x12345678 };
+	auto cmd = std::make_shared<SsdWriteCmd>(0, 0x12345678);
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd.get());
 	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
 }
 
 TEST_F(CommandBufferFixture, addEraseCmd) {
-	SsdEraseCmd cmd{ 0, 1 };
+	auto cmd = std::make_shared<SsdEraseCmd>(0, 1);
 
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd);
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd.get());
 	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
 }
 
 TEST_F(CommandBufferFixture, add5WriteCmd) {
-	SsdWriteCmd cmd1{ 0, 0x12345678 };
-	SsdWriteCmd cmd2{ 1, 0x12345678 };
-	SsdWriteCmd cmd3{ 2, 0x12345678 };
-	SsdWriteCmd cmd4{ 3, 0x12345678 };
-	SsdWriteCmd cmd5{ 4, 0x12345678 };
-	SsdWriteCmd cmd6{ 5, 0x12345678 };
+	auto cmd1 = std::make_shared<SsdWriteCmd>(0, 0x12345678);
+	auto cmd2 = std::make_shared<SsdWriteCmd>(1, 0x12345678);
+	auto cmd3 = std::make_shared<SsdWriteCmd>(2, 0x12345678);
+	auto cmd4 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+	auto cmd5 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
+	auto cmd6 = std::make_shared<SsdWriteCmd>(5, 0x12345678);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+	cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd5.get());
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd6.get());
 
-	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 });
-	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ &cmd6 }));
+	CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{ cmd1.get(), cmd2.get(), cmd3.get(), cmd4.get(), cmd5.get() });
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ cmd6.get() }));
 }
-
 
 TEST_F(CommandBufferFixture, flushCmd) {
-	SsdWriteCmd cmd1{ 0, 0x12345678 };
-	SsdWriteCmd cmd2{ 1, 0x12345678 };
-	SsdWriteCmd cmd3{ 2, 0x12345678 };
-	SsdFlushCmd cmd4{};
+	auto cmd1 = std::make_shared<SsdWriteCmd>(0, 0x12345678);
+	auto cmd2 = std::make_shared<SsdWriteCmd>(1, 0x12345678);
+	auto cmd3 = std::make_shared<SsdWriteCmd>(2, 0x12345678);
+	auto cmd4 = std::make_shared<SsdFlushCmd>();
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+	cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+	auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
 
-
-	CHECK_OUTSTANING_Q(result, CmdQ_type{ &cmd1, &cmd2, &cmd3 });
-	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ }));
+	CHECK_OUTSTANING_Q(result, CmdQ_type{ cmd1.get(), cmd2.get(), cmd3.get() });
+	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{}));
 }
 
-
 TEST_F(CommandBufferFixture, cachedReadWithWrite) {
-	SsdWriteCmd cmd1{ 0, 0x12345678 };
-	SsdReadCmd	cmd2{0};
+	auto cmd1 = std::make_shared<SsdWriteCmd>(0, 0x12345678);
+	auto cmd2 = std::make_shared<SsdReadCmd>(0);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	auto result1 = cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
+	cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+	auto result1 = cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
 
 	EXPECT_EQ(result1.size(), 1);
 	EXPECT_TRUE(isCachedReadCmd(result1[0], 0, 0x12345678));
 
-	SsdEraseCmd cmd3{ 0, 5 };
-	SsdReadCmd	cmd4{ 0 };
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	auto result2 = cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
+	auto cmd3 = std::make_shared<SsdEraseCmd>(0, 5);
+	auto cmd4 = std::make_shared<SsdReadCmd>(0);
+	cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+	auto result2 = cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
 
 	EXPECT_EQ(result2.size(), 1);
 	EXPECT_TRUE(isCachedReadCmd(result2[0], 0, 0));
@@ -146,152 +143,154 @@ TEST_F(CommandBufferFixture, cachedReadWithWrite) {
 
 
 TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
-	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
-	SsdWriteCmd cmd2{ 1, 0xDEADDEAD };
-	SsdWriteCmd cmd3{ 2, 0xABBAABBA };
-	SsdWriteCmd cmd4{ 3, 0xAAAABBBB};
-	SsdWriteCmd cmd5{ 4, 0x00011112 };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(0, 0xBEEFBEEF);
+    auto cmd2 = std::make_shared<SsdWriteCmd>(1, 0xDEADDEAD);
+    auto cmd3 = std::make_shared<SsdWriteCmd>(2, 0xABBAABBA);
+    auto cmd4 = std::make_shared<SsdWriteCmd>(3, 0xAAAABBBB);
+    auto cmd5 = std::make_shared<SsdWriteCmd>(4, 0x00011112);
 
-	std::vector<std::string> expected = { "1_W_0_0xBEEFBEEF", "2_W_1_0xDEADDEAD", "3_W_2_0xABBAABBA",  "4_W_3_0xAAAABBBB",  "5_W_4_0x00011112", };
+    std::vector<std::string> expected = {
+        "1_W_0_0xBEEFBEEF", "2_W_1_0xDEADDEAD", "3_W_2_0xABBAABBA",
+        "4_W_3_0xAAAABBBB", "5_W_4_0x00011112"
+    };
 
-	std::vector<BufferedCmdInfo*> v;
-	v.push_back(cmd1.getBufferedCmdInfo());
-	v.push_back(cmd2.getBufferedCmdInfo());
-	v.push_back(cmd3.getBufferedCmdInfo());
-	v.push_back(cmd4.getBufferedCmdInfo());
-	v.push_back(cmd5.getBufferedCmdInfo());
+    std::vector<BufferedCmdInfo*> v{
+        cmd1->getBufferedCmdInfo(),
+        cmd2->getBufferedCmdInfo(),
+        cmd3->getBufferedCmdInfo(),
+        cmd4->getBufferedCmdInfo(),
+        cmd5->getBufferedCmdInfo()
+    };
 
-	CommandBufferStorage bufferStorage;
-	bufferStorage.setBufferToStorage(v);
+    CommandBufferStorage bufferStorage;
+    bufferStorage.setBufferToStorage(v);
 
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
+    IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+    std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
-	EXPECT_EQ(expected, actual);
+    EXPECT_EQ(expected, actual);
 }
 
 TEST_F(CommandBufferFixture, BufferFileUpdatePartiallyFullCmdQ) {
-	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };
-	std::vector<std::string> expected = { "1_W_0_0xBEEFBEEF", "2_empty", "3_empty",  "4_empty",  "5_empty", };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(0, 0xBEEFBEEF);
+    std::vector<std::string> expected = {
+        "1_W_0_0xBEEFBEEF", "2_empty", "3_empty", "4_empty", "5_empty"
+    };
 
-	std::vector<BufferedCmdInfo*> v;
-	v.push_back(cmd1.getBufferedCmdInfo());
+    std::vector<BufferedCmdInfo*> v{
+        cmd1->getBufferedCmdInfo()
+    };
 
-	CommandBufferStorage bufferStorage;
-	bufferStorage.setBufferToStorage(v);
+    CommandBufferStorage bufferStorage;
+    bufferStorage.setBufferToStorage(v);
 
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
+    IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+    std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
-	EXPECT_EQ(expected, actual);
+    EXPECT_EQ(expected, actual);
 }
 
 TEST_F(CommandBufferFixture, BufferFileUpdateEmptyCmdQ) {
-	std::vector<std::string> expected = { "1_empty", "2_empty", "3_empty",  "4_empty",  "5_empty", };
+    std::vector<std::string> expected = {
+        "1_empty", "2_empty", "3_empty", "4_empty", "5_empty"
+    };
 
-	std::vector<BufferedCmdInfo*> v;
-	CommandBufferStorage bufferStorage;
-	bufferStorage.setBufferToStorage(v);
+    std::vector<BufferedCmdInfo*> v;
+    CommandBufferStorage bufferStorage;
+    bufferStorage.setBufferToStorage(v);
 
-	IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
-	std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
+    IOManager ioManager{ SsdSimulator::getInstance().getMaxSector() };
+    std::vector<std::string> actual = ioManager.buffer().getBufferFileList();
 
-	EXPECT_EQ(expected, actual);
+    EXPECT_EQ(expected, actual);
 }
 
 TEST_F(CommandBufferFixture, AllOverlapEraseWithEraseAddress) {
-	SsdWriteCmd cmd1{ 1, 0x12345678 };
-	SsdWriteCmd cmd2{ 3, 0x12345678 };
-	SsdEraseCmd cmd3{ 2, 3 };	// 2-4
-	SsdEraseCmd cmd4{ 1, 5 };	// 1-5
-	SsdWriteCmd cmd5{ 2, 0x12345678 };
-	SsdWriteCmd cmd6{ 4, 0x12345678 };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(1, 0x12345678);
+    auto cmd2 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+    auto cmd3 = std::make_shared<SsdEraseCmd>(2, 3);  // 2-4
+    auto cmd4 = std::make_shared<SsdEraseCmd>(1, 5);  // 1-5
+    auto cmd5 = std::make_shared<SsdWriteCmd>(2, 0x12345678);
+    auto cmd6 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+    cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd5.get());
+    auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd6.get());
 
-	CmdQ_type expectedOutstandingQ{};
+    CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
+    CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
+    CmdQ_type expectedBufferingQ{ cmd4.get(), cmd5.get(), cmd6.get() };
 
-	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
-
-	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
-	CmdQ_type expectedBufferingQ{ &cmd4, &cmd5, &cmd6 };
-
-	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
+    EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
 TEST_F(CommandBufferFixture, PartialOverlapEraseWithEraseAddress) {
-	SsdWriteCmd cmd1{ 1, 2 };	// 1-2
-	SsdEraseCmd cmd2{ 3, 4 };	// 3-6
-	SsdEraseCmd cmd3{ 1, 4 };	// 1-5
-	SsdEraseCmd cmd4{ 3, 3 };	// 3-5
-	SsdWriteCmd cmd5{ 4, 0x12345678 };
-	SsdWriteCmd cmd6{ 4, 0x12345678 };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(1, 2);       // 1-2
+    auto cmd2 = std::make_shared<SsdEraseCmd>(3, 4);       // 3-6
+    auto cmd3 = std::make_shared<SsdEraseCmd>(1, 4);       // 1-5
+    auto cmd4 = std::make_shared<SsdEraseCmd>(3, 3);       // 3-5
+    auto cmd5 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
+    auto cmd6 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+    cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd5.get());
+    auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd6.get());
 
-	CmdQ_type expectedOutstandingQ{};
-	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
+    CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
+    CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
+    CmdQ_type expectedBufferingQ{ cmd2.get(), cmd3.get(), cmd4.get(), cmd6.get() };
 
-	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
-	CmdQ_type expectedBufferingQ{ &cmd2, &cmd3, &cmd4, &cmd6 };
-
-	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
+    EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
 TEST_F(CommandBufferFixture, WriteOverlapErase) {
-	SsdWriteCmd cmd1{ 3, 0x12345678 };
-	SsdWriteCmd cmd2{ 4, 0x12345678 };
-	SsdWriteCmd cmd3{ 3, 0x12345678 };
-	SsdWriteCmd cmd4{ 5, 0x12345678 };
-	SsdWriteCmd cmd5{ 3, 0x12345678 };
-	SsdWriteCmd cmd6{ 6, 0x12345678 };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+    auto cmd2 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
+    auto cmd3 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+    auto cmd4 = std::make_shared<SsdWriteCmd>(5, 0x12345678);
+    auto cmd5 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+    auto cmd6 = std::make_shared<SsdWriteCmd>(6, 0x12345678);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+    cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd5.get());
+    auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd6.get());
 
-	CmdQ_type expectedOutstandingQ{};
-	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
+    CHECK_OUTSTANING_Q_WRITE(result, CmdQ_type{});
+    CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
+    CmdQ_type expectedBufferingQ{ cmd2.get(), cmd4.get(), cmd5.get(), cmd6.get() };
 
-	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
-	CmdQ_type expectedBufferingQ{ &cmd2, &cmd4, &cmd5, &cmd6 };
-
-	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
+    EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
 
 TEST_F(CommandBufferFixture, WriteLaterOverlapErase) {
-	SsdWriteCmd cmd1{ 1, 0x12345678 };
-	SsdWriteCmd cmd2{ 2, 0x12345678 };
-	SsdWriteCmd cmd3{ 3, 0x12345678 };
-	SsdWriteCmd cmd4{ 4, 0x12345678 };
-	SsdWriteCmd cmd5{ 5, 0x12345678 };
-	SsdWriteCmd cmd6{ 5, 0x12345678 };
+    auto cmd1 = std::make_shared<SsdWriteCmd>(1, 0x12345678);
+    auto cmd2 = std::make_shared<SsdWriteCmd>(2, 0x12345678);
+    auto cmd3 = std::make_shared<SsdWriteCmd>(3, 0x12345678);
+    auto cmd4 = std::make_shared<SsdWriteCmd>(4, 0x12345678);
+    auto cmd5 = std::make_shared<SsdWriteCmd>(5, 0x12345678);
+    auto cmd6 = std::make_shared<SsdWriteCmd>(5, 0x12345678);
 
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd1);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd2);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd3);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd4);
-	cmdBuffer.addBufferAndGetCmdToRun(&cmd5);
-	auto result = cmdBuffer.addBufferAndGetCmdToRun(&cmd6);
+    cmdBuffer.addBufferAndGetCmdToRun(cmd1.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd2.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd3.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd4.get());
+    cmdBuffer.addBufferAndGetCmdToRun(cmd5.get());
+    auto result = cmdBuffer.addBufferAndGetCmdToRun(cmd6.get());
 
-	CmdQ_type expectedOutstandingQ{ &cmd1, &cmd2, &cmd3, &cmd4, &cmd5 };
-	CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
+    CmdQ_type expectedOutstandingQ{ cmd1.get(), cmd2.get(), cmd3.get(), cmd4.get(), cmd5.get() };
+    CHECK_OUTSTANING_Q_WRITE(result, expectedOutstandingQ);
 
-	CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
-	CmdQ_type expectedBufferingQ{ &cmd6 };
+    CmdQ_type actualBufferingQ = cmdBuffer.popAllBufferToOutstandingQ();
+    CmdQ_type expectedBufferingQ{ cmd6.get() };
 
-	EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
+    EXPECT_EQ(expectedBufferingQ, actualBufferingQ);
 }
