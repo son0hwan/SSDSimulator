@@ -16,7 +16,7 @@ public:
     }
 
     std::vector<std::string> getBufferFileList() {
-        if (!bufferFolderAndFilesExist()) forceCreateFiveFreshBufferFiles();
+        if (!bufferFolderExist()) forceCreateFiveFreshBufferFiles();
 
         std::vector<std::string> buffers;
         for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
@@ -71,12 +71,12 @@ private:
         }
     }
 
-    bool createBufferFile(const std::string & fileName) {
+    bool createBufferFile(const std::string& fileName) {
         std::ofstream file(fileName, std::ios::trunc);  // trunc: overwrite if exists
         return file.is_open();
     }
 
-    std::string removeFolderPathFrom(const std::filesystem::directory_entry & file) {
+    std::string removeFolderPathFrom(const std::filesystem::directory_entry& file) {
         return file.path().filename().string();
     }
 
@@ -89,15 +89,8 @@ private:
         return true;
     }
 
-    bool bufferFolderAndFilesExist() {
-        if (!std::filesystem::exists(BUFFER_FOLDER)) return false;        
-        
-        int numOfFiles = 0;
-        for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
-            if (fileName.is_regular_file()) numOfFiles++;
-        }
-        if (numOfFiles != NUM_OF_BUFFERS) return false;
-
+    bool bufferFolderExist() {
+        if (!std::filesystem::exists(BUFFER_FOLDER)) return false;
         return true;
     }
 };
