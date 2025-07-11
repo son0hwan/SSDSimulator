@@ -39,12 +39,8 @@ protected:
 private:
 	std::vector<SsdCmdInterface*> GetBufferedReadCmd(BufferedCmdInfo* readCmdInfo);
 
-	void CheckLbaOverlapBothErases(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove);
-	void CheckLbaOverlapWriteAndErase(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& writesToRemove);
-	void CheckLbaOverlapBothWrites(vector<BufferedCmdInfo*>& bufferingQ);
-	void CompareWithOtherErases(vector<BufferedCmdInfo*>::iterator& itCmd, vector<BufferedCmdInfo*>& bufferingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, vector<BufferedCmdInfo*>& erasesToRemove);
-	void CompareWithWrites(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>::iterator& itCommand, uint32_t startEraseAddress, uint32_t endEraseAddress, vector<BufferedCmdInfo*>& writesToRemove);
-	void removeFromOutstandingQ(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove);
+	void CheckLbaOverlap(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove);
+	void CompareWithOther(vector<BufferedCmdInfo*>::iterator& itCmd, vector<BufferedCmdInfo*>& bufferingQ, uint32_t startFrontEraseAddress, uint32_t endFrontEraseAddress, vector<BufferedCmdInfo*>& erasesToRemove);	void removeFromOutstandingQ(vector<BufferedCmdInfo*>& bufferingQ, vector<BufferedCmdInfo*>& erasesToRemove);
 
 	BufferedCmdInfo* CheckLbaOverlap(vector<BufferedCmdInfo*>& bufferingQ, long address);
 };

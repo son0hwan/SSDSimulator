@@ -1,24 +1,3 @@
-[25.07.10 14:06] TestShell.run(void)( )                                      : fullwrite 0x12345678
-[25.07.10 14:06] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
-[25.07.10 14:06] ShellFullWriteCmd.run(void)( )                              : ShellFullWriteCmd::run has been called
-[25.07.10 14:06] ShellReadCmd.ShellReadCmd(long)( )                          : ShellReadCmd::ShellReadCmd has been called
-[25.07.10 14:06] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
-[25.07.10 14:06] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
-[25.07.10 14:06] ShellWriteCmd.ShellWriteCmd(long,unsigned int)( )           : ShellWriteCmd::ShellWriteCmd has been called
-[25.07.10 14:06] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
-[25.07.10 14:06] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
-[25.07.10 14:06] ShellErrorCmd.ShellErrorCmd(void)( )                        : ShellErrorCmd::ShellErrorCmd has been called
-[25.07.10 14:06] ShellHelpCmd.ShellHelpCmd(void)( )                          : ShellHelpCmd::ShellHelpCmd has been called
-[25.07.10 14:06] ShellFullWriteCmd.ShellFullWriteCmd(unsigned int)( )        : ShellFullWriteCmd::ShellFullWriteCmd has been called
-[25.07.10 14:06] ShellFullReadCmd.ShellFullReadCmd(void)( )                  : ShellFullReadCmd::ShellFullReadCmd has been called
-[25.07.10 14:06] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
-[25.07.10 14:06] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
-[25.07.10 14:06] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
-[25.07.10 14:06] ShellScript2Cmd.ShellScript2Cmd(void)( )                    : ShellScript2Cmd::ShellScript2Cmd has been called
-[25.07.10 14:06] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
-[25.07.10 14:06] ShellScript3Cmd.ShellScript3Cmd(void)( )                    : ShellScript3Cmd::ShellScript3Cmd has been called
-[25.07.10 14:06] ShellEraseCmd.ShellEraseCmd(long,long)( )                   : ShellEraseCmd::ShellEraseCmd has been called
-[25.07.10 14:06] ShellEraseRangeCmd.ShellEraseRangeCmd(long,long)( )         : ShellEraseRangeCmd::ShellEraseRangeCmd has been called
-[25.07.10 14:06] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
-[25.07.10 14:06] ShellScript4Cmd.ShellScript4Cmd(void)( )                    : ShellScript4Cmd::ShellScript4Cmd has been called
-[25.07.10 14:06] ShellFlushCmd.ShellFlushCmd(void)( )                        : ShellFlushCmd::ShellFlushCmd has been called
+[25.07.11 09:59] TestShell.run(void)( )                                      : 1_
+[25.07.11 09:59] ShellScript1Cmd.ShellScript1Cmd(void)( )                    : ShellScript1Cmd::ShellScript1Cmd has been called
+[25.07.11 09:59] ShellScript1Cmd.run(void)( )                                : ShellScript1Cmd::run has been called
