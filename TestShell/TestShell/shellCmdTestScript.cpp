@@ -151,13 +151,10 @@ bool ShellScript4Cmd::run() {
 
 	for (int i = 0; i < MAX_LOOP_COUNT; i++) {
 		for (int address = 2; address <= 98; address += 2) {
-			std::string FIRST_RANDOM_STR = genRandomString(MAX_VAL_LEN);
-			std::string SECOND_RANDOM_STR = genRandomString(MAX_VAL_LEN);
-
-			if (result = executor->writeToSSDWithResult(address, stoul(FIRST_RANDOM_STR, nullptr, 16)))
+			if (result = executor->writeToSSDWithResult(address, rand()))
 				goto ret;
 
-			if (result = executor->writeToSSDWithResult(address, stoul(SECOND_RANDOM_STR, nullptr, 16)))
+			if (result = executor->writeToSSDWithResult(address, rand()))
 				goto ret;
 
 			int erase_unit = ((address == 98) ? 2 : 3);
