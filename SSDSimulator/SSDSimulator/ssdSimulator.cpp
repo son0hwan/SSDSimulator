@@ -26,7 +26,8 @@ void SsdSimulator::write(uint32_t address, uint32_t value) {
 	LoadAllDatasFromNand();
 	WriteDataToSpecificAddress(address, value);
 	ioManager.nand().ProgramAllDatasToNand(lbaTable);
-	ioManager.output().updateWriteSuccess();
+	ioManager.output().updateWriteStatus(++writeCnt, true);
+	ioManager.output().updateWriteStatus(++writeCnt, false);
 }
 
 void SsdSimulator::erase(uint32_t startAddress, uint32_t eraseSize) {
@@ -39,7 +40,8 @@ void SsdSimulator::erase(uint32_t startAddress, uint32_t eraseSize) {
 		WriteDataToSpecificAddress(lba, ZERO);
 	}
 	ioManager.nand().ProgramAllDatasToNand(lbaTable);
-	ioManager.output().updateEraseSuccess();
+	ioManager.output().updateWriteStatus(++writeCnt, true);
+	ioManager.output().updateWriteStatus(++writeCnt, false);
 }
 
 uint32_t SsdSimulator::getMaxSector() {

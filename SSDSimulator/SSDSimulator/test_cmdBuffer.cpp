@@ -107,7 +107,6 @@ TEST_F(CommandBufferFixture, add5WriteCmd) {
 	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ &cmd6 }));
 }
 
-
 TEST_F(CommandBufferFixture, flushCmd) {
 	SsdWriteCmd cmd1{ 0, 0x12345678 };
 	SsdWriteCmd cmd2{ 1, 0x12345678 };
@@ -123,7 +122,6 @@ TEST_F(CommandBufferFixture, flushCmd) {
 	CHECK_OUTSTANING_Q(result, CmdQ_type{ &cmd1, &cmd2, &cmd3 });
 	EXPECT_THAT(cmdBuffer.getAllBufferedCmd(), ContainerEq(CmdQ_type{ }));
 }
-
 
 TEST_F(CommandBufferFixture, cachedReadWithWrite) {
 	SsdWriteCmd cmd1{ 0, 0x12345678 };
@@ -143,7 +141,6 @@ TEST_F(CommandBufferFixture, cachedReadWithWrite) {
 	EXPECT_EQ(result2.size(), 1);
 	EXPECT_TRUE(isCachedReadCmd(result2[0], 0, 0));
 }
-
 
 TEST_F(CommandBufferFixture, BufferFileUpdateFullCmdQ) {
 	SsdWriteCmd cmd1{ 0, 0xBEEFBEEF };

@@ -42,4 +42,6 @@ private:
 
     std::vector<LbaEntry> lbaTable;
     IOManager ioManager{ DEFAULT_MAX_LBA_OF_DEVICE };
+    int writeCnt = 0;
+    int eraseCnt = 0;
 };

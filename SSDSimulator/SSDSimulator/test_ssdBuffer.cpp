@@ -2,7 +2,6 @@
 #include "IOManager.h"
 #include "ssdSimulator.h"
 #include <vector>
-
 #include "cmdBuffer.h"
 
 using namespace testing;
