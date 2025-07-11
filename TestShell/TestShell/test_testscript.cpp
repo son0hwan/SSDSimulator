@@ -45,10 +45,23 @@ TEST_F(ShellFixture, WriteReadAging) {
 }
 
 TEST_F(ShellFixture, EraseAndWriteAging) {
+	int toggle = 0;
+
 	EXPECT_CALL(mockSSD, eraseToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
 	EXPECT_CALL(mockSSD, writeToSSD(_, _))
 		.WillRepeatedly(Return(SUCCESS_STRING));
+	EXPECT_CALL(mockRandomGenerator, next)
+		.WillRepeatedly([&toggle]() {
+		if (toggle == 0) {
+			toggle = 1;
+			return std::stoul(TEST_SAMPLE_DATA, nullptr, 16);
+		}
+		else {
+			toggle = 0;
+			return std::stoul(TEST_SAMPLE_DATA2, nullptr, 16);
+		}
+			});
 
 	command("4_EraseAndWriteAging");
 
