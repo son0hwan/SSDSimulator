@@ -16,6 +16,8 @@ public:
     }
 
     std::vector<std::string> getBufferFileList() {
+        if (!bufferFolderAndFilesExist()) forceCreateFiveFreshBufferFiles();
+
         std::vector<std::string> buffers;
         for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
             if (fileName.is_regular_file()) {
@@ -84,6 +86,18 @@ private:
             std::cerr << "File not found: " << filePath << std::endl;
             return false;
         }
+        return true;
+    }
+
+    bool bufferFolderAndFilesExist() {
+        if (!std::filesystem::exists(BUFFER_FOLDER)) return false;        
+        
+        int numOfFiles = 0;
+        for (const auto& fileName : std::filesystem::directory_iterator(BUFFER_FOLDER)) {
+            if (fileName.is_regular_file()) numOfFiles++;
+        }
+        if (numOfFiles != NUM_OF_BUFFERS) return false;
+
         return true;
     }
 };
